@@ -35,12 +35,13 @@ export async function generateMetadata({
   }
 }
 
-// Blog post page component
-export default async function BlogPostPage({
-  params
-}: {
+interface PageProps {
   params: { slug: string }
-}) {
+  searchParams?: { [key: string]: string | string[] | undefined }
+}
+
+// Blog post page component
+export default async function BlogPostPage({ params }: PageProps) {
   // Get blog post from the slug
   const post = await getContentBySlug<BlogPost>('blog', params.slug)
 
