@@ -6,12 +6,15 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { BlogPost, getContentBySlug } from '@/utils/content-loader'
 
+interface PageProps {
+  params: { slug: string }
+  searchParams: Record<string, string | string[] | undefined>
+}
+
 // Generate metadata for the blog post
 export async function generateMetadata({
   params
-}: {
-  params: { slug: string }
-}): Promise<Metadata> {
+}: PageProps): Promise<Metadata> {
   const post = await getContentBySlug<BlogPost>('blog', params.slug)
 
   if (!post) {
@@ -36,11 +39,7 @@ export async function generateMetadata({
 }
 
 // Blog post page component
-export default async function BlogPostPage({
-  params
-}: {
-  params: { slug: string }
-}) {
+export default async function BlogPostPage({ params }: PageProps) {
   // Get blog post from the slug
   const post = await getContentBySlug<BlogPost>('blog', params.slug)
 
