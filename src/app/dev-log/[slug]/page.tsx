@@ -15,6 +15,11 @@ interface DevLogEntry {
   slug: string
 }
 
+interface PageProps {
+  params: { slug: string }
+  searchParams: Record<string, string | string[] | undefined>
+}
+
 // This function will be replaced with actual data fetching
 // No placeholder content is used
 async function getDevLogEntry(slug: string): Promise<DevLogEntry | null> {
@@ -26,9 +31,7 @@ async function getDevLogEntry(slug: string): Promise<DevLogEntry | null> {
 
 export async function generateMetadata({
   params
-}: {
-  params: { slug: string }
-}): Promise<Metadata> {
+}: PageProps): Promise<Metadata> {
   const entry = await getDevLogEntry(params.slug)
 
   if (!entry) {
@@ -50,11 +53,7 @@ export async function generateMetadata({
   }
 }
 
-export default async function DevLogEntryPage({
-  params
-}: {
-  params: { slug: string }
-}) {
+export default async function DevLogEntryPage({ params }: PageProps) {
   const entry = await getDevLogEntry(params.slug)
 
   if (!entry) {

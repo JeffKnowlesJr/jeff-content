@@ -14,13 +14,9 @@ interface BlogPost {
   tags: string[]
 }
 
-interface BlogTagPageProps {
-  params: {
-    tag: string
-  }
-  searchParams: {
-    page?: string
-  }
+interface PageProps {
+  params: { tag: string }
+  searchParams: Record<string, string | string[] | undefined>
 }
 
 function getTagPosts(tag: string): BlogPost[] {
@@ -32,7 +28,7 @@ function getTagPosts(tag: string): BlogPost[] {
 
 export async function generateMetadata({
   params
-}: BlogTagPageProps): Promise<Metadata> {
+}: PageProps): Promise<Metadata> {
   const tag = params.tag
   const posts = getTagPosts(tag)
 
@@ -49,10 +45,7 @@ export async function generateMetadata({
   }
 }
 
-export default function BlogTagPage({
-  params,
-  searchParams
-}: BlogTagPageProps) {
+export default function BlogTagPage({ params, searchParams }: PageProps) {
   const tag = params.tag
   const currentPage = Number(searchParams.page) || 1
   const postsPerPage = 6

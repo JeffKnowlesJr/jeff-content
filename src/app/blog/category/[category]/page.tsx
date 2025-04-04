@@ -1,3 +1,4 @@
+import React from 'react'
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import BlogLayout from '@/components/blog/BlogLayout'
@@ -14,13 +15,9 @@ interface BlogPost {
   tags: string[]
 }
 
-interface BlogCategoryPageProps {
-  params: {
-    category: string
-  }
-  searchParams: {
-    page?: string
-  }
+interface PageProps {
+  params: { category: string }
+  searchParams: Record<string, string | string[] | undefined>
 }
 
 function getCategoryPosts(category: string): BlogPost[] {
@@ -34,7 +31,7 @@ function getCategoryPosts(category: string): BlogPost[] {
 
 export async function generateMetadata({
   params
-}: BlogCategoryPageProps): Promise<Metadata> {
+}: PageProps): Promise<Metadata> {
   const category = params.category
   const posts = getCategoryPosts(category)
 
@@ -51,10 +48,7 @@ export async function generateMetadata({
   }
 }
 
-export default function BlogCategoryPage({
-  params,
-  searchParams
-}: BlogCategoryPageProps) {
+export default function BlogCategoryPage({ params, searchParams }: PageProps) {
   const category = params.category
   const currentPage = Number(searchParams.page) || 1
   const postsPerPage = 6
