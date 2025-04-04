@@ -1,0 +1,5 @@
+{
+  "name": "content-scripts",
+  "type": "module",
+  "private": true
+}

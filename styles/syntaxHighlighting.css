@@ -1,0 +1,102 @@
+/* Syntax highlighting theme inspired by the blue waves image by Smit Patel */
+
+pre[class*='language-'],
+code[class*='language-'] {
+  color: #e0e0e0;
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 1.5;
+  background: #0a1e36;
+  border-radius: 0.5rem;
+}
+
+pre[class*='language-'] {
+  padding: 1em;
+  margin: 0.5em 0;
+  overflow: auto;
+  border: 1px solid #3b6387;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  color: #6a8eae;
+}
+
+.token.punctuation {
+  color: #88b4df;
+}
+
+.token.namespace {
+  opacity: 0.7;
+}
+
+.token.property,
+.token.tag,
+.token.boolean,
+.token.number,
+.token.constant,
+.token.symbol {
+  color: #4a9fff;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin {
+  color: #92c9ff;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string {
+  color: #a3d4ff;
+  background: transparent;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.keyword {
+  color: #58b0ff;
+}
+
+.token.function,
+.token.class-name {
+  color: #05c2ff;
+}
+
+.token.regex,
+.token.important,
+.token.variable {
+  color: #d6e9ff;
+}
+
+.token.important,
+.token.bold {
+  font-weight: bold;
+}
+
+.token.italic {
+  font-style: italic;
+}
+
+.token.entity {
+  cursor: help;
+}
+
+/* For inline code */
+:not(pre) > code {
+  background-color: rgba(10, 30, 54, 0.1);
+  color: #0a1e36;
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+}
