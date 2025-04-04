@@ -8,15 +8,11 @@ import { Project, getContentBySlug } from '@/utils/content-loader'
 import ExternalLink from '@/components/projects/ExternalLink'
 import MarkdownLink from '@/components/markdown/MarkdownLink'
 
-type Params = {
-  slug: string
-}
-
 // Generate metadata for the project page
 export async function generateMetadata({
   params
 }: {
-  params: Params
+  params: { slug: string }
 }): Promise<Metadata> {
   const project = await getContentBySlug<Project>('projects', params.slug)
 
@@ -44,7 +40,7 @@ export async function generateMetadata({
 export default async function ProjectDetailPage({
   params
 }: {
-  params: Params
+  params: { slug: string }
 }) {
   // Get project from the slug
   const project = await getContentBySlug<Project>('projects', params.slug)

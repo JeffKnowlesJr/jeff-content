@@ -6,15 +6,11 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { BlogPost, getContentBySlug } from '@/utils/content-loader'
 
-type Params = {
-  slug: string
-}
-
 // Generate metadata for the blog post
 export async function generateMetadata({
   params
 }: {
-  params: Params
+  params: { slug: string }
 }): Promise<Metadata> {
   const post = await getContentBySlug<BlogPost>('blog', params.slug)
 
@@ -40,7 +36,11 @@ export async function generateMetadata({
 }
 
 // Blog post page component
-export default async function BlogPostPage({ params }: { params: Params }) {
+export default async function BlogPostPage({
+  params
+}: {
+  params: { slug: string }
+}) {
   // Get blog post from the slug
   const post = await getContentBySlug<BlogPost>('blog', params.slug)
 
