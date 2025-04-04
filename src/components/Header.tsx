@@ -117,10 +117,10 @@ export default function Header() {
       <div className='bg-gray-100/60 dark:bg-gray-900/60 backdrop-blur-sm py-3'>
         <div className='flex justify-between items-center max-w-7xl mx-auto px-4 sm:px-6'>
           <Link
-            href='/'
+            href='https://www.jkjrdev.com'
             className='flex items-center hover:text-teal-600 dark:hover:text-teal-400 transition-colors'
           >
-            <i className='fas fa-code text-teal-500 mr-2'></i>
+            <i className='fas fa-cogs text-teal-500 mr-2'></i>
             <span className='text-gray-700 dark:text-gray-300 font-medium text-sm sm:text-base truncate'>
               Jeff Knowles Jr Digital Development
             </span>
