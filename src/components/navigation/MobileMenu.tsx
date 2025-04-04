@@ -1,5 +1,4 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 
 interface MobileMenuProps {
@@ -7,16 +6,7 @@ interface MobileMenuProps {
   onClose: () => void
 }
 
-const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose }) => {
-  const menuItems = [
-    { name: 'Home', path: '/' },
-    { name: 'About', path: '/about' },
-    { name: 'Projects', path: '/projects' },
-    { name: 'Services', path: '/services' },
-    { name: 'Blog', path: '/blog' },
-    { name: 'Contact', path: '/contact' }
-  ]
-
+const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen }) => {
   return (
     <AnimatePresence>
       {isOpen && (

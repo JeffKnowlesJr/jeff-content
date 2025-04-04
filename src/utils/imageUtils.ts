@@ -120,7 +120,7 @@ export async function optimizeImage(
 export async function processImages(
   inputDir: string,
   outputDir: string,
-  options = {
+  _options = {
     maxWidth: 1920,
     quality: 80,
     generatePlaceholder: true
@@ -148,6 +148,6 @@ export function generateImageSizes(
   }
 ): string {
   return Object.entries(breakpoints)
-    .map(([breakpoint, width]) => `(min-width: ${width}px) ${width}px`)
+    .map(([_breakpoint, width]) => `(min-width: ${width}px) ${width}px`)
     .join(', ')
 }

@@ -18,7 +18,7 @@ declare module '*.mdx' {
     ogImage: {
       url: string
     }
-    [key: string]: any
+    [key: string]: unknown
   }
 
   const MDXComponent: ComponentType
