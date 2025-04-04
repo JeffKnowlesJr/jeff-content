@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import BlogLayout from '@/components/blog/BlogLayout'
 import BlogPostList from '@/components/blog/BlogPostList'
 import BlogPagination from '@/components/blog/BlogPagination'
+import { generateTagMetadata } from '@/utils/metadata'
 
 interface BlogPost {
   slug: string
@@ -34,15 +35,12 @@ export async function generateMetadata({
 
   if (posts.length === 0) {
     return {
-      title: 'Tag Not Found | Jeff Knowles Jr.',
+      title: 'Tag Not Found',
       description: 'The requested blog tag could not be found.'
     }
   }
 
-  return {
-    title: `${tag} | Blog Tags | Jeff Knowles Jr.`,
-    description: `Browse all blog posts tagged with ${tag}.`
-  }
+  return generateTagMetadata(tag)
 }
 
 export default function BlogTagPage({ params, searchParams }: PageProps) {

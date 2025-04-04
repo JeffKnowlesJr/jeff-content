@@ -1,11 +1,11 @@
-import { Metadata } from 'next'
-import { Inter, Merriweather } from 'next/font/google'
 import Script from 'next/script'
 import './globals.css'
+import { Inter, Merriweather } from 'next/font/google'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import BackgroundAnimation from '@/components/BackgroundAnimation'
 import ThemedApp from '@/components/ThemedApp'
+import { generateBaseMetadata } from '@/utils/metadata'
 import { generateWebsiteSchema } from '@/utils/schema'
 
 // Define fonts
@@ -26,46 +26,7 @@ const merriweather = Merriweather({
 const jsonLd = generateWebsiteSchema()
 
 // Define global metadata
-export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL || 'https://jeffknowlesjr.com'
-  ),
-  title: {
-    template: '%s | Jeff Knowles Jr',
-    default: 'Jeff Knowles Jr - Portfolio & Blog'
-  },
-  description:
-    'Personal portfolio and blog showcasing web development projects, technical articles, and professional services by Jeff Knowles Jr.',
-  keywords: [
-    'web development',
-    'frontend',
-    'backend',
-    'full-stack',
-    'react',
-    'nextjs',
-    'javascript',
-    'typescript',
-    'portfolio',
-    'blog'
-  ],
-  authors: [{ name: 'Jeff Knowles Jr', url: 'https://jeffknowlesjr.com' }],
-  creator: 'Jeff Knowles Jr',
-  publisher: 'Jeff Knowles Jr',
-  formatDetection: {
-    email: true,
-    address: true,
-    telephone: true
-  },
-  openGraph: {
-    type: 'website',
-    locale: 'en_US',
-    url: 'https://jeffknowlesjr.com',
-    title: 'Jeff Knowles Jr - Portfolio & Blog',
-    description:
-      'Personal portfolio and blog showcasing web development projects, technical articles, and professional services.',
-    siteName: 'Jeff Knowles Jr'
-  }
-}
+export const metadata = generateBaseMetadata()
 
 export default function RootLayout({
   children

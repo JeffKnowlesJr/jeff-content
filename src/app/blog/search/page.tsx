@@ -2,10 +2,34 @@ import { Metadata } from 'next'
 import BlogLayout from '@/components/blog/BlogLayout'
 import BlogPostList from '@/components/blog/BlogPostList'
 
+// Define search page metadata
 export const metadata: Metadata = {
-  title: 'Search Blog Posts | Jeff Knowles Jr.',
+  title: 'Search Blog Posts',
   description:
-    'Search through our blog posts about web development, programming, and technology.'
+    'Search through our blog posts about web development, programming, and technology.',
+  openGraph: {
+    title: 'Blog Search | Jeff Knowles Jr',
+    description:
+      'Search through our blog posts about web development, programming, and technology.',
+    type: 'website',
+    url: 'https://jeffknowlesjr.com/blog/search',
+    images: [
+      {
+        url: 'https://jeffknowlesjr.com/images/og-default.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Jeff Knowles Jr Blog Search'
+      }
+    ]
+  },
+  twitter: {
+    card: 'summary_large_image',
+    site: '@jeffknowlesjr',
+    creator: '@jeffknowlesjr',
+    title: 'Blog Search | Jeff Knowles Jr',
+    description:
+      'Search through our blog posts about web development, programming, and technology.'
+  }
 }
 
 interface BlogPost {

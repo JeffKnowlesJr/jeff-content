@@ -7,6 +7,7 @@ import remarkGfm from 'remark-gfm'
 import Script from 'next/script'
 import { Project, getContentBySlug } from '@/utils/content-loader'
 import { generateProjectSchema } from '@/utils/schema'
+import { generateProjectMetadata } from '@/utils/metadata'
 import ExternalLink from '@/components/projects/ExternalLink'
 import MarkdownLink from '@/components/markdown/MarkdownLink'
 
@@ -28,17 +29,7 @@ export async function generateMetadata({
     }
   }
 
-  return {
-    title: `${project.title} | Jeff Knowles Jr`,
-    description: project.excerpt,
-    openGraph: {
-      title: project.title,
-      description: project.excerpt,
-      type: 'article',
-      images: [project.featuredImage],
-      tags: project.tags
-    }
-  }
+  return generateProjectMetadata(project)
 }
 
 // Project detail page component

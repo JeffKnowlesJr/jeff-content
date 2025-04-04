@@ -1,18 +1,10 @@
 import { Metadata } from 'next'
 import { BlogPost, getContentList } from '@/utils/content-loader'
 import BlogCard from '@/components/blog/BlogCard'
+import { generateBlogIndexMetadata } from '@/utils/metadata'
 
-export const metadata: Metadata = {
-  title: 'Blog | Jeff Knowles Jr',
-  description:
-    'Thoughts and insights on web development, cloud architecture, and technical consulting.',
-  openGraph: {
-    title: 'Blog | Jeff Knowles Jr',
-    description:
-      'Thoughts and insights on web development, cloud architecture, and technical consulting.',
-    type: 'website'
-  }
-}
+// Generate metadata
+export const metadata: Metadata = generateBlogIndexMetadata()
 
 // Get blog posts from our content loader
 async function getBlogPosts(): Promise<BlogPost[]> {
@@ -38,7 +30,7 @@ async function getBlogPosts(): Promise<BlogPost[]> {
   }
 }
 
-// Fallback posts in case content loading fails
+// Fallback posts in case content directory doesn't work
 function getFallbackPosts(): BlogPost[] {
   return [
     {

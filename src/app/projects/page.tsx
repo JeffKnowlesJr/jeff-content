@@ -1,12 +1,10 @@
 import { Metadata } from 'next'
 import { Project, getContentList } from '@/utils/content-loader'
 import ProjectCard from '@/components/projects/ProjectCard'
+import { generateProjectsIndexMetadata } from '@/utils/metadata'
 
-export const metadata: Metadata = {
-  title: 'Projects | Jeff Knowles Jr',
-  description:
-    'Explore my portfolio of web development, cloud architecture, and technical consulting projects.'
-}
+// Generate metadata
+export const metadata: Metadata = generateProjectsIndexMetadata()
 
 // Define the project type as displayed in the UI
 interface UIProject {

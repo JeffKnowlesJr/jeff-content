@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import BlogLayout from '@/components/blog/BlogLayout'
 import BlogPostList from '@/components/blog/BlogPostList'
 import BlogPagination from '@/components/blog/BlogPagination'
+import { generateCategoryMetadata } from '@/utils/metadata'
 
 interface BlogPost {
   slug: string
@@ -37,15 +38,15 @@ export async function generateMetadata({
 
   if (posts.length === 0) {
     return {
-      title: 'Category Not Found | Jeff Knowles Jr.',
+      title: 'Category Not Found',
       description: 'The requested blog category could not be found.'
     }
   }
 
-  return {
-    title: `${category} | Blog Categories | Jeff Knowles Jr.`,
-    description: `Browse all blog posts in the ${category} category.`
-  }
+  return generateCategoryMetadata(
+    category,
+    `Browse all blog posts in the ${category} category.`
+  )
 }
 
 export default function BlogCategoryPage({ params, searchParams }: PageProps) {

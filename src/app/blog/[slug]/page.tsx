@@ -7,6 +7,7 @@ import remarkGfm from 'remark-gfm'
 import Script from 'next/script'
 import { BlogPost, getContentBySlug } from '@/utils/content-loader'
 import { generateBlogPostSchema } from '@/utils/schema'
+import { generateBlogPostMetadata } from '@/utils/metadata'
 
 interface PageProps {
   params: { slug: string }
@@ -26,18 +27,7 @@ export async function generateMetadata({
     }
   }
 
-  return {
-    title: `${post.title} | Jeff Knowles Jr`,
-    description: post.excerpt,
-    openGraph: {
-      title: post.title,
-      description: post.excerpt,
-      type: 'article',
-      publishedTime: post.datePublished,
-      authors: [post.author],
-      tags: post.tags
-    }
-  }
+  return generateBlogPostMetadata(post)
 }
 
 // Blog post page component
