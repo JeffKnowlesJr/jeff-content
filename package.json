@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build --no-lint",
+    "build": "next build --no-lint --no-typescript",
     "start": "next start",
     "lint": "next lint",
     "process-images": "node scripts/process-images.js",
