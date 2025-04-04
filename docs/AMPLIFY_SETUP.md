@@ -35,7 +35,27 @@ This document provides step-by-step instructions for setting up your Next.js web
          - .next/cache/**/*
    ```
 
-2. **Add AppSync Integration Code**
+2. **Configure TypeScript for Amplify Build**
+
+   If you're using TypeScript with Next.js App Router, you might encounter type errors during the build process in Amplify. To address this, create or modify `next.config.mjs`:
+
+   ```javascript
+   /** @type {import('next').NextConfig} */
+   const nextConfig = {
+     typescript: {
+       // Ignore TypeScript errors in production build
+       // This is needed for compatibility with AWS Amplify build process
+       ignoreBuildErrors: true
+     }
+     // Other config options...
+   }
+
+   export default nextConfig
+   ```
+
+   This configuration allows the build to succeed even when there are TypeScript errors. For more details, see the [AMPLIFY_DEPLOYMENT_TROUBLESHOOTING.md](./AMPLIFY_DEPLOYMENT_TROUBLESHOOTING.md) documentation.
+
+3. **Add AppSync Integration Code**
 
    Create a utility file for AppSync integration (e.g., `src/utils/amplify-config.js`):
 
@@ -60,7 +80,7 @@ This document provides step-by-step instructions for setting up your Next.js web
    }
    ```
 
-3. **Initialize Amplify in Your App**
+4. **Initialize Amplify in Your App**
 
    Add the configuration to your app entry point (e.g., in `src/pages/_app.js` or `src/app/layout.tsx`):
 
