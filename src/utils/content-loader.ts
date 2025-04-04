@@ -62,11 +62,27 @@ export async function getContentList<T>(type: ContentType): Promise<T[]> {
       const filePath = path.join(contentDir, fileName)
       const fileContents = fs.readFileSync(filePath, 'utf8')
       const { data, content } = matter(fileContents)
+      const slug = fileName.replace('.md', '')
+
+      // For blog posts, ensure consistency between datePublished and publishDate
+      if (type === 'blog') {
+        // Use datePublished as the primary field, fall back to publishDate
+        if (!data.datePublished && data.publishDate) {
+          data.datePublished = data.publishDate
+        } else if (!data.publishDate && data.datePublished) {
+          data.publishDate = data.datePublished
+        }
+
+        // Generate ID from slug if not provided
+        if (!data.id) {
+          data.id = slug
+        }
+      }
 
       return {
         ...data,
         content,
-        slug: fileName.replace('.md', '')
+        slug
       } as T
     })
 
@@ -96,6 +112,21 @@ export async function getContentBySlug<T>(
 
     const fileContents = fs.readFileSync(filePath, 'utf8')
     const { data, content } = matter(fileContents)
+
+    // For blog posts, ensure consistency between datePublished and publishDate
+    if (type === 'blog') {
+      // Use datePublished as the primary field, fall back to publishDate
+      if (!data.datePublished && data.publishDate) {
+        data.datePublished = data.publishDate
+      } else if (!data.publishDate && data.datePublished) {
+        data.publishDate = data.datePublished
+      }
+
+      // Generate ID from slug if not provided
+      if (!data.id) {
+        data.id = slug
+      }
+    }
 
     return {
       ...data,
