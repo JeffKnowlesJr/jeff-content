@@ -28,6 +28,23 @@ interface DevLogEntry {
 async function getDevLogEntries(): Promise<DevLogEntry[]> {
   return [
     {
+      id: 'seo-metadata-implementation',
+      title:
+        'SEO Metadata Implementation: OpenGraph, Twitter Cards, and Canonical URLs',
+      date: '2024-04-16',
+      summary:
+        'A detailed breakdown of implementing comprehensive metadata for SEO optimization across the website, including social sharing tags and structured data integration.',
+      tags: [
+        'SEO',
+        'Next.js',
+        'OpenGraph',
+        'Twitter Cards',
+        'Metadata API',
+        'Structured Data'
+      ],
+      slug: 'seo-metadata-implementation'
+    },
+    {
       id: 'responsive-ui-gradient-redesign',
       title: 'Responsive UI and Gradient Design System',
       date: '2024-04-04',
