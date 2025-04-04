@@ -4,7 +4,9 @@ import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import Script from 'next/script'
 import { Project, getContentBySlug } from '@/utils/content-loader'
+import { generateProjectSchema } from '@/utils/schema'
 import ExternalLink from '@/components/projects/ExternalLink'
 import MarkdownLink from '@/components/markdown/MarkdownLink'
 
@@ -48,6 +50,12 @@ export default async function ProjectDetailPage({ params }: PageProps) {
   if (!project) {
     notFound()
   }
+
+  // Generate structured data for JSON-LD
+  const baseUrl =
+    process.env.NEXT_PUBLIC_SITE_URL || 'https://jeffknowlesjr.com'
+  const canonicalUrl = `${baseUrl}/projects/${params.slug}`
+  const jsonLd = generateProjectSchema(project, canonicalUrl)
 
   // GitHub icon SVG
   const GitHubIcon = (
@@ -112,6 +120,11 @@ export default async function ProjectDetailPage({ params }: PageProps) {
 
   return (
     <div className='min-h-screen'>
+      <Script
+        id='project-jsonld'
+        type='application/ld+json'
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className='max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12'>
         <Link
           href='/projects'

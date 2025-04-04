@@ -1,54 +1,69 @@
-import type { Metadata } from 'next'
+import { Metadata } from 'next'
 import { Inter, Merriweather } from 'next/font/google'
+import Script from 'next/script'
 import './globals.css'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import ThemedApp from '@/components/ThemedApp'
 import BackgroundAnimation from '@/components/BackgroundAnimation'
+import ThemedApp from '@/components/ThemedApp'
+import { generateWebsiteSchema } from '@/utils/schema'
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
-const merriweather = Merriweather({
-  weight: ['300', '400', '700', '900'],
+// Define fonts
+const inter = Inter({
   subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-inter'
+})
+
+const merriweather = Merriweather({
+  subsets: ['latin'],
+  weight: ['400', '700', '900'],
+  display: 'swap',
   variable: '--font-merriweather'
 })
 
+// Generate website schema for JSON-LD
+const jsonLd = generateWebsiteSchema()
+
+// Define global metadata
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL || 'https://jeffknowlesjr.com'
+  ),
   title: {
-    template: '%s | Jeff Knowles Jr.',
-    default: 'Jeff Knowles Jr. | Software Engineer & Cloud Architect'
+    template: '%s | Jeff Knowles Jr',
+    default: 'Jeff Knowles Jr - Portfolio & Blog'
   },
   description:
-    'Full-stack software engineer and cloud architect specializing in modern web development, AWS, and scalable architectures.',
-  metadataBase: new URL('https://jeffknowles.dev'),
+    'Personal portfolio and blog showcasing web development projects, technical articles, and professional services by Jeff Knowles Jr.',
+  keywords: [
+    'web development',
+    'frontend',
+    'backend',
+    'full-stack',
+    'react',
+    'nextjs',
+    'javascript',
+    'typescript',
+    'portfolio',
+    'blog'
+  ],
+  authors: [{ name: 'Jeff Knowles Jr', url: 'https://jeffknowlesjr.com' }],
+  creator: 'Jeff Knowles Jr',
+  publisher: 'Jeff Knowles Jr',
+  formatDetection: {
+    email: true,
+    address: true,
+    telephone: true
+  },
   openGraph: {
-    title: 'Jeff Knowles Jr.',
-    description:
-      'Full-stack software engineer and cloud architect specializing in modern web development.',
-    url: 'https://jeffknowles.dev',
-    siteName: 'Jeff Knowles Jr.',
+    type: 'website',
     locale: 'en_US',
-    type: 'website'
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1
-    }
-  },
-  twitter: {
-    title: 'Jeff Knowles Jr.',
-    card: 'summary_large_image',
-    creator: '@jeffknowlesjr'
-  },
-  verification: {
-    google: 'your-google-verification-code',
-    yandex: 'your-yandex-verification-code'
+    url: 'https://jeffknowlesjr.com',
+    title: 'Jeff Knowles Jr - Portfolio & Blog',
+    description:
+      'Personal portfolio and blog showcasing web development projects, technical articles, and professional services.',
+    siteName: 'Jeff Knowles Jr'
   }
 }
 
@@ -63,6 +78,13 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${inter.variable} ${merriweather.variable}`}
     >
+      <head>
+        <Script
+          id='website-jsonld'
+          type='application/ld+json'
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body
         className='bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans'
         suppressHydrationWarning

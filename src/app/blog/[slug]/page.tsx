@@ -4,7 +4,9 @@ import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import Script from 'next/script'
 import { BlogPost, getContentBySlug } from '@/utils/content-loader'
+import { generateBlogPostSchema } from '@/utils/schema'
 
 interface PageProps {
   params: { slug: string }
@@ -48,6 +50,12 @@ export default async function BlogPostPage({ params }: PageProps) {
     notFound()
   }
 
+  // Generate structured data for JSON-LD
+  const baseUrl =
+    process.env.NEXT_PUBLIC_SITE_URL || 'https://jeffknowlesjr.com'
+  const canonicalUrl = `${baseUrl}/blog/${params.slug}`
+  const jsonLd = generateBlogPostSchema(post, canonicalUrl)
+
   // Code block rendering for markdown
   const codeBlock = ({
     inline,
@@ -77,6 +85,11 @@ export default async function BlogPostPage({ params }: PageProps) {
 
   return (
     <div className='min-h-screen'>
+      <Script
+        id='blog-post-jsonld'
+        type='application/ld+json'
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className='max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12'>
         <Link
           href='/blog'
