@@ -15,6 +15,10 @@ interface DevLogEntry {
   slug: string
 }
 
+type Params = {
+  slug: string
+}
+
 // This function will be replaced with actual data fetching
 // No placeholder content is used
 async function getDevLogEntry(slug: string): Promise<DevLogEntry | null> {
@@ -27,7 +31,7 @@ async function getDevLogEntry(slug: string): Promise<DevLogEntry | null> {
 export async function generateMetadata({
   params
 }: {
-  params: { slug: string }
+  params: Params
 }): Promise<Metadata> {
   const entry = await getDevLogEntry(params.slug)
 
@@ -50,11 +54,7 @@ export async function generateMetadata({
   }
 }
 
-export default async function DevLogEntryPage({
-  params
-}: {
-  params: { slug: string }
-}) {
+export default async function DevLogEntryPage({ params }: { params: Params }) {
   const entry = await getDevLogEntry(params.slug)
 
   if (!entry) {

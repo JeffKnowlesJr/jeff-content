@@ -5,15 +5,18 @@ import { notFound } from 'next/navigation'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { Project, getContentBySlug } from '@/utils/content-loader'
-import CodeBlock from '@/components/markdown/CodeBlock'
 import ExternalLink from '@/components/projects/ExternalLink'
 import MarkdownLink from '@/components/markdown/MarkdownLink'
+
+type Params = {
+  slug: string
+}
 
 // Generate metadata for the project page
 export async function generateMetadata({
   params
 }: {
-  params: { slug: string }
+  params: Params
 }): Promise<Metadata> {
   const project = await getContentBySlug<Project>('projects', params.slug)
 
@@ -41,7 +44,7 @@ export async function generateMetadata({
 export default async function ProjectDetailPage({
   params
 }: {
-  params: { slug: string }
+  params: Params
 }) {
   // Get project from the slug
   const project = await getContentBySlug<Project>('projects', params.slug)
@@ -84,6 +87,33 @@ export default async function ProjectDetailPage({
       />
     </svg>
   )
+
+  // Code block rendering for markdown
+  const codeBlock = ({
+    inline,
+    className,
+    children,
+    ...props
+  }: {
+    inline?: boolean
+    className?: string
+    children?: React.ReactNode
+  }) => {
+    const match = /language-(\w+)/.exec(className || '')
+    return !inline && match ? (
+      <div className='relative group'>
+        <pre className={`${className} overflow-x-auto p-4 rounded-lg`}>
+          <code className={className} {...props}>
+            {children}
+          </code>
+        </pre>
+      </div>
+    ) : (
+      <code className={`${className} px-1 py-0.5 rounded text-sm`} {...props}>
+        {children}
+      </code>
+    )
+  }
 
   return (
     <div className='min-h-screen'>
@@ -169,7 +199,7 @@ export default async function ProjectDetailPage({
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
                 components={{
-                  code: CodeBlock,
+                  code: codeBlock,
                   a: ({ href, children }) => (
                     <MarkdownLink href={href}>{children}</MarkdownLink>
                   ),
