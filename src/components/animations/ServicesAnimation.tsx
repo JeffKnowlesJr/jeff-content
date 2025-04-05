@@ -1,10 +1,12 @@
 'use client'
 
 import React, { useRef, useEffect, useState } from 'react'
+import { useIsClient } from '@/hooks/useIsClient'
 
 const ServicesAnimation = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [loaded, setLoaded] = useState(false)
+  const isClient = useIsClient()
   // Use a ref instead of state for mouse position to prevent rerenders
   const mousePositionRef = useRef({ x: 0, y: 0 })
   // Add mouse velocity tracking for fluid motion effects
@@ -19,6 +21,8 @@ const ServicesAnimation = () => {
   const sphereOffsetRef = useRef({ x: 0, y: 0 }) // Offset from center
 
   useEffect(() => {
+    if (!isClient) return
+
     const canvas = canvasRef.current
     if (!canvas) return
 
@@ -596,7 +600,18 @@ const ServicesAnimation = () => {
       }
       cancelAnimationFrame(animationFrameId)
     }
-  }, []) // No dependencies to prevent re-initialization
+  }, [isClient])
+
+  // Render a loading state or canvas based on client-side rendering status
+  if (!isClient) {
+    return (
+      <div className='w-full h-full relative'>
+        <div className='w-full h-full rounded-full overflow-hidden bg-gradient-to-br from-blue-900/10 to-purple-900/10'>
+          {/* Empty placeholder during SSR */}
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className='w-full h-full relative'>
