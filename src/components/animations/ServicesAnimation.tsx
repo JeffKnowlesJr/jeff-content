@@ -112,10 +112,10 @@ const ServicesAnimation = () => {
     }
 
     const handleMouseUp = () => {
-      // Keep velocity but mark as inactive after a short delay
+      // Don't reset active state as quickly to maintain momentum
       setTimeout(() => {
         mouseActiveRef.current = false
-      }, 50)
+      }, 150) // Longer delay (was 50)
     }
 
     const handleTouchMove = (e: TouchEvent) => {
@@ -191,9 +191,10 @@ const ServicesAnimation = () => {
     }
 
     const handleTouchEnd = () => {
+      // Don't reset active state as quickly to maintain momentum
       setTimeout(() => {
         mouseActiveRef.current = false
-      }, 50)
+      }, 150) // Longer delay (was 50)
     }
 
     // Add all event listeners
@@ -277,10 +278,10 @@ const ServicesAnimation = () => {
         offsetX: number,
         offsetY: number
       ) {
-        // Add velocity influence decay
-        this.velocityInfluenceX *= 0.95
-        this.velocityInfluenceY *= 0.95
-        this.velocityInfluenceZ *= 0.95
+        // Add velocity influence decay but make it more gradual
+        this.velocityInfluenceX *= 0.98 // Slower decay (was 0.95)
+        this.velocityInfluenceY *= 0.98 // Slower decay (was 0.95)
+        this.velocityInfluenceZ *= 0.98 // Slower decay (was 0.95)
 
         // Add velocity influence to position
         this.x += this.velocityInfluenceX
@@ -325,8 +326,8 @@ const ServicesAnimation = () => {
         const targetY = rotX_y + centerY
         const targetZ = rotX_z
 
-        // Smooth transition to rotated position
-        const transitionSpeed = 0.05
+        // Smooth transition to rotated position with more momentum
+        const transitionSpeed = 0.03 // Slightly reduced for more momentum (was 0.05)
         this.x += (targetX - this.x) * transitionSpeed
         this.y += (targetY - this.y) * transitionSpeed
         this.z += (targetZ - this.z) * transitionSpeed
@@ -399,10 +400,10 @@ const ServicesAnimation = () => {
           }
         }
 
-        // Add damping
-        this.speedX *= 0.98
-        this.speedY *= 0.98
-        this.speedZ *= 0.98
+        // Add gentler damping for more persistent motion
+        this.speedX *= 0.99 // Reduced damping (was 0.98)
+        this.speedY *= 0.99 // Reduced damping (was 0.98)
+        this.speedZ *= 0.99 // Reduced damping (was 0.98)
 
         // Smooth pulse based on time
         const pulse =
@@ -519,22 +520,22 @@ const ServicesAnimation = () => {
     const animate = () => {
       time += 0.005 // slower time progression
 
-      // Apply friction to the spin
-      sphereSpinRef.current.x *= 0.98
-      sphereSpinRef.current.y *= 0.98
+      // Apply gentler friction to the spin to maintain momentum longer
+      sphereSpinRef.current.x *= 0.995 // Reduced friction (was 0.98)
+      sphereSpinRef.current.y *= 0.995 // Reduced friction (was 0.98)
 
       // Update sphere rotation based on spin
       sphereRotationRef.current.x += sphereSpinRef.current.x
       sphereRotationRef.current.y += sphereSpinRef.current.y
 
-      // Gradually return offset to center
-      sphereOffsetRef.current.x *= 0.95
-      sphereOffsetRef.current.y *= 0.95
+      // Very gradual return to center to maintain offset momentum longer
+      sphereOffsetRef.current.x *= 0.98 // Gentler return (was 0.95)
+      sphereOffsetRef.current.y *= 0.98 // Gentler return (was 0.95)
 
-      // Decay mouse velocity over time
+      // Decay mouse velocity over time, but more gradually
       if (!mouseActiveRef.current) {
-        mouseVelocityRef.current.x *= 0.95
-        mouseVelocityRef.current.y *= 0.95
+        mouseVelocityRef.current.x *= 0.98 // Slower decay (was 0.95)
+        mouseVelocityRef.current.y *= 0.98 // Slower decay (was 0.95)
       }
 
       if (!canvas || !ctx) return
