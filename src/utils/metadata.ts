@@ -136,7 +136,7 @@ export function generateBlogIndexMetadata(): Metadata {
       url: blogUrl,
       title: 'Blog | Jeff Knowles Jr',
       description:
-        'Technical articles and insights about web development, cloud architecture, and software engineering.',
+        'Technical articles and insights about web development, cloud architecture, and analytics engineering.',
       images: [
         {
           url: `${BASE_URL}/images/og-default.jpg`,
@@ -152,7 +152,7 @@ export function generateBlogIndexMetadata(): Metadata {
       creator: '@jeffknowlesjr',
       title: 'Blog | Jeff Knowles Jr',
       description:
-        'Technical articles and insights about web development, cloud architecture, and software engineering.'
+        'Technical articles and insights about web development, cloud architecture, and analytics engineering.'
     },
     alternates: {
       canonical: blogUrl

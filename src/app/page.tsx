@@ -4,9 +4,9 @@ import Image from 'next/image'
 import { getContentList, BlogPost, Project } from '@/utils/content-loader'
 
 export const metadata: Metadata = {
-  title: 'Jeff Knowles Jr. | Software Engineer & Cloud Architect',
+  title: 'Jeff Knowles Jr. | Analytics Engineer & Cloud Architect',
   description:
-    'Full-stack software engineer and cloud architect specializing in modern web development, AWS, and scalable architectures.'
+    'Full-stack analytics engineer and cloud architect specializing in modern web development, AWS, and scalable architectures.'
 }
 
 // Get latest blog post dynamically from content directory
@@ -136,7 +136,7 @@ export default async function HomePage() {
             {/* Text content below on mobile */}
             <div>
               <h1 className='text-4xl font-bold text-gray-900 dark:text-white mb-6 leading-tight'>
-                <span className='whitespace-nowrap'>Marketing Engineer</span>{' '}
+                <span className='whitespace-nowrap'>Analytics Engineer</span>{' '}
                 <span className='whitespace-nowrap'>
                   <span className='text-white dark:text-white'>&</span>{' '}
                   <span className='text-primary dark:text-primary-light'>
@@ -164,7 +164,7 @@ export default async function HomePage() {
           <div className='hidden md:flex md:flex-row items-center max-w-7xl mx-auto'>
             <div className='md:w-3/5'>
               <h1 className='text-5xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6 leading-tight'>
-                <span className='whitespace-nowrap'>Marketing Engineer</span>{' '}
+                <span className='whitespace-nowrap'>Analytics Engineer</span>{' '}
                 <span className='whitespace-nowrap'>
                   <span className='text-white dark:text-white'>&</span>{' '}
                   <span className='text-primary dark:text-primary-light'>
