@@ -1,5 +1,5 @@
 @import '../../node_modules/@fortawesome/fontawesome-free/css/all.min.css';
-@import '../../styles/syntaxHighlighting.css';
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -85,31 +85,40 @@
 
   /* Code blocks with transparency */
   pre {
-    @apply rounded-lg my-4 overflow-x-auto;
-    transition: background-color 0.5s ease;
+    margin: 1rem 0;
+    padding: 1rem;
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    overflow-x: auto;
+    font-family: monospace;
   }
 
-  /* Syntax highlighted code blocks */
-  pre code.language-typescript,
-  pre code.language-javascript,
-  pre code[class*='language-'] {
-    @apply bg-transparent;
-    display: block;
+  .dark pre {
+    background-color: #1a1a1a;
+    border-color: #333;
+  }
+
+  code {
+    font-family: monospace;
+    background-color: #f5f5f5;
+    padding: 0.2rem 0.4rem;
+    border-radius: 3px;
+  }
+
+  .dark code {
+    background-color: #1a1a1a;
+  }
+
+  pre code {
+    padding: 0;
+    background-color: transparent;
+    border-radius: 0;
   }
 
   /* Route-based code block style */
   h3 + pre,
   h3 + div > pre {
     @apply backdrop-blur-md;
-  }
-
-  code {
-    @apply px-1.5 py-0.5 rounded text-sm font-mono;
-    transition: background-color 0.5s ease;
-  }
-
-  pre code {
-    @apply bg-transparent p-0;
   }
 
   /* Typography */
@@ -321,6 +330,10 @@
 
   .animate-float {
     animation: float 6s ease-in-out infinite;
+  }
+
+  .code-fullscreen-backdrop {
+    @apply fixed inset-0 bg-black/70 backdrop-blur-sm z-40;
   }
 
   /* Responsive utilities */

@@ -4,8 +4,6 @@ import Image from 'next/image'
 import Link from 'next/link'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import BackToTopButton from './BackToTopButton'
 
 interface BlogPostProps {
@@ -20,38 +18,7 @@ interface BlogPostProps {
   }
 }
 
-interface CodeBlockProps {
-  inline?: boolean
-  className?: string
-  children?: React.ReactNode
-}
-
 export default function BlogPost({ post }: BlogPostProps) {
-  const codeBlock = ({
-    inline,
-    className,
-    children,
-    ...props
-  }: CodeBlockProps) => {
-    const match = /language-(\w+)/.exec(className || '')
-    const language = match ? match[1] : 'text'
-
-    return !inline && match ? (
-      <SyntaxHighlighter
-        style={vscDarkPlus as Record<string, React.CSSProperties>}
-        language={language}
-        PreTag='div'
-        {...props}
-      >
-        {String(children).replace(/\n$/, '')}
-      </SyntaxHighlighter>
-    ) : (
-      <code className={className} {...props}>
-        {children}
-      </code>
-    )
-  }
-
   return (
     <article
       id='blog-post-content'
@@ -108,7 +75,6 @@ export default function BlogPost({ post }: BlogPostProps) {
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
           components={{
-            code: codeBlock,
             h1: ({ children }) => (
               <h1 className='text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white'>
                 {children}
@@ -170,11 +136,6 @@ export default function BlogPost({ post }: BlogPostProps) {
             ),
             hr: () => (
               <hr className='my-8 border-gray-300 dark:border-gray-700' />
-            ),
-            pre: ({ children }) => (
-              <div className='my-6 rounded-lg overflow-hidden shadow-md'>
-                {children}
-              </div>
             )
           }}
         >

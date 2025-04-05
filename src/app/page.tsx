@@ -105,9 +105,9 @@ export default async function HomePage() {
   return (
     <div className='min-h-screen'>
       {/* Hero Section */}
-      <section className='relative py-12 md:py-24 overflow-hidden'>
+      <section className='relative py-12 md:py-24 overflow-hidden w-full'>
         <div className='absolute inset-0 bg-gradient-to-br from-primary-light/20 to-secondary-light/20 dark:from-primary-dark/30 dark:to-secondary-dark/30 opacity-80'></div>
-        <div className='relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
+        <div className='relative w-full px-4 sm:px-6 lg:px-8'>
           {/* Mobile-first layout - stack elements vertically */}
           <div className='block md:hidden text-center'>
             {/* Image first on mobile */}
@@ -136,9 +136,12 @@ export default async function HomePage() {
             {/* Text content below on mobile */}
             <div>
               <h1 className='text-4xl font-bold text-gray-900 dark:text-white mb-6 leading-tight'>
-                Software Engineer &{' '}
-                <span className='text-primary dark:text-primary-light'>
-                  Cloud Architect
+                <span className='whitespace-nowrap'>Marketing Engineer</span>{' '}
+                <span className='whitespace-nowrap'>
+                  <span className='text-white dark:text-white'>&</span>{' '}
+                  <span className='text-primary dark:text-primary-light'>
+                    Cloud Architect
+                  </span>
                 </span>
               </h1>
               <p className='text-lg text-gray-600 dark:text-gray-300 mb-8'>
@@ -158,12 +161,15 @@ export default async function HomePage() {
           </div>
 
           {/* Desktop layout - side by side */}
-          <div className='hidden md:flex md:flex-row items-center'>
+          <div className='hidden md:flex md:flex-row items-center max-w-7xl mx-auto'>
             <div className='md:w-3/5'>
               <h1 className='text-5xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6 leading-tight'>
-                Software Engineer &{' '}
-                <span className='text-primary dark:text-primary-light'>
-                  Cloud Architect
+                <span className='whitespace-nowrap'>Marketing Engineer</span>{' '}
+                <span className='whitespace-nowrap'>
+                  <span className='text-white dark:text-white'>&</span>{' '}
+                  <span className='text-primary dark:text-primary-light'>
+                    Cloud Architect
+                  </span>
                 </span>
               </h1>
               <p className='text-xl text-gray-600 dark:text-gray-300 mb-8'>
@@ -208,23 +214,25 @@ export default async function HomePage() {
       {/* Featured Projects Section */}
       <section className='py-20 section-gradient-light'>
         <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
-          <div className='flex justify-between items-center mb-12'>
-            <h2 className='text-3xl font-bold text-gray-900 dark:text-white'>
-              Featured Projects
+          <div className='flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8 sm:mb-12'>
+            <h2 className='text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white relative inline-block'>
+              <span className='relative z-10'>Featured Projects</span>
+              <span className='absolute -bottom-1 left-0 w-1/3 h-1 bg-primary dark:bg-primary-light rounded-full'></span>
             </h2>
             <Link
               href='/projects'
-              className='btn-gradient-primary px-4 py-2 rounded-lg hover:opacity-90 transition-opacity'
+              className='btn btn-primary text-sm sm:text-base py-2 px-4 sm:px-5 self-start'
             >
               View All Projects
             </Link>
           </div>
-          <div className='grid md:grid-cols-2 gap-8'>
+
+          <div className='grid md:grid-cols-2 gap-6 sm:gap-8'>
             {featuredProjects.map((project) => (
               <Link
                 key={project.slug}
                 href={`/projects/${project.slug}`}
-                className='card'
+                className='card hover:shadow-lg transition-shadow duration-300'
               >
                 <div className='relative h-48 overflow-hidden'>
                   <Image
@@ -234,18 +242,18 @@ export default async function HomePage() {
                     className='object-cover group-hover:scale-105 transition-transform duration-300'
                   />
                 </div>
-                <div className='p-6'>
-                  <h3 className='text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-primary dark:group-hover:text-primary-light transition-colors'>
+                <div className='p-5 sm:p-6'>
+                  <h3 className='text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-primary dark:group-hover:text-primary-light transition-colors'>
                     {project.title}
                   </h3>
-                  <p className='text-gray-600 dark:text-gray-300 mb-4'>
+                  <p className='text-gray-600 dark:text-gray-300 mb-4 text-sm sm:text-base'>
                     {project.description}
                   </p>
                   <div className='flex flex-wrap gap-2'>
                     {project.technologies.map((tech) => (
                       <span
                         key={tech}
-                        className='badge bg-primary-light/20 dark:bg-primary-dark/30 text-primary-dark dark:text-primary-light'
+                        className='badge bg-primary-light/20 dark:bg-primary-dark/30 text-primary-dark dark:text-primary-light text-xs'
                       >
                         {tech}
                       </span>
@@ -259,20 +267,21 @@ export default async function HomePage() {
       </section>
 
       {/* Latest Blog Post Section */}
-      <section className='py-20 px-4 bg-[var(--color-cream-accent)] dark:bg-gray-900'>
-        <div className='max-w-6xl mx-auto'>
-          <div className='flex justify-between items-center mb-12'>
-            <h2 className='text-3xl font-bold text-gray-900 dark:text-white'>
-              Latest from the Blog
+      <section className='py-20 section-gradient-light'>
+        <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
+          <div className='flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8 sm:mb-12'>
+            <h2 className='text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white relative inline-block'>
+              <span className='relative z-10'>Latest from the Blog</span>
+              <span className='absolute -bottom-1 left-0 w-1/3 h-1 bg-secondary dark:bg-secondary-light rounded-full'></span>
             </h2>
             <Link
               href='/blog'
-              className='btn-gradient-secondary px-4 py-2 rounded-lg hover:opacity-90 transition-opacity'
+              className='btn btn-secondary text-sm sm:text-base py-2 px-4 sm:px-5 self-start'
             >
               View All Posts
             </Link>
           </div>
-          <div className='card flex flex-col md:flex-row gap-8 overflow-hidden'>
+          <div className='card flex flex-col md:flex-row gap-8 overflow-hidden hover:shadow-lg transition-shadow duration-300'>
             {latestPost.featuredImage && (
               <div className='md:w-1/2'>
                 <div className='relative aspect-[16/9] md:aspect-auto md:h-full'>
@@ -287,16 +296,16 @@ export default async function HomePage() {
                 </div>
               </div>
             )}
-            <div className='md:w-1/2 p-8'>
+            <div className='md:w-1/2 p-6 sm:p-8'>
               <Link href={`/blog/${latestPost.slug}`}>
-                <h3 className='text-2xl font-bold text-gray-900 dark:text-white hover:text-primary dark:hover:text-primary-light mb-4 transition-colors'>
+                <h3 className='text-xl sm:text-2xl font-bold text-gray-900 dark:text-white hover:text-primary dark:hover:text-primary-light mb-4 transition-colors'>
                   {latestPost.title}
                 </h3>
               </Link>
-              <p className='text-gray-600 dark:text-gray-300 mb-4'>
+              <p className='text-sm sm:text-base text-gray-600 dark:text-gray-300 mb-4'>
                 {latestPost.excerpt}
               </p>
-              <div className='flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400 mb-6'>
+              <div className='flex items-center gap-4 text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-6'>
                 <span>
                   {new Date(latestPost.date).toLocaleDateString('en-US', {
                     year: 'numeric',
@@ -309,7 +318,7 @@ export default async function HomePage() {
               </div>
               <Link
                 href={`/blog/${latestPost.slug}`}
-                className='inline-flex items-center text-primary dark:text-primary-light hover:text-primary-dark dark:hover:text-primary font-medium'
+                className='inline-flex items-center text-primary dark:text-primary-light hover:text-primary-dark dark:hover:text-primary font-medium text-sm sm:text-base'
               >
                 Read More
                 <svg

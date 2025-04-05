@@ -114,14 +114,14 @@ export default function Header() {
   return (
     <header className='relative z-40 w-full'>
       {/* Top Bar - transparent background */}
-      <div className='bg-gray-100/60 dark:bg-gray-900/60 backdrop-blur-sm py-3 w-full'>
+      <div className='bg-gray-100/60 dark:bg-gray-900/60 backdrop-blur-sm h-14 w-full flex items-center'>
         <div className='flex justify-between items-center w-full mx-auto px-4 sm:px-6 lg:px-8'>
           <Link
             href='https://www.jkjrdev.com'
             className='flex items-center hover:text-teal-600 dark:hover:text-teal-400 transition-colors'
           >
             <i className='fas fa-cogs text-teal-500 mr-2'></i>
-            <span className='text-gray-700 dark:text-gray-300 font-medium text-sm sm:text-base truncate'>
+            <span className='text-gray-700 dark:text-gray-300 font-inter font-medium text-base truncate'>
               Jeff Knowles Jr Digital Development
             </span>
           </Link>
@@ -134,14 +134,14 @@ export default function Header() {
 
       {/* Main Navigation - transparent background */}
       <nav className='bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm shadow-sm w-full'>
-        <div className='flex justify-between items-center h-16 sm:h-20 lg:h-24 w-full mx-auto px-4 sm:px-6 lg:px-8'>
+        <div className='flex justify-between items-center h-16 sm:h-20 max-h-[80px] w-full mx-auto px-4 sm:px-6 lg:px-8'>
           {/* Logo */}
           <Link href='/' className='flex items-center flex-shrink-0'>
-            <div className='h-8 sm:h-10 lg:h-12 flex items-center'>
+            <div className='h-10 flex items-center'>
               <Image
                 src='/JKJR3.png'
                 alt='JKJR Logo'
-                width={120}
+                width={101.9}
                 height={40}
                 className='w-auto h-full object-contain'
                 priority
@@ -213,11 +213,11 @@ export default function Header() {
               className='flex items-center'
               onClick={() => setMobileMenuOpen(false)}
             >
-              <div className='h-8 flex items-center'>
+              <div className='h-10 flex items-center'>
                 <Image
                   src='/JKJR3.png'
                   alt='JKJR Logo'
-                  width={120}
+                  width={101.9}
                   height={40}
                   className='w-auto h-full object-contain'
                 />

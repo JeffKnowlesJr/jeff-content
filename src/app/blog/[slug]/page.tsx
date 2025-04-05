@@ -46,33 +46,6 @@ export default async function BlogPostPage({ params }: PageProps) {
   const canonicalUrl = `${baseUrl}/blog/${params.slug}`
   const jsonLd = generateBlogPostSchema(post, canonicalUrl)
 
-  // Code block rendering for markdown
-  const codeBlock = ({
-    inline,
-    className,
-    children,
-    ...props
-  }: {
-    inline?: boolean
-    className?: string
-    children?: React.ReactNode
-  }) => {
-    const match = /language-(\w+)/.exec(className || '')
-    return !inline && match ? (
-      <div className='relative group'>
-        <pre className={`${className} overflow-x-auto p-4 rounded-lg`}>
-          <code className={className} {...props}>
-            {children}
-          </code>
-        </pre>
-      </div>
-    ) : (
-      <code className={`${className} px-1 py-0.5 rounded text-sm`} {...props}>
-        {children}
-      </code>
-    )
-  }
-
   return (
     <div className='min-h-screen'>
       <Script
@@ -80,10 +53,10 @@ export default async function BlogPostPage({ params }: PageProps) {
         type='application/ld+json'
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12'>
+      <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-12'>
         <Link
           href='/blog'
-          className='inline-flex items-center text-primary dark:text-primary-light hover:underline mb-8'
+          className='inline-flex items-center text-primary dark:text-primary-light hover:underline mb-4 sm:mb-8 text-base sm:text-lg'
         >
           <svg
             className='mr-2 w-4 h-4'
@@ -102,13 +75,13 @@ export default async function BlogPostPage({ params }: PageProps) {
           Back to Blog
         </Link>
 
-        <article className='bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden'>
-          <div className='p-8 pb-4'>
+        <article className='bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700'>
+          <div className='p-4 sm:p-8 pb-3 sm:pb-4 border-b border-gray-100 dark:border-gray-700'>
             <header>
-              <h1 className='text-4xl font-bold text-gray-900 dark:text-white mb-4'>
+              <h1 className='text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4'>
                 {post.title}
               </h1>
-              <div className='flex flex-wrap items-center gap-4 text-gray-600 dark:text-gray-300 mb-4'>
+              <div className='flex flex-wrap items-center gap-4 text-base text-gray-600 dark:text-gray-300 mb-4'>
                 <div className='flex items-center'>
                   <svg
                     className='w-5 h-5 mr-2'
@@ -169,7 +142,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                 {post.tags.map((tag: string) => (
                   <span
                     key={tag}
-                    className='px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-full text-sm'
+                    className='px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-full text-sm sm:text-base'
                   >
                     {tag}
                   </span>
@@ -188,66 +161,27 @@ export default async function BlogPostPage({ params }: PageProps) {
             </div>
           )}
 
-          <div className='p-8'>
-            <div className='prose dark:prose-invert max-w-none'>
-              <ReactMarkdown
-                remarkPlugins={[remarkGfm]}
-                components={{
-                  code: codeBlock,
-                  a: ({ href, children }) => (
-                    <a
-                      href={href}
-                      className='text-primary dark:text-primary-light hover:underline'
-                      target='_blank'
-                      rel='noopener noreferrer'
-                    >
-                      {children}
-                    </a>
-                  ),
-                  h2: ({ children }) => (
-                    <h2 className='text-2xl font-bold mt-8 mb-4 border-b border-gray-200 dark:border-gray-700 pb-2'>
-                      {children}
-                    </h2>
-                  ),
-                  h3: ({ children }) => (
-                    <h3 className='text-xl font-bold mt-6 mb-3'>{children}</h3>
-                  ),
-                  ul: ({ children }) => (
-                    <ul className='list-disc pl-6 my-4'>{children}</ul>
-                  ),
-                  ol: ({ children }) => (
-                    <ol className='list-decimal pl-6 my-4'>{children}</ol>
-                  ),
-                  blockquote: ({ children }) => (
-                    <blockquote className='border-l-4 border-primary pl-4 italic my-4'>
-                      {children}
-                    </blockquote>
-                  ),
-                  img: ({ src, alt }) => (
-                    <img
-                      src={src}
-                      alt={alt}
-                      className='rounded-lg shadow-md my-6 max-w-full max-h-[500px] object-contain'
-                    />
-                  )
-                }}
-              >
-                {post.content}
-              </ReactMarkdown>
+          <div className='p-4 sm:p-8 bg-white dark:bg-gray-800'>
+            <div className='max-w-prose mx-auto my-12'>
+              <div className='prose dark:prose-invert prose-lg mx-auto'>
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {post.content}
+                </ReactMarkdown>
+              </div>
             </div>
 
-            <div className='mt-12 border-t border-gray-200 dark:border-gray-700 pt-8'>
+            <div className='mt-12 border-t border-gray-200 dark:border-gray-700 pt-6 sm:pt-8'>
               <div className='flex flex-col sm:flex-row sm:justify-between gap-4'>
-                <div>
-                  <h3 className='text-lg font-bold text-gray-900 dark:text-white mb-2'>
+                <div className='bg-gray-50 dark:bg-gray-700 p-4 rounded-lg'>
+                  <h3 className='text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-2'>
                     About the Author
                   </h3>
-                  <p className='text-gray-600 dark:text-gray-300'>
+                  <p className='text-base sm:text-lg text-gray-700 dark:text-gray-200 leading-relaxed'>
                     {post.author} is a developer and technical writer.
                   </p>
                 </div>
-                <div className='flex items-center gap-2'>
-                  <span className='text-sm text-gray-600 dark:text-gray-300'>
+                <div className='flex items-center gap-2 self-start mt-2'>
+                  <span className='text-base text-gray-700 dark:text-gray-200'>
                     Share:
                   </span>
                   <div className='flex gap-3'>

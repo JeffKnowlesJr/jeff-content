@@ -9,7 +9,6 @@ import { Project, getContentBySlug } from '@/utils/content-loader'
 import { generateProjectSchema } from '@/utils/schema'
 import { generateProjectMetadata } from '@/utils/metadata'
 import ExternalLink from '@/components/projects/ExternalLink'
-import MarkdownLink from '@/components/markdown/MarkdownLink'
 
 interface PageProps {
   params: { slug: string }
@@ -82,33 +81,6 @@ export default async function ProjectDetailPage({ params }: PageProps) {
     </svg>
   )
 
-  // Code block rendering for markdown
-  const codeBlock = ({
-    inline,
-    className,
-    children,
-    ...props
-  }: {
-    inline?: boolean
-    className?: string
-    children?: React.ReactNode
-  }) => {
-    const match = /language-(\w+)/.exec(className || '')
-    return !inline && match ? (
-      <div className='relative group'>
-        <pre className={`${className} overflow-x-auto p-4 rounded-lg`}>
-          <code className={className} {...props}>
-            {children}
-          </code>
-        </pre>
-      </div>
-    ) : (
-      <code className={`${className} px-1 py-0.5 rounded text-sm`} {...props}>
-        {children}
-      </code>
-    )
-  }
-
   return (
     <div className='min-h-screen'>
       <Script
@@ -116,10 +88,10 @@ export default async function ProjectDetailPage({ params }: PageProps) {
         type='application/ld+json'
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12'>
+      <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-12'>
         <Link
           href='/projects'
-          className='inline-flex items-center text-primary dark:text-primary-light hover:underline mb-8'
+          className='inline-flex items-center text-primary dark:text-primary-light hover:underline mb-4 sm:mb-8 text-base sm:text-lg'
         >
           <svg
             className='mr-2 w-4 h-4'
@@ -138,10 +110,10 @@ export default async function ProjectDetailPage({ params }: PageProps) {
           Back to Projects
         </Link>
 
-        <article className='bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden'>
-          <div className='p-8 pb-4'>
+        <article className='bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700'>
+          <div className='p-4 sm:p-8 pb-3 sm:pb-4 border-b border-gray-100 dark:border-gray-700'>
             <header>
-              <h1 className='text-4xl font-bold text-gray-900 dark:text-white mb-4'>
+              <h1 className='text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4'>
                 {project.title}
               </h1>
 
@@ -150,7 +122,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                   project.techStack.map((tech: string) => (
                     <span
                       key={tech}
-                      className='px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-full text-sm'
+                      className='px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-full text-sm sm:text-base'
                     >
                       {tech}
                     </span>
@@ -173,12 +145,12 @@ export default async function ProjectDetailPage({ params }: PageProps) {
             </div>
           )}
 
-          <div className='p-8'>
-            <div className='flex flex-wrap gap-4 mb-8'>
+          <div className='p-4 sm:p-8 bg-white dark:bg-gray-800'>
+            <div className='flex flex-wrap gap-4 mb-6 sm:mb-8'>
               {project.liveUrl && (
                 <ExternalLink
                   href={project.liveUrl}
-                  className='inline-flex items-center bg-primary hover:bg-primary-dark text-white font-medium py-2 px-4 rounded transition-colors'
+                  className='inline-flex items-center bg-primary hover:bg-primary-dark text-white font-medium py-2 px-4 rounded transition-colors text-base sm:text-lg'
                   icon={DemoIcon}
                 >
                   View Live Demo
@@ -188,7 +160,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
               {project.githubUrl && (
                 <ExternalLink
                   href={project.githubUrl}
-                  className='inline-flex items-center bg-gray-800 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded transition-colors'
+                  className='inline-flex items-center bg-gray-800 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded transition-colors text-base sm:text-lg'
                   icon={GitHubIcon}
                 >
                   View on GitHub
@@ -196,52 +168,18 @@ export default async function ProjectDetailPage({ params }: PageProps) {
               )}
             </div>
 
-            <div className='prose dark:prose-invert max-w-none'>
-              <ReactMarkdown
-                remarkPlugins={[remarkGfm]}
-                components={{
-                  code: codeBlock,
-                  a: ({ href, children }) => (
-                    <MarkdownLink href={href}>{children}</MarkdownLink>
-                  ),
-                  h2: ({ children }) => (
-                    <h2 className='text-2xl font-bold mt-8 mb-4 border-b border-gray-200 dark:border-gray-700 pb-2'>
-                      {children}
-                    </h2>
-                  ),
-                  h3: ({ children }) => (
-                    <h3 className='text-xl font-bold mt-6 mb-3'>{children}</h3>
-                  ),
-                  ul: ({ children }) => (
-                    <ul className='list-disc pl-6 my-4'>{children}</ul>
-                  ),
-                  ol: ({ children }) => (
-                    <ol className='list-decimal pl-6 my-4'>{children}</ol>
-                  ),
-                  blockquote: ({ children }) => (
-                    <blockquote className='border-l-4 border-primary pl-4 italic my-4'>
-                      {children}
-                    </blockquote>
-                  ),
-                  img: ({ src, alt }) => (
-                    <img
-                      src={src}
-                      alt={alt}
-                      className='rounded-lg shadow-md my-6 max-w-full max-h-[500px] object-contain'
-                    />
-                  )
-                }}
-              >
+            <div className='mt-8 prose dark:prose-invert max-w-none'>
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
                 {project.content}
               </ReactMarkdown>
             </div>
           </div>
         </article>
 
-        <div className='mt-8 flex justify-between bg-gray-50 dark:bg-gray-800 rounded-lg p-6 shadow-md'>
+        <div className='mt-6 sm:mt-8 flex justify-between bg-gray-50 dark:bg-gray-800 rounded-lg p-4 sm:p-6 shadow-md border border-gray-200 dark:border-gray-700'>
           <Link
             href='/projects'
-            className='text-primary dark:text-primary-light hover:underline inline-flex items-center'
+            className='text-primary dark:text-primary-light hover:underline inline-flex items-center text-base sm:text-lg'
           >
             <svg
               className='mr-2 w-4 h-4'
