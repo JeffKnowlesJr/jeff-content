@@ -116,7 +116,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
         type='application/ld+json'
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <div className='max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12'>
+      <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12'>
         <Link
           href='/projects'
           className='inline-flex items-center text-primary dark:text-primary-light hover:underline mb-8'
@@ -139,27 +139,13 @@ export default async function ProjectDetailPage({ params }: PageProps) {
         </Link>
 
         <article className='bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden'>
-          {project.featuredImage && (
-            <div className='w-full aspect-video relative'>
-              <img
-                src={
-                  project.featuredImage ||
-                  project.contentImage ||
-                  project.thumbnailImage
-                }
-                alt={project.title}
-                className='object-cover w-full h-full'
-              />
-            </div>
-          )}
-
-          <div className='p-8'>
-            <header className='mb-8'>
+          <div className='p-8 pb-4'>
+            <header>
               <h1 className='text-4xl font-bold text-gray-900 dark:text-white mb-4'>
                 {project.title}
               </h1>
 
-              <div className='flex flex-wrap gap-3 my-4'>
+              <div className='flex flex-wrap gap-3 mb-6'>
                 {project.techStack &&
                   project.techStack.map((tech: string) => (
                     <span
@@ -170,29 +156,45 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                     </span>
                   ))}
               </div>
-
-              <div className='flex flex-wrap gap-4 mt-6'>
-                {project.liveUrl && (
-                  <ExternalLink
-                    href={project.liveUrl}
-                    className='inline-flex items-center bg-primary hover:bg-primary-dark text-white font-medium py-2 px-4 rounded transition-colors'
-                    icon={DemoIcon}
-                  >
-                    View Live Demo
-                  </ExternalLink>
-                )}
-
-                {project.githubUrl && (
-                  <ExternalLink
-                    href={project.githubUrl}
-                    className='inline-flex items-center bg-gray-800 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded transition-colors'
-                    icon={GitHubIcon}
-                  >
-                    View on GitHub
-                  </ExternalLink>
-                )}
-              </div>
             </header>
+          </div>
+
+          {project.featuredImage && (
+            <div className='w-full relative max-h-[500px] overflow-hidden'>
+              <img
+                src={
+                  project.featuredImage ||
+                  project.contentImage ||
+                  project.thumbnailImage
+                }
+                alt={project.title}
+                className='object-cover w-full'
+              />
+            </div>
+          )}
+
+          <div className='p-8'>
+            <div className='flex flex-wrap gap-4 mb-8'>
+              {project.liveUrl && (
+                <ExternalLink
+                  href={project.liveUrl}
+                  className='inline-flex items-center bg-primary hover:bg-primary-dark text-white font-medium py-2 px-4 rounded transition-colors'
+                  icon={DemoIcon}
+                >
+                  View Live Demo
+                </ExternalLink>
+              )}
+
+              {project.githubUrl && (
+                <ExternalLink
+                  href={project.githubUrl}
+                  className='inline-flex items-center bg-gray-800 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded transition-colors'
+                  icon={GitHubIcon}
+                >
+                  View on GitHub
+                </ExternalLink>
+              )}
+            </div>
 
             <div className='prose dark:prose-invert max-w-none'>
               <ReactMarkdown
@@ -225,7 +227,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                     <img
                       src={src}
                       alt={alt}
-                      className='rounded-lg shadow-md my-6 max-w-full'
+                      className='rounded-lg shadow-md my-6 max-w-full max-h-[500px] object-contain'
                     />
                   )
                 }}

@@ -112,10 +112,10 @@ export default function Header() {
   ]
 
   return (
-    <header className='relative z-40'>
+    <header className='relative z-40 w-full'>
       {/* Top Bar - transparent background */}
-      <div className='bg-gray-100/60 dark:bg-gray-900/60 backdrop-blur-sm py-3'>
-        <div className='flex justify-between items-center max-w-7xl mx-auto px-4 sm:px-6'>
+      <div className='bg-gray-100/60 dark:bg-gray-900/60 backdrop-blur-sm py-3 w-full'>
+        <div className='flex justify-between items-center w-full mx-auto px-4 sm:px-6 lg:px-8'>
           <Link
             href='https://www.jkjrdev.com'
             className='flex items-center hover:text-teal-600 dark:hover:text-teal-400 transition-colors'
@@ -133,8 +133,8 @@ export default function Header() {
       </div>
 
       {/* Main Navigation - transparent background */}
-      <nav className='bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm shadow-sm'>
-        <div className='flex justify-between items-center h-16 sm:h-20 lg:h-24 max-w-7xl mx-auto px-4 sm:px-6'>
+      <nav className='bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm shadow-sm w-full'>
+        <div className='flex justify-between items-center h-16 sm:h-20 lg:h-24 w-full mx-auto px-4 sm:px-6 lg:px-8'>
           {/* Logo */}
           <Link href='/' className='flex items-center flex-shrink-0'>
             <div className='h-8 sm:h-10 lg:h-12 flex items-center'>

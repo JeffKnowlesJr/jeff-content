@@ -9,8 +9,8 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <div className='min-h-screen py-20 px-4'>
-      <div className='max-w-4xl mx-auto'>
+    <div className='min-h-screen py-20 px-4 sm:px-6 lg:px-8'>
+      <div className='w-full mx-auto'>
         {/* Header Section */}
         <div className='text-center mb-16'>
           <h1 className='text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6'>
@@ -23,7 +23,7 @@ export default function ContactPage() {
         </div>
 
         {/* Contact Form Section */}
-        <div className='grid md:grid-cols-2 gap-12'>
+        <div className='grid md:grid-cols-2 gap-12 max-w-6xl mx-auto'>
           {/* Form */}
           <div className='card p-8'>
             <ContactForm />

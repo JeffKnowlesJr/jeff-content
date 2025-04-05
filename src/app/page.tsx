@@ -105,11 +105,61 @@ export default async function HomePage() {
   return (
     <div className='min-h-screen'>
       {/* Hero Section */}
-      <section className='relative py-24 overflow-hidden'>
+      <section className='relative py-12 md:py-24 overflow-hidden'>
         <div className='absolute inset-0 bg-gradient-to-br from-primary-light/20 to-secondary-light/20 dark:from-primary-dark/30 dark:to-secondary-dark/30 opacity-80'></div>
         <div className='relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
-          <div className='flex flex-col md:flex-row items-center gap-12'>
-            <div className='md:w-1/2'>
+          {/* Mobile-first layout - stack elements vertically */}
+          <div className='block md:hidden text-center'>
+            {/* Image first on mobile */}
+            <div className='mb-12'>
+              <div className='relative w-64 h-64 mx-auto rounded-full overflow-hidden shadow-xl group'>
+                {/* Large circle gradient background */}
+                <div className='profile-bg-circle'></div>
+
+                {/* Circle border */}
+                <div className='absolute inset-0 border-[6px] border-primary dark:border-primary-light rounded-full z-10'></div>
+
+                {/* Subtle radial overlay */}
+                <div className='absolute inset-0 bg-gradient-radial from-transparent to-black/20 dark:to-black/40 z-5 opacity-60'></div>
+
+                {/* Image */}
+                <Image
+                  src='/images/jeff-profile.jpg'
+                  alt='Jeff Knowles Jr.'
+                  fill
+                  className='object-cover object-top z-0 transition-transform duration-300'
+                  priority
+                />
+              </div>
+            </div>
+
+            {/* Text content below on mobile */}
+            <div>
+              <h1 className='text-4xl font-bold text-gray-900 dark:text-white mb-6 leading-tight'>
+                Software Engineer &{' '}
+                <span className='text-primary dark:text-primary-light'>
+                  Cloud Architect
+                </span>
+              </h1>
+              <p className='text-lg text-gray-600 dark:text-gray-300 mb-8'>
+                Building modern, scalable web applications with React, Next.js,
+                and AWS. Focused on performance, user experience, and
+                maintainable code.
+              </p>
+              <div className='flex justify-center flex-wrap gap-4'>
+                <Link href='/projects' className='btn btn-primary'>
+                  View Projects
+                </Link>
+                <Link href='/contact' className='btn btn-outline'>
+                  Get in Touch
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          {/* Desktop layout - side by side */}
+          <div className='hidden md:flex md:flex-row items-center'>
+            <div className='md:w-3/5'>
               <h1 className='text-5xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6 leading-tight'>
                 Software Engineer &{' '}
                 <span className='text-primary dark:text-primary-light'>
@@ -130,13 +180,23 @@ export default async function HomePage() {
                 </Link>
               </div>
             </div>
-            <div className='md:w-1/2 flex justify-center items-center md:items-end'>
-              <div className='relative w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden border-4 border-primary dark:border-primary-light shadow-xl'>
+            <div className='md:w-2/5 flex justify-end items-center'>
+              <div className='relative w-80 h-80 rounded-full overflow-hidden shadow-xl group'>
+                {/* Large circle gradient background */}
+                <div className='profile-bg-circle-large'></div>
+
+                {/* Circle border */}
+                <div className='absolute inset-0 border-[8px] border-primary dark:border-primary-light rounded-full z-10'></div>
+
+                {/* Subtle radial overlay */}
+                <div className='absolute inset-0 bg-gradient-radial from-transparent to-black/20 dark:to-black/40 z-5 opacity-60'></div>
+
+                {/* Image */}
                 <Image
                   src='/images/jeff-profile.jpg'
                   alt='Jeff Knowles Jr.'
                   fill
-                  className='object-cover object-top'
+                  className='object-cover object-top z-0 transition-transform duration-300'
                   priority
                 />
               </div>

@@ -110,17 +110,17 @@ export default async function ProjectsPage() {
   const projects = await getProjects()
 
   return (
-    <div className='container mx-auto px-4 py-8'>
-      <div className='max-w-4xl mx-auto'>
+    <div className='container mx-auto px-4 sm:px-6 lg:px-8 py-12'>
+      <div className='w-full'>
         <h1 className='text-3xl font-bold text-gray-900 dark:text-white mb-8'>
           Projects
         </h1>
-        <p className='text-gray-600 dark:text-gray-300 mb-8'>
+        <p className='text-gray-600 dark:text-gray-300 mb-8 max-w-4xl'>
           Here are some of the projects I&apos;ve worked on. Each project
           represents a unique challenge and solution in web development, cloud
           architecture, and technical implementation.
         </p>
-        <div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
           {projects.map((project) => (
             <ProjectCard
               key={project.id}
