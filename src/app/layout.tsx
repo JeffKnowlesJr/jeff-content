@@ -26,7 +26,18 @@ const merriweather = Merriweather({
 const jsonLd = generateWebsiteSchema()
 
 // Define global metadata
-export const metadata = generateBaseMetadata()
+export const metadata = {
+  ...generateBaseMetadata(),
+  icons: {
+    icon: '/favicon.ico',
+    shortcut: '/favicon.ico',
+    apple: '/apple-icon.png',
+    other: {
+      rel: 'icon',
+      url: '/favicon.ico'
+    }
+  }
+}
 
 export default function RootLayout({
   children

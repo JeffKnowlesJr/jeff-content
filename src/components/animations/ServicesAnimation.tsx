@@ -496,7 +496,7 @@ const ServicesAnimation = () => {
     // Create particles in a 3D spherical pattern
     const centerX = canvas.width / 2
     const centerY = canvas.height / 2
-    const radius = Math.min(canvas.width, canvas.height) / 1.6 // Much bigger sphere
+    const radius = Math.min(canvas.width, canvas.height) / 1.4 // Even bigger sphere (was 1.6)
 
     for (let i = 0; i < particleCount; i++) {
       // Use spherical coordinates to position particles in 3D space
@@ -505,11 +505,11 @@ const ServicesAnimation = () => {
       const theta = Math.sqrt(particleCount * Math.PI) * phi // azimuthal angle (0 to 2π)
 
       // Convert spherical to cartesian coordinates
-      const x = centerX + radius * Math.sin(phi) * Math.cos(theta) * 0.92 // Even larger radius factor
-      const y = centerY + radius * Math.sin(phi) * Math.sin(theta) * 0.92 // Even larger radius factor
-      const z = radius * Math.cos(phi) * 0.92 // Even larger radius factor
+      const x = centerX + radius * Math.sin(phi) * Math.cos(theta) * 0.95 // Even larger radius factor (was 0.92)
+      const y = centerY + radius * Math.sin(phi) * Math.sin(theta) * 0.95 // Even larger radius factor
+      const z = radius * Math.cos(phi) * 0.95 // Even larger radius factor
 
-      particles.push(new Particle(x, y, z, 4.5)) // Larger particles
+      particles.push(new Particle(x, y, z, 5)) // Larger particles (was 4.5)
     }
 
     // Animation variables
@@ -520,43 +520,30 @@ const ServicesAnimation = () => {
     const animate = () => {
       time += 0.005 // slower time progression
 
-      // Apply gentler friction to the spin to maintain momentum longer
-      sphereSpinRef.current.x *= 0.995 // Reduced friction (was 0.98)
-      sphereSpinRef.current.y *= 0.995 // Reduced friction (was 0.98)
+      // Maintain momentum with even gentler friction
+      sphereSpinRef.current.x *= 0.997 // Even less friction (was 0.995)
+      sphereSpinRef.current.y *= 0.997 // Even less friction
 
       // Update sphere rotation based on spin
       sphereRotationRef.current.x += sphereSpinRef.current.x
       sphereRotationRef.current.y += sphereSpinRef.current.y
 
-      // Very gradual return to center to maintain offset momentum longer
-      sphereOffsetRef.current.x *= 0.98 // Gentler return (was 0.95)
-      sphereOffsetRef.current.y *= 0.98 // Gentler return (was 0.95)
+      // Very gradual return to center
+      sphereOffsetRef.current.x *= 0.985 // Gentler return
+      sphereOffsetRef.current.y *= 0.985 // Gentler return
 
-      // Decay mouse velocity over time, but more gradually
+      // Decay mouse velocity over time, with better momentum
       if (!mouseActiveRef.current) {
-        mouseVelocityRef.current.x *= 0.98 // Slower decay (was 0.95)
-        mouseVelocityRef.current.y *= 0.98 // Slower decay (was 0.95)
+        mouseVelocityRef.current.x *= 0.99 // Even slower decay (was 0.98)
+        mouseVelocityRef.current.y *= 0.99 // Even slower decay
       }
 
       if (!canvas || !ctx) return
 
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-      // More colorful background with radial gradient
-      const gradient = ctx.createRadialGradient(
-        centerX + sphereOffsetRef.current.x,
-        centerY + sphereOffsetRef.current.y,
-        0,
-        centerX + sphereOffsetRef.current.x,
-        centerY + sphereOffsetRef.current.y,
-        radius
-      )
-      gradient.addColorStop(0, 'rgba(30, 40, 90, 0.2)')
-      gradient.addColorStop(0.5, 'rgba(25, 20, 80, 0.1)')
-      gradient.addColorStop(1, 'rgba(10, 15, 40, 0)')
-
-      ctx.fillStyle = gradient
-      ctx.fillRect(0, 0, canvas.width, canvas.height)
+      // Remove background gradient - just use clear background
+      // We're not using any background gradient now
 
       // Sort particles by z-coordinate for proper 3D rendering (back to front)
       particles.sort((a, b) => a.z - b.z)
@@ -616,7 +603,7 @@ const ServicesAnimation = () => {
 
   return (
     <div className='w-full h-full relative'>
-      <div className='w-full h-full rounded-full overflow-hidden bg-gradient-to-br from-blue-900/10 to-purple-900/10'>
+      <div className='w-full h-full rounded-full overflow-hidden'>
         <canvas ref={canvasRef} className='w-full h-full' />
       </div>
 
