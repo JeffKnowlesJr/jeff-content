@@ -7,6 +7,7 @@ import remarkGfm from 'remark-gfm'
 import { BlogPost, getContentBySlug } from '@/utils/content-loader'
 import { generateBlogPostSchema } from '@/utils/schema'
 import { generateBlogPostMetadata } from '@/utils/metadata'
+import BlogLayout from '@/components/blog/BlogLayout'
 
 type Params = {
   slug: string
@@ -74,8 +75,8 @@ export default async function BlogPostPage({ params }: { params: Params }) {
   }
 
   return (
-    <div className='min-h-screen'>
-      <div className='max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12'>
+    <BlogLayout showHeader={false}>
+      <div className='w-full'>
         <Link
           href='/blog'
           className='inline-flex items-center text-primary dark:text-primary-light hover:underline mb-8'
@@ -98,7 +99,7 @@ export default async function BlogPostPage({ params }: { params: Params }) {
         </Link>
 
         <article className='bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden'>
-          <div className='p-8'>
+          <div className='p-4 sm:p-6 md:p-8'>
             <header className='mb-8'>
               <h1 className='text-4xl font-bold text-gray-900 dark:text-white mb-4'>
                 {post.title}
@@ -182,7 +183,7 @@ export default async function BlogPostPage({ params }: { params: Params }) {
               )}
             </header>
 
-            <div className='prose dark:prose-invert max-w-none'>
+            <div className='prose dark:prose-invert max-w-none prose-p:text-base sm:prose-p:text-lg prose-li:text-base sm:prose-li:text-lg prose-p:leading-relaxed prose-li:leading-relaxed'>
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
                 components={{
@@ -213,8 +214,11 @@ export default async function BlogPostPage({ params }: { params: Params }) {
                       {children}
                     </ul>
                   ),
-                  ol: ({ node, children, ...props }: any) => (
-                    <ol className='list-decimal pl-6 my-4' {...props}>
+                  ol: ({ node, ordered, children, ...props }: any) => (
+                    <ol
+                      className='list-decimal pl-6 my-4'
+                      {...(ordered === false ? {} : props)}
+                    >
                       {children}
                     </ol>
                   ),
@@ -266,6 +270,6 @@ export default async function BlogPostPage({ params }: { params: Params }) {
           </div>
         </div>
       </div>
-    </div>
+    </BlogLayout>
   )
 }

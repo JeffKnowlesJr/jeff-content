@@ -1,6 +1,7 @@
 import { Metadata } from 'next'
 import { BlogPost, getContentList } from '@/utils/content-loader'
 import BlogCard from '@/components/blog/BlogCard'
+import BlogLayout from '@/components/blog/BlogLayout'
 import { generateBlogIndexMetadata } from '@/utils/metadata'
 
 // Generate metadata
@@ -215,32 +216,38 @@ export default async function BlogPage() {
   const posts = await getBlogPosts()
 
   return (
-    <div className="container mx-auto px-4 py-6 sm:py-8">
-      <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-8">
-        Blog Posts
-      </h1>
+    <BlogLayout>
+      <div className='w-full'>
+        <h1 className='text-3xl font-bold text-gray-900 dark:text-white mb-8'>
+          Blog Posts
+        </h1>
+        <p className='text-gray-600 dark:text-gray-300 mb-8 max-w-4xl'>
+          Explore articles covering web development, cloud architecture, and
+          technical implementation details from real-world projects.
+        </p>
 
-      {/* Mobile-optimized grid - single column on mobile, two columns on larger screens */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-        {posts.map((post) => (
-          <BlogCard
-            key={post.slug}
-            id={post.slug}
-            title={post.title}
-            excerpt={post.excerpt}
-            image={
-              post.featuredImage ||
-              post.image ||
-              '/images/blog/default-post.jpg'
-            }
-            author={post.author}
-            publishDate={post.datePublished || post.publishDate || ''}
-            readingTime={post.readingTime}
-            tags={post.tags}
-            slug={post.slug}
-          />
-        ))}
+        {/* Mobile-optimized grid - single column on mobile, two columns on larger screens */}
+        <div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
+          {posts.map((post) => (
+            <BlogCard
+              key={post.slug}
+              id={post.slug}
+              title={post.title}
+              excerpt={post.excerpt}
+              image={
+                post.featuredImage ||
+                post.image ||
+                '/images/blog/default-post.jpg'
+              }
+              author={post.author}
+              publishDate={post.datePublished || post.publishDate || ''}
+              readingTime={post.readingTime}
+              tags={post.tags}
+              slug={post.slug}
+            />
+          ))}
+        </div>
       </div>
-    </div>
+    </BlogLayout>
   )
 }

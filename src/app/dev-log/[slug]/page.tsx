@@ -174,7 +174,7 @@ export default async function DevLogEntryPage({ params }: PageProps) {
 
   return (
     <div className='min-h-screen'>
-      <div className='max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12'>
+      <div className='max-w-4xl mx-auto px-3 sm:px-6 lg:px-8 py-8 sm:py-12'>
         <Link
           href='/dev-log'
           className='inline-flex items-center text-primary dark:text-primary-light hover:underline mb-8'
@@ -196,41 +196,43 @@ export default async function DevLogEntryPage({ params }: PageProps) {
           Back to Development Log
         </Link>
 
-        <article className='prose dark:prose-invert max-w-none'>
-          <header className='mb-8'>
-            <h1 className='text-4xl font-bold text-gray-900 dark:text-white mb-4'>
-              {entry.title}
-            </h1>
-            <div className='flex flex-wrap items-center gap-4 text-gray-600 dark:text-gray-300'>
-              <time dateTime={entry.date}>
-                {new Date(entry.date).toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric'
-                })}
-              </time>
-              <div className='flex flex-wrap gap-2'>
-                {entry.tags.map((tag: string) => (
-                  <span
-                    key={tag}
-                    className='px-2 py-1 text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-full'
-                  >
-                    {tag}
-                  </span>
-                ))}
+        <article className='prose dark:prose-invert max-w-none bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden'>
+          <div className='p-4 sm:p-6 md:p-8'>
+            <header className='mb-8'>
+              <h1 className='text-4xl font-bold text-gray-900 dark:text-white mb-4'>
+                {entry.title}
+              </h1>
+              <div className='flex flex-wrap items-center gap-4 text-gray-600 dark:text-gray-300'>
+                <time dateTime={entry.date}>
+                  {new Date(entry.date).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  })}
+                </time>
+                <div className='flex flex-wrap gap-2'>
+                  {entry.tags.map((tag: string) => (
+                    <span
+                      key={tag}
+                      className='px-2 py-1 text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-full'
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
               </div>
-            </div>
-          </header>
+            </header>
 
-          <div className='markdown-content'>
-            <ReactMarkdown
-              remarkPlugins={[remarkGfm]}
-              components={{
-                code: codeBlock
-              }}
-            >
-              {entry.content}
-            </ReactMarkdown>
+            <div className='markdown-content prose-p:text-base sm:prose-p:text-lg prose-li:text-base sm:prose-li:text-lg'>
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                components={{
+                  code: codeBlock
+                }}
+              >
+                {entry.content}
+              </ReactMarkdown>
+            </div>
           </div>
         </article>
       </div>

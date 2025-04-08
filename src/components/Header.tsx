@@ -30,6 +30,11 @@ export default function Header() {
   const [mounted, setMounted] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
+  // Debug mobile menu changes
+  useEffect(() => {
+    console.log('Mobile menu state changed:', mobileMenuOpen)
+  }, [mobileMenuOpen])
+
   // Only show the theme toggle after mounting to avoid hydration mismatch
   useEffect(() => {
     setMounted(true)
@@ -37,8 +42,17 @@ export default function Header() {
 
   // Close mobile menu on route change
   useEffect(() => {
-    if (mobileMenuOpen) {
-      setMobileMenuOpen(false)
+    const handleRouteChange = () => {
+      if (mobileMenuOpen) {
+        setMobileMenuOpen(false)
+      }
+    }
+
+    // Listen for route changes in Next.js
+    window.addEventListener('popstate', handleRouteChange)
+
+    return () => {
+      window.removeEventListener('popstate', handleRouteChange)
     }
   }, [mobileMenuOpen])
 
@@ -169,7 +183,13 @@ export default function Header() {
               <button
                 type='button'
                 className='flex items-center justify-center h-10 w-10 text-gray-700 dark:text-gray-300 hover:text-teal-600 dark:hover:text-teal-400'
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                onClick={() => {
+                  console.log(
+                    'Toggle mobile menu button clicked, current state:',
+                    mobileMenuOpen
+                  )
+                  setMobileMenuOpen(!mobileMenuOpen)
+                }}
                 aria-expanded={mobileMenuOpen}
                 aria-label='Toggle mobile menu'
               >
@@ -201,19 +221,22 @@ export default function Header() {
         </div>
       </nav>
 
-      {/* Mobile Menu */}
-      <div
-        className={`mobile-menu ${mobileMenuOpen ? 'open' : 'closed'}`}
-        aria-hidden={!mobileMenuOpen}
-      >
-        <div className='h-full flex flex-col bg-white dark:bg-gray-800 w-[80%] max-w-sm p-6'>
-          <div className='flex justify-between items-center mb-8'>
-            <Link
-              href='/'
-              className='flex items-center'
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              <div className='h-10 flex items-center'>
+      {/* Mobile Menu - Ultra Simple Version */}
+      {mobileMenuOpen ? (
+        <div
+          id='mobileMenu'
+          className='fixed inset-0 bg-black/70 z-[9999]'
+          onClick={(e) => {
+            // Only close if clicking the backdrop (not the menu itself)
+            if (e.target === e.currentTarget) {
+              console.log('Backdrop clicked, closing menu')
+              setMobileMenuOpen(false)
+            }
+          }}
+        >
+          <div className='fixed top-0 right-0 w-[80%] max-w-[300px] h-full bg-white dark:bg-gray-800 overflow-auto'>
+            <div className='p-4 flex justify-between items-center border-b border-gray-200 dark:border-gray-700'>
+              <div className='h-10'>
                 <Image
                   src='/JKJR3.png'
                   alt='JKJR Logo'
@@ -222,39 +245,64 @@ export default function Header() {
                   className='w-auto h-full object-contain'
                 />
               </div>
-            </Link>
-            <button
-              type='button'
-              className='flex items-center justify-center h-10 w-10 text-gray-700 dark:text-gray-300 hover:text-teal-600 dark:hover:text-teal-400'
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              <i className='fas fa-times text-xl'></i>
-            </button>
-          </div>
+              <button
+                className='p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700'
+                onClick={() => {
+                  console.log('Close button clicked')
+                  setMobileMenuOpen(false)
+                }}
+              >
+                <i className='fas fa-times text-xl'></i>
+              </button>
+            </div>
 
-          <nav className='flex-1'>
-            <ul className='space-y-4'>
-              {menuItems.map((item) => (
-                <li key={item.name}>
-                  <Link
-                    href={item.href}
-                    className='block py-3 px-4 text-lg font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-teal-600 dark:hover:text-teal-400 rounded-lg transition-colors'
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    {item.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
+            <div className='p-4'>
+              <ul className='space-y-3'>
+                {menuItems.map((item) => (
+                  <li key={item.name}>
+                    <Link
+                      href={item.href}
+                      className='block p-3 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 font-medium text-lg'
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      {item.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-          <div className='mt-auto pt-6 border-t border-gray-200 dark:border-gray-700'>
-            <div className='flex justify-around items-center'>
-              <SocialIcons />
+            <div className='p-4 border-t border-gray-200 dark:border-gray-700'>
+              <div className='flex justify-start space-x-5'>
+                <a
+                  href='https://github.com/jeffknowlesjr'
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='h-10 w-10 flex items-center justify-center text-xl'
+                >
+                  <i className='fab fa-github'></i>
+                </a>
+                <a
+                  href='https://linkedin.com/in/jeffknowlesjr'
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='h-10 w-10 flex items-center justify-center text-xl'
+                >
+                  <i className='fab fa-linkedin-in'></i>
+                </a>
+                <a
+                  href='https://facebook.com/jeffknowlesjr'
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='h-10 w-10 flex items-center justify-center text-xl'
+                >
+                  <i className='fab fa-facebook-f'></i>
+                </a>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      ) : null}
     </header>
   )
 }

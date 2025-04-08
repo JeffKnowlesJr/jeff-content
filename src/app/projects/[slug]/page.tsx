@@ -20,8 +20,11 @@ export async function generateMetadata({
   params: Params
 }): Promise<Metadata> {
   try {
+    // First await the params object itself before accessing its properties
+    const resolvedParams = await params
+
     // Use String() to coerce the slug - Solution 1 from documentation
-    const slug = String(params.slug)
+    const slug = String(resolvedParams.slug)
 
     const project = await getContentBySlug<Project>('projects', slug)
 
@@ -47,8 +50,11 @@ export default async function ProjectDetailPage({
 }: {
   params: Params
 }) {
+  // First await the params object itself before accessing its properties
+  const resolvedParams = await params
+
   // Use String() to coerce the slug - Solution 1 from documentation
-  const slug = String(params.slug)
+  const slug = String(resolvedParams.slug)
 
   // Get project from the slug
   const project = await getContentBySlug<Project>('projects', slug)
@@ -98,33 +104,6 @@ export default async function ProjectDetailPage({
     </svg>
   )
 
-  // Code block rendering for markdown
-  const codeBlock = ({
-    inline,
-    className,
-    children,
-    ...props
-  }: {
-    inline?: boolean
-    className?: string
-    children?: React.ReactNode
-  }) => {
-    const match = /language-(\w+)/.exec(className || '')
-    return !inline && match ? (
-      <div className='relative group'>
-        <pre className={`${className} overflow-x-auto p-4 rounded-lg`}>
-          <code className={className} {...props}>
-            {children}
-          </code>
-        </pre>
-      </div>
-    ) : (
-      <code className={`${className} px-1 py-0.5 rounded text-sm`} {...props}>
-        {children}
-      </code>
-    )
-  }
-
   return (
     <div className='min-h-screen'>
       {/* Add JSON-LD structured data */}
@@ -133,7 +112,7 @@ export default async function ProjectDetailPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <div className='max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12'>
+      <div className='max-w-4xl mx-auto px-3 sm:px-6 lg:px-8 py-8 sm:py-12'>
         <Link
           href='/projects'
           className='inline-flex items-center text-primary dark:text-primary-light hover:underline mb-8'
@@ -156,7 +135,7 @@ export default async function ProjectDetailPage({
         </Link>
 
         <article className='bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden'>
-          <div className='p-8'>
+          <div className='p-4 sm:p-6 md:p-8'>
             <header className='mb-8'>
               <h1 className='text-4xl font-bold text-gray-900 dark:text-white mb-4'>
                 {project.title}
@@ -211,12 +190,33 @@ export default async function ProjectDetailPage({
               </div>
             </header>
 
-            <div className='prose dark:prose-invert max-w-none'>
+            <div className='prose dark:prose-invert max-w-none prose-p:text-base sm:prose-p:text-lg prose-li:text-base sm:prose-li:text-lg prose-p:leading-relaxed prose-li:leading-relaxed'>
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
+                // @ts-ignore: ReactMarkdown component types are hard to get right
                 components={{
-                  code: codeBlock,
-                  a: ({ node, href, children, ...props }: any) => (
+                  code: ({ inline, className, children, ...props }) => {
+                    const match = /language-(\w+)/.exec(className || '')
+                    return !inline && match ? (
+                      <div className='relative group'>
+                        <pre
+                          className={`${className} overflow-x-auto p-4 rounded-lg`}
+                        >
+                          <code className={className} {...props}>
+                            {children}
+                          </code>
+                        </pre>
+                      </div>
+                    ) : (
+                      <code
+                        className={`${className} px-1 py-0.5 rounded text-sm`}
+                        {...props}
+                      >
+                        {children}
+                      </code>
+                    )
+                  },
+                  a: ({ href, children, ...props }) => (
                     <a
                       href={href}
                       className='text-primary dark:text-primary-light hover:underline'
@@ -227,7 +227,7 @@ export default async function ProjectDetailPage({
                       {children}
                     </a>
                   ),
-                  h2: ({ node, children, ...props }: any) => (
+                  h2: ({ children, ...props }) => (
                     <h2
                       className='text-2xl font-bold mt-8 mb-4 border-b border-gray-200 dark:border-gray-700 pb-2'
                       {...props}
@@ -235,22 +235,25 @@ export default async function ProjectDetailPage({
                       {children}
                     </h2>
                   ),
-                  h3: ({ node, children, ...props }: any) => (
+                  h3: ({ children, ...props }) => (
                     <h3 className='text-xl font-bold mt-6 mb-3' {...props}>
                       {children}
                     </h3>
                   ),
-                  ul: ({ node, children, ...props }: any) => (
+                  ul: ({ children, ...props }) => (
                     <ul className='list-disc pl-6 my-4' {...props}>
                       {children}
                     </ul>
                   ),
-                  ol: ({ node, children, ...props }: any) => (
-                    <ol className='list-decimal pl-6 my-4' {...props}>
+                  ol: ({ node, ordered, children, ...props }: any) => (
+                    <ol
+                      className='list-decimal pl-6 my-4'
+                      {...(ordered === false ? {} : props)}
+                    >
                       {children}
                     </ol>
                   ),
-                  blockquote: ({ node, children, ...props }: any) => (
+                  blockquote: ({ children, ...props }) => (
                     <blockquote
                       className='border-l-4 border-primary pl-4 italic my-4'
                       {...props}
@@ -258,7 +261,7 @@ export default async function ProjectDetailPage({
                       {children}
                     </blockquote>
                   ),
-                  img: ({ src, alt }: any) => (
+                  img: ({ src, alt }) => (
                     <img
                       src={src}
                       alt={alt}

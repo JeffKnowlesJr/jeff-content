@@ -300,16 +300,19 @@ export default async function HomePage() {
           <div className='card flex flex-col md:flex-row gap-8 overflow-hidden hover:shadow-lg transition-shadow duration-300'>
             {latestPost.featuredImage && (
               <div className='md:w-1/2'>
-                <div className='relative aspect-[16/9] md:aspect-auto md:h-full'>
+                <Link
+                  href={`/blog/${latestPost.slug}`}
+                  className='block relative aspect-[16/9] md:aspect-auto md:h-full'
+                >
                   <Image
                     src={latestPost.featuredImage}
                     alt={latestPost.title}
                     fill
                     sizes='(max-width: 768px) 100vw, 50vw'
-                    className='object-cover'
+                    className='object-cover hover:scale-105 transition-transform duration-300'
                     priority
                   />
-                </div>
+                </Link>
               </div>
             )}
             <div className='md:w-1/2 p-6 sm:p-8'>
