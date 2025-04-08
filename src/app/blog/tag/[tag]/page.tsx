@@ -41,7 +41,18 @@ export async function generateMetadata({
 
   return {
     title: `${tag} | Blog Tags | Jeff Knowles Jr.`,
-    description: `Browse all blog posts tagged with ${tag}.`
+    description: `Browse all blog posts tagged with ${tag}.`,
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1
+      }
+    }
   }
 }
 
@@ -62,12 +73,12 @@ export default function BlogTagPage({ params, searchParams }: PageProps) {
 
   return (
     <BlogLayout>
-      <div className='space-y-8'>
-        <div className='text-center'>
-          <h1 className='text-3xl font-bold text-gray-900 dark:text-white mb-4'>
+      <div className="space-y-8">
+        <div className="text-center">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
             Posts tagged with &quot;{tag}&quot;
           </h1>
-          <p className='text-gray-600 dark:text-gray-400'>
+          <p className="text-gray-600 dark:text-gray-400">
             {tagPosts.length} post{tagPosts.length === 1 ? '' : 's'}
           </p>
         </div>
