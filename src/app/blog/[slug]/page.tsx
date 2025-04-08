@@ -27,18 +27,7 @@ export async function generateMetadata({
     }
   }
 
-  return {
-    title: `${post.title} | Jeff Knowles Jr`,
-    description: post.excerpt,
-    openGraph: {
-      title: post.title,
-      description: post.excerpt,
-      type: 'article',
-      publishedTime: post.datePublished,
-      authors: [post.author],
-      tags: post.tags
-    }
-  }
+  return generateBlogPostMetadata(post)
 }
 
 // Blog post page component

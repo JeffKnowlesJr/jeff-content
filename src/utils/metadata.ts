@@ -117,6 +117,17 @@ export function generateBlogPostMetadata(post: BlogPost): Metadata {
     },
     alternates: {
       canonical: postUrl
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1
+      }
     }
   }
 }
@@ -207,6 +218,17 @@ export function generateProjectMetadata(project: Project): Metadata {
     },
     alternates: {
       canonical: projectUrl
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1
+      }
     }
   }
 }
@@ -261,18 +283,18 @@ export function generateCategoryMetadata(
 
   return {
     title: `${category} | Blog Categories`,
-    description,
+    description: description,
     openGraph: {
       type: 'website',
       url: categoryUrl,
-      title: `${category} | Blog Categories`,
-      description,
+      title: `${category} | Blog Categories | Jeff Knowles Jr`,
+      description: description,
       images: [
         {
           url: `${BASE_URL}/images/og-default.jpg`,
           width: 1200,
           height: 630,
-          alt: `${category} blog posts by Jeff Knowles Jr`
+          alt: `${category} Category | Jeff Knowles Jr Blog`
         }
       ]
     },
@@ -280,11 +302,22 @@ export function generateCategoryMetadata(
       card: 'summary_large_image',
       site: '@jeffknowlesjr',
       creator: '@jeffknowlesjr',
-      title: `${category} | Blog Categories`,
-      description
+      title: `${category} | Blog Categories | Jeff Knowles Jr`,
+      description: description
     },
     alternates: {
       canonical: categoryUrl
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1
+      }
     }
   }
 }
@@ -294,22 +327,22 @@ export function generateCategoryMetadata(
  */
 export function generateTagMetadata(tag: string): Metadata {
   const tagUrl = `${BASE_URL}/blog/tag/${tag}`
-  const description = `Posts tagged with ${tag} on Jeff Knowles Jr's blog`
+  const description = `Browse all blog posts tagged with ${tag}.`
 
   return {
     title: `${tag} | Blog Tags`,
-    description,
+    description: description,
     openGraph: {
       type: 'website',
       url: tagUrl,
-      title: `${tag} | Blog Tags`,
-      description,
+      title: `${tag} | Blog Tags | Jeff Knowles Jr`,
+      description: description,
       images: [
         {
           url: `${BASE_URL}/images/og-default.jpg`,
           width: 1200,
           height: 630,
-          alt: `Posts tagged with ${tag} by Jeff Knowles Jr`
+          alt: `${tag} Tag | Jeff Knowles Jr Blog`
         }
       ]
     },
@@ -317,11 +350,22 @@ export function generateTagMetadata(tag: string): Metadata {
       card: 'summary_large_image',
       site: '@jeffknowlesjr',
       creator: '@jeffknowlesjr',
-      title: `${tag} | Blog Tags`,
-      description
+      title: `${tag} | Blog Tags | Jeff Knowles Jr`,
+      description: description
     },
     alternates: {
       canonical: tagUrl
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1
+      }
     }
   }
 }
