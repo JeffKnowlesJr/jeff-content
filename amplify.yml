@@ -14,7 +14,6 @@ frontend:
       - '**/*'
     # Add the following to support Next.js server-side features
     discard-paths: false
-    baseDirectory: .next
   cache:
     paths:
       - node_modules/**/*
