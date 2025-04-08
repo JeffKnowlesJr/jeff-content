@@ -5,7 +5,7 @@ excerpt: 'Learn best practices and modern techniques for optimizing images in we
 author: 'Jeff & Claude'
 tags: ['Web Development', 'Performance', 'Optimization', 'Images', 'WebP']
 readingTime: 8
-featuredImage: '/images/blog/featured/pizza-optimized.webp'
+featuredImage: '/images/blog/featured/pizza-rotated.webp'
 status: 'published'
 # SEO metadata
 description: 'Learn effective image optimization strategies that dramatically improve website load times while maintaining visual quality. Practical techniques for developers seeking better performance.'
@@ -22,7 +22,7 @@ keywords:
   ]
 ogTitle: 'Image Optimization: Essential Techniques for Faster Websites'
 ogDescription: 'Discover how to optimize images for dramatic performance improvements while maintaining visual quality. Implementation strategies for developers seeking faster load times.'
-ogImage: '/images/blog/featured/pizza-optimized.webp'
+ogImage: '/images/blog/featured/pizza-rotated.webp'
 ogType: 'article'
 twitterCard: 'summary_large_image'
 twitterCreator: '@jeffknowlesjr'
