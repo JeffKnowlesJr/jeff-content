@@ -166,11 +166,11 @@ export default async function BlogPostPage({ params }: PageProps) {
               </div>
 
               {post.featuredImage && (
-                <div className="w-full aspect-video relative mb-6 rounded-lg overflow-hidden shadow-md">
+                <div className="w-full max-h-[500px] relative mb-6 rounded-lg overflow-hidden shadow-md">
                   <img
                     src={post.featuredImage || post.image}
                     alt={post.title}
-                    className="object-cover w-full h-full"
+                    className="object-contain w-full h-full"
                   />
                 </div>
               )}

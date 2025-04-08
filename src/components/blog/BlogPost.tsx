@@ -44,13 +44,13 @@ export default function BlogPost({ post }: BlogPostProps) {
         </div>
 
         {post.featuredImage && (
-          <div className="relative w-full max-w-4xl mx-auto aspect-video mb-10 rounded-xl overflow-hidden shadow-lg">
+          <div className="relative w-full max-w-4xl mx-auto max-h-[500px] mb-10 rounded-xl overflow-hidden shadow-lg">
             <Image
               src={post.featuredImage}
               alt={post.title}
               fill
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
-              className="object-cover"
+              className="object-contain"
               priority
             />
           </div>
