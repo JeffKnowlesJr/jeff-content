@@ -83,26 +83,6 @@ async function getProjects(): Promise<UIProject[]> {
       link: 'https://www.projectomega.dev',
       github: 'https://github.com/yourusername/project-omega',
       slug: 'project-omega'
-    },
-    {
-      id: 'project-omega-build',
-      title: 'Project Omega: Build System & Deployment',
-      description:
-        'A detailed technical guide to the build system, CI/CD pipeline, and deployment infrastructure for the Project Omega multi-site architecture.',
-      image: '/images/projects/analytics-dashboard.jpg',
-      technologies: [
-        'GitHub Actions',
-        'AWS CodePipeline',
-        'Docker',
-        'Terraform',
-        'CloudFront',
-        'Lambda@Edge',
-        'CloudWatch',
-        'S3'
-      ],
-      link: 'https://www.projectomega.dev/build',
-      github: 'https://github.com/yourusername/project-omega-infrastructure',
-      slug: 'project-omega-build-manual'
     }
   ]
 }

@@ -47,10 +47,6 @@ function getPopularProjects() {
     {
       title: 'Project Omega: Multi-Site Architecture',
       slug: 'project-omega'
-    },
-    {
-      title: 'Project Omega: Build System & Deployment',
-      slug: 'project-omega-build-manual'
     }
   ]
 }
