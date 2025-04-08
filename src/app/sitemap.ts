@@ -16,6 +16,26 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8
   }))
 
+  // Extract all unique tags from blog posts
+  const allTags = blogPosts.reduce((tags, post) => {
+    if (post.tags && Array.isArray(post.tags)) {
+      post.tags.forEach((tag) => {
+        if (!tags.includes(tag)) {
+          tags.push(tag)
+        }
+      })
+    }
+    return tags
+  }, [] as string[])
+
+  // Generate tag page entries
+  const tagEntries = allTags.map((tag) => ({
+    url: `${baseUrl}/blog/tag/${tag.toLowerCase().replace(/\s+/g, '-')}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly' as const,
+    priority: 0.7
+  }))
+
   // Static routes of the site
   const routes = [
     '',
@@ -31,5 +51,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: route === '' ? 1.0 : 0.9
   }))
 
-  return [...routes, ...blogPostEntries]
+  return [...routes, ...blogPostEntries, ...tagEntries]
 }
