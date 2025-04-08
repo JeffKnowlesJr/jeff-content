@@ -1,12 +1,12 @@
 ---
-title: 'AWS Amplify: Simplifying Cloud Development'
-slug: aws-amplify-cloud-development
-excerpt: Exploring how AWS Amplify streamlines modern web development by seamlessly integrating AWS services
+title: 'Amplify Cloud Development: Building Scalable Applications with AWS'
+slug: amplify-cloud-development
+excerpt: 'How to leverage AWS Amplify to build full-stack applications with integrated authentication, storage, and serverless functions'
 author: 'Jeff & Claude'
-tags: ['AWS', 'Amplify', 'Cloud Architecture', 'DevOps']
-readingTime: 12
-featuredImage: 'https://d309xicbd1a46e.cloudfront.net/featured/getty-images-4zkrf2iPZ8k-unsplash.webp'
-status: published
+tags: ['AWS', 'Amplify', 'Cloud', 'Serverless', 'Authentication']
+readingTime: 10
+featuredImage: '/images/blog/featured/aws-amplify-cloud-development.jpg'
+status: 'published'
 # SEO metadata
 description: 'Discover how AWS Amplify streamlines cloud development by integrating AWS services into a cohesive framework. Learn the architecture behind a modern serverless application with practical implementation examples.'
 keywords:
@@ -28,8 +28,8 @@ twitterCard: 'summary_large_image'
 twitterCreator: '@jeffknowlesjr'
 articleSection: 'Cloud Architecture'
 articleAuthor: 'Jeff & Claude'
-datePublished: '2024-03-17'
-dateModified: '2024-03-17'
+datePublished: '2025-03-30'
+dateModified: '2025-03-30'
 ---
 
 # AWS Amplify: Simplifying Modern Cloud Development

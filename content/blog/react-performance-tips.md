@@ -28,8 +28,8 @@ twitterCard: 'summary_large_image'
 twitterCreator: '@jeffknowlesjr'
 articleSection: 'React Development'
 articleAuthor: 'Jeff & Claude'
-datePublished: '2024-03-20'
-dateModified: '2024-03-25'
+datePublished: '2025-03-20'
+dateModified: '2025-03-25'
 ---
 
 # React Performance Tips: Building Lightning-Fast Web Applications

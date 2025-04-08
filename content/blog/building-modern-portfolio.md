@@ -1,12 +1,12 @@
 ---
-title: Building a Modern Portfolio Website
+title: 'Building a Modern Developer Portfolio with Next.js'
 slug: building-modern-portfolio
-excerpt: A journey from static HTML to a modern React application with AWS microservices
+excerpt: 'How to build a performant, accessible, and visually appealing developer portfolio using Next.js, TypeScript, and TailwindCSS'
 author: 'Jeff & Claude'
-tags: ['React', 'AWS', 'TypeScript', 'Terraform']
-readingTime: 15
-featuredImage: 'https://d309xicbd1a46e.cloudfront.net/featured/hal-gatewood-tZc3vjPCk-Q-unsplash.webp'
-status: published
+tags: ['Next.js', 'TypeScript', 'TailwindCSS', 'Portfolio', 'Web Development']
+readingTime: 11
+featuredImage: '/images/blog/featured/building-modern-portfolio.jpg'
+status: 'published'
 # SEO metadata
 description: 'Trace the evolution of a developer portfolio from static HTML to React with AWS microservices. Learn practical steps for progressive enhancement while maintaining performance and scalability.'
 keywords:
@@ -28,8 +28,8 @@ twitterCard: 'summary_large_image'
 twitterCreator: '@jeffknowlesjr'
 articleSection: 'Web Development'
 articleAuthor: 'Jeff & Claude'
-datePublished: '2024-03-15'
-dateModified: '2024-03-15'
+datePublished: '2025-03-30'
+dateModified: '2025-03-30'
 ---
 
 # Building a Modern Portfolio Website: From HTML to Microservices

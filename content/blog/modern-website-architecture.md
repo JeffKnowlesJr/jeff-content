@@ -29,8 +29,8 @@ twitterCard: 'summary_large_image'
 twitterCreator: '@jeffknowlesjr'
 articleSection: 'Web Development'
 articleAuthor: 'Jeff & Claude'
-datePublished: '2024-04-01'
-dateModified: '2024-04-04'
+datePublished: '2025-04-01'
+dateModified: '2025-04-04'
 ---
 
 # Modern Website Architecture: When to Split Your SPA for SEO

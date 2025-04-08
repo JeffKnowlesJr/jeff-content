@@ -199,13 +199,15 @@ Key files that must maintain padding coordination:
 
 ### Image Standards
 
-- Blog featured images: 1200px wide
+- Blog featured images: 1200px wide (processed to 16:9 ratio automatically)
 - Project images: 1200px wide
 - Logo: 120x40px
-- All images must have WebP format with fallback
-- Required image paths:
-  - Blog: `/images/blog/featured/{filename}.jpg`
-  - Projects: `/images/projects/{filename}.jpg`
+- All images are converted to WebP format with original as fallback
+- Image workflow:
+  - Source images placed in: `/public/content/assets/`
+  - Blog images require "blog" in filename (processed to: `/images/blog/featured/{filename}.webp`)
+  - Project images require "project" in filename (processed to: `/images/projects/{filename}.webp`)
+  - Run `npm run process-images` to convert and optimize
 
 ## Theme System
 

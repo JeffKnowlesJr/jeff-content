@@ -1,12 +1,12 @@
 ---
-title: Optimizing Images for the Modern Web
+title: 'Optimizing Images for Web Applications: A Complete Guide'
 slug: optimizing-images-web
-excerpt: A comprehensive guide to image optimization techniques that improve website performance, enhance user experience, and boost SEO rankings
+excerpt: 'Learn best practices and modern techniques for optimizing images in web applications to maximize performance and user experience.'
 author: 'Jeff & Claude'
-tags: ['Web Performance', 'Images', 'Optimization', 'WebP', 'Lazy Loading']
+tags: ['Web Development', 'Performance', 'Optimization', 'Images', 'WebP']
 readingTime: 8
-featuredImage: 'https://d309xicbd1a46e.cloudfront.net/featured/hector-j-rivas-QNc9tTNHRyI-unsplash.webp'
-status: published
+featuredImage: '/images/blog/featured/typescript-best-practices.jpg'
+status: 'published'
 # SEO metadata
 description: 'Learn effective image optimization strategies that dramatically improve website load times while maintaining visual quality. Practical techniques for developers seeking better performance.'
 keywords:
@@ -28,8 +28,8 @@ twitterCard: 'summary_large_image'
 twitterCreator: '@jeffknowlesjr'
 articleSection: 'Web Development'
 articleAuthor: 'Jeff & Claude'
-datePublished: '2024-03-25'
-dateModified: '2024-03-25'
+datePublished: '2025-04-01'
+dateModified: '2025-04-01'
 ---
 
 # Optimizing Images for the Modern Web

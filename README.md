@@ -154,11 +154,24 @@ For questions or feedback, please open an issue or reach out through the contact
 
 ## Image Processing
 
-Raw images should be placed in the `src/assets` directory. Use the scripts in the `scripts/` directory to process and optimize these images before they are used on the website:
+Raw images should be placed in the `public/content/assets` directory with proper naming:
 
-- `scripts/process-images.js`: Processes and optimizes images from the assets directory
-- `scripts/resize-blog-image.js`: Optimizes a blog image and creates a 16:9 aspect ratio version
-- `scripts/convert-profile-image.js`: Converts HEIC images to JPG format and optimizes them
+- For blog images: Include "blog" in the filename
+- For project images: Include "project" in the filename
+- Logo: Named "JKJR3.png"
+
+Then run the image processing script to optimize the images:
+
+```bash
+npm run process-images
+```
+
+This will:
+
+- Process blog images to `/public/images/blog/featured/` (1200px width, WebP format)
+- Process project images to `/public/images/projects/` (1200px width, WebP format)
+- Process the logo to both PNG and WebP formats
+- Automatically create any necessary directories
 
 Always process images before using them on the website to ensure optimal performance.
 

@@ -1,21 +1,14 @@
 ---
-title: 'Obsidian.md for Developers: Supercharging Your Knowledge Management'
-slug: 'obsidian-for-developers'
-excerpt: 'How I use Obsidian to manage code snippets, project documentation, and personal knowledge as a developer'
+title: 'Obsidian for Developers: Building a Knowledge Management System'
+slug: obsidian-for-developers
+excerpt: A comprehensive guide on how developers can use Obsidian to create an effective knowledge management system for code snippets, documentation, and technical notes.
 author: 'Jeff & Claude'
-tags:
-  [
-    'Obsidian',
-    'Knowledge Management',
-    'Developer Tools',
-    'Productivity',
-    'Markdown'
-  ]
-readingTime: 8
-featuredImage: '/images/blog/featured/lala-azizli-OLvQEjwCSVI-unsplash.webp'
-status: 'PUBLISHED'
-datePublished: '2024-07-01'
-dateModified: '2024-07-01'
+tags: ['Obsidian', 'Knowledge Management', 'Developer Tools', 'Documentation']
+readingTime: 9
+featuredImage: '/images/blog/featured/responsive-design-principles.jpg'
+status: 'published'
+datePublished: '2025-03-30'
+dateModified: '2025-03-30'
 description: 'Discover how Obsidian.md can transform your developer workflow with powerful knowledge management, code snippets, and project documentation all in plain text Markdown.'
 keywords:
   - 'Obsidian.md for developers'

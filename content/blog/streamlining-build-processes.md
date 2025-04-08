@@ -7,8 +7,8 @@ tags: ['AWS', 'Amplify', 'DevOps', 'React', 'CI/CD', 'Prebuild']
 readingTime: 6
 featuredImage: 'https://d309xicbd1a46e.cloudfront.net/featured/lukas-MU8w72PzRow-unsplash.webp'
 status: 'PUBLISHED'
-datePublished: '2023-11-15'
-dateModified: '2023-11-15'
+datePublished: '2025-04-15'
+dateModified: '2025-04-15'
 description: 'Learn how we streamlined build processes using prebuild hooks and static pre-processing for optimal CI/CD workflow'
 keywords:
   [

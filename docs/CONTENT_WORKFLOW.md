@@ -17,13 +17,13 @@ content/
 ### Image Structure
 
 ```
-public/images/
-├── blog/
-│   ├── featured/   # Featured images for blog posts
-│   └── content/    # Images used within blog content
-└── projects/
-    ├── featured/   # Featured images for projects
-    └── content/    # Images used within project content
+public/
+├── content/
+│   └── assets/      # Source images before processing
+└── images/
+    ├── blog/
+    │   └── featured/ # Processed blog featured images
+    └── projects/     # Processed project images
 ```
 
 ## Content Formats
@@ -176,20 +176,31 @@ This will:
 
 ### 2. Adding Images
 
-1. Add featured images to the appropriate directory:
+1. Place your source images in the assets directory:
 
-   - Blog: `/public/images/blog/featured/`
-   - Projects: `/public/images/projects/featured/`
+   - **Source directory**: `/public/content/assets/`
+   - For blog images: Use filenames containing "blog" (e.g., `blog-your-topic.jpg`)
+   - For project images: Use filenames containing "project" (e.g., `project-name.jpg`)
 
-2. Add content images to:
+2. Process the images using the automated script:
 
-   - Blog: `/public/images/blog/content/`
-   - Projects: `/public/images/projects/content/`
-
-3. Optimize images before adding them:
    ```bash
    npm run process-images
    ```
+
+   This will:
+
+   - Process blog images to: `/public/images/blog/featured/`
+   - Process project images to: `/public/images/projects/`
+   - Convert images to WebP format
+   - Optimize images for web (1200px width for blog images)
+   - Create any required directories automatically
+
+3. Reference the processed images in your content's frontmatter:
+   - Blog posts: `featuredImage: "/images/blog/featured/your-image.webp"`
+   - Projects: `featuredImage: "/images/projects/your-image.webp"`
+
+> Note: The image processing script filters images based on filenames. Blog images must contain "blog" in the filename, and project images must contain "project".
 
 ### 3. Preview Content
 
@@ -238,15 +249,23 @@ Use the `projectType` field to categorize projects. Common types include:
 
 ### Image Sizes
 
-- Blog featured images: 1200x675px (16:9 ratio)
-- Project featured images: 1600x900px (16:9 ratio)
-- Project thumbnails: 600x450px (4:3 ratio)
+- Blog featured images: Place in `/public/content/assets/` with "blog" in the filename
+  - Will be processed to 1200px width (height adjusted proportionally)
+- Project images: Place in `/public/content/assets/` with "project" in the filename
+  - Will be processed to 1200px width (height adjusted proportionally)
+
+### Naming Convention
+
+- Use descriptive filenames that include "blog" or "project" as appropriate
+- Examples:
+  - Blog: `blog-nextjs-architecture.jpg`
+  - Project: `project-portfolio-redesign.jpg`
 
 ### Image Formats
 
-- WebP preferred (with JPG/PNG fallbacks)
-- Maximum size: 200KB for featured images, 100KB for content images
-- Use meaningful filenames that reflect the content
+- Original images can be JPG, PNG, etc.
+- The processing script will convert to WebP format automatically
+- Reference the WebP version in your content (e.g., `/images/blog/featured/blog-nextjs-architecture.webp`)
 
 ## Content Migration
 

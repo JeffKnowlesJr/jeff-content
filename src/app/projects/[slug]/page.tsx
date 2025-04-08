@@ -133,20 +133,6 @@ export default async function ProjectDetailPage({ params }: PageProps) {
         </Link>
 
         <article className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
-          {project.featuredImage && (
-            <div className="w-full aspect-video relative">
-              <img
-                src={
-                  project.featuredImage ||
-                  project.contentImage ||
-                  project.thumbnailImage
-                }
-                alt={project.title}
-                className="object-cover w-full h-full"
-              />
-            </div>
-          )}
-
           <div className="p-8">
             <header className="mb-8">
               <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
@@ -164,6 +150,20 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                     </span>
                   ))}
               </div>
+
+              {project.featuredImage && (
+                <div className="w-full aspect-video relative mb-6 rounded-lg overflow-hidden shadow-md">
+                  <img
+                    src={
+                      project.featuredImage ||
+                      project.contentImage ||
+                      project.thumbnailImage
+                    }
+                    alt={project.title}
+                    className="object-cover w-full h-full"
+                  />
+                </div>
+              )}
 
               <div className="flex flex-wrap gap-4 mt-6">
                 {project.liveUrl && (
@@ -193,36 +193,49 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                 remarkPlugins={[remarkGfm]}
                 components={{
                   code: codeBlock,
-                  a: ({ href, children }) => (
+                  a: ({ node, href, children, ...props }: any) => (
                     <a
                       href={href}
                       className="text-primary dark:text-primary-light hover:underline"
                       target="_blank"
                       rel="noopener noreferrer"
+                      {...props}
                     >
                       {children}
                     </a>
                   ),
-                  h2: ({ children }) => (
-                    <h2 className="text-2xl font-bold mt-8 mb-4 border-b border-gray-200 dark:border-gray-700 pb-2">
+                  h2: ({ node, children, ...props }: any) => (
+                    <h2
+                      className="text-2xl font-bold mt-8 mb-4 border-b border-gray-200 dark:border-gray-700 pb-2"
+                      {...props}
+                    >
                       {children}
                     </h2>
                   ),
-                  h3: ({ children }) => (
-                    <h3 className="text-xl font-bold mt-6 mb-3">{children}</h3>
+                  h3: ({ node, children, ...props }: any) => (
+                    <h3 className="text-xl font-bold mt-6 mb-3" {...props}>
+                      {children}
+                    </h3>
                   ),
-                  ul: ({ children }) => (
-                    <ul className="list-disc pl-6 my-4">{children}</ul>
+                  ul: ({ node, children, ...props }: any) => (
+                    <ul className="list-disc pl-6 my-4" {...props}>
+                      {children}
+                    </ul>
                   ),
-                  ol: ({ children }) => (
-                    <ol className="list-decimal pl-6 my-4">{children}</ol>
+                  ol: ({ node, children, ...props }: any) => (
+                    <ol className="list-decimal pl-6 my-4" {...props}>
+                      {children}
+                    </ol>
                   ),
-                  blockquote: ({ children }) => (
-                    <blockquote className="border-l-4 border-primary pl-4 italic my-4">
+                  blockquote: ({ node, children, ...props }: any) => (
+                    <blockquote
+                      className="border-l-4 border-primary pl-4 italic my-4"
+                      {...props}
+                    >
                       {children}
                     </blockquote>
                   ),
-                  img: ({ src, alt }) => (
+                  img: ({ src, alt }: any) => (
                     <img
                       src={src}
                       alt={alt}

@@ -30,8 +30,8 @@ export async function generateMetadata({
   return generateBlogPostMetadata(post)
 }
 
-// Blog post page component
-export default async function BlogPostPage({ params }: PageProps) {
+// Blog post page component with image as background
+export default async function BlogPostPageBackground({ params }: PageProps) {
   // Get blog post from the slug
   const post = await getContentBySlug<BlogPost>('blog', params.slug)
 
@@ -92,42 +92,55 @@ export default async function BlogPostPage({ params }: PageProps) {
         </Link>
 
         <article className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
-          <div className="p-8">
-            <header className="mb-8">
+          {/* Hero section with image as background for title and date */}
+          {post.featuredImage ? (
+            <div className="relative">
+              <div
+                className="w-full aspect-video bg-cover bg-center"
+                style={{
+                  backgroundImage: `url(${post.featuredImage || post.image})`
+                }}
+              >
+                <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+                <div className="relative z-10 p-8 md:p-12 flex flex-col items-center justify-center h-full text-center">
+                  <h1 className="text-4xl font-bold text-white mb-4 drop-shadow-lg">
+                    {post.title}
+                  </h1>
+                  <div className="flex flex-wrap items-center justify-center gap-4 text-white text-sm">
+                    <div className="flex items-center">
+                      <span className="font-medium">{post.author}</span>
+                    </div>
+                    <span>•</span>
+                    <div className="flex items-center">
+                      <time dateTime={post.datePublished}>
+                        {new Date(post.datePublished).toLocaleDateString(
+                          'en-US',
+                          {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                          }
+                        )}
+                      </time>
+                    </div>
+                    <span>•</span>
+                    <div className="flex items-center">
+                      <span>{post.readingTime}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="p-8">
               <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
                 {post.title}
               </h1>
               <div className="flex flex-wrap items-center gap-4 text-gray-600 dark:text-gray-300 mb-6">
                 <div className="flex items-center">
-                  <svg
-                    className="w-5 h-5 mr-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                    />
-                  </svg>
                   <span>{post.author}</span>
                 </div>
                 <div className="flex items-center">
-                  <svg
-                    className="w-5 h-5 mr-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                    />
-                  </svg>
                   <time dateTime={post.datePublished}>
                     {new Date(post.datePublished).toLocaleDateString('en-US', {
                       year: 'numeric',
@@ -137,24 +150,15 @@ export default async function BlogPostPage({ params }: PageProps) {
                   </time>
                 </div>
                 <div className="flex items-center">
-                  <svg
-                    className="w-5 h-5 mr-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
                   <span>{post.readingTime}</span>
                 </div>
               </div>
+            </div>
+          )}
 
-              <div className="flex flex-wrap gap-2 mt-4 mb-6">
+          <div className="p-8">
+            <header className="mb-8">
+              <div className="flex flex-wrap gap-2 mb-6">
                 {post.tags.map((tag: string) => (
                   <span
                     key={tag}
@@ -164,16 +168,6 @@ export default async function BlogPostPage({ params }: PageProps) {
                   </span>
                 ))}
               </div>
-
-              {post.featuredImage && (
-                <div className="w-full aspect-video relative mb-6 rounded-lg overflow-hidden shadow-md">
-                  <img
-                    src={post.featuredImage || post.image}
-                    alt={post.title}
-                    className="object-cover w-full h-full"
-                  />
-                </div>
-              )}
             </header>
 
             <div className="prose dark:prose-invert max-w-none">
