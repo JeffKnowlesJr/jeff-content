@@ -55,7 +55,7 @@ export function ContactForm() {
           value={formData.name}
           onChange={handleChange}
           required
-          className='form-input w-full'
+          className='form-input w-full text-gray-900 dark:text-white'
           placeholder='Your name'
         />
       </div>
@@ -74,7 +74,7 @@ export function ContactForm() {
           value={formData.email}
           onChange={handleChange}
           required
-          className='form-input w-full'
+          className='form-input w-full text-gray-900 dark:text-white'
           placeholder='your.email@example.com'
         />
       </div>
@@ -116,7 +116,7 @@ export function ContactForm() {
           onChange={handleChange}
           required
           rows={4}
-          className='form-textarea w-full'
+          className='form-textarea w-full text-gray-900 dark:text-white'
           placeholder='Your message...'
         />
       </div>

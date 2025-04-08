@@ -3,7 +3,6 @@ import { join } from 'path'
 import matter from 'gray-matter'
 import { remark } from 'remark'
 import html from 'remark-html'
-import prism from 'remark-prism'
 
 export interface BlogPost {
   id: string
@@ -28,10 +27,7 @@ export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
     const fileContents = await readFile(fullPath, 'utf8')
     const { data, content } = matter(fileContents)
 
-    const processedContent = await remark()
-      .use(html)
-      .use(prism)
-      .process(content)
+    const processedContent = await remark().use(html).process(content)
     const contentHtml = processedContent.toString()
 
     return {

@@ -3,7 +3,7 @@ import Link from 'next/link'
 export default function ProjectNotFound() {
   return (
     <main className='min-h-screen bg-white dark:bg-gray-900 py-12'>
-      <div className='max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center'>
+      <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center'>
         <h1 className='text-4xl font-bold text-gray-900 dark:text-white mb-4'>
           Project Not Found
         </h1>

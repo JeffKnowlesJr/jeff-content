@@ -4,9 +4,11 @@ import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import Script from 'next/script'
 import { Project, getContentBySlug } from '@/utils/content-loader'
+import { generateProjectSchema } from '@/utils/schema'
+import { generateProjectMetadata } from '@/utils/metadata'
 import ExternalLink from '@/components/projects/ExternalLink'
-import MarkdownLink from '@/components/markdown/MarkdownLink'
 
 interface PageProps {
   params: { slug: string }
@@ -26,28 +28,7 @@ export async function generateMetadata({
     }
   }
 
-  return {
-    title: `${project.title} | Jeff Knowles Jr`,
-    description: project.excerpt,
-    openGraph: {
-      title: project.title,
-      description: project.excerpt,
-      type: 'article',
-      images: [project.featuredImage],
-      tags: project.tags
-    },
-    robots: {
-      index: true,
-      follow: true,
-      googleBot: {
-        index: true,
-        follow: true,
-        'max-video-preview': -1,
-        'max-image-preview': 'large',
-        'max-snippet': -1
-      }
-    }
-  }
+  return generateProjectMetadata(project)
 }
 
 // Project detail page component
@@ -59,6 +40,12 @@ export default async function ProjectDetailPage({ params }: PageProps) {
   if (!project) {
     notFound()
   }
+
+  // Generate structured data for JSON-LD
+  const baseUrl =
+    process.env.NEXT_PUBLIC_SITE_URL || 'https://jeffknowlesjr.com'
+  const canonicalUrl = `${baseUrl}/projects/${params.slug}`
+  const jsonLd = generateProjectSchema(project, canonicalUrl)
 
   // GitHub icon SVG
   const GitHubIcon = (
@@ -207,7 +194,14 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                 components={{
                   code: codeBlock,
                   a: ({ href, children }) => (
-                    <MarkdownLink href={href}>{children}</MarkdownLink>
+                    <a
+                      href={href}
+                      className="text-primary dark:text-primary-light hover:underline"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {children}
+                    </a>
                   ),
                   h2: ({ children }) => (
                     <h2 className="text-2xl font-bold mt-8 mb-4 border-b border-gray-200 dark:border-gray-700 pb-2">

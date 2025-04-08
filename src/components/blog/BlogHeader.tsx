@@ -21,7 +21,7 @@ export default function BlogHeader() {
       </h1>
       <p className='text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto'>
         Technical articles and insights about web development, cloud
-        architecture, and software engineering.
+        architecture, and analytics engineering.
       </p>
 
       <form onSubmit={handleSearch} className='max-w-md mx-auto'>

@@ -4,14 +4,20 @@ import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import Script from 'next/script'
 import { BlogPost, getContentBySlug } from '@/utils/content-loader'
+import { generateBlogPostSchema } from '@/utils/schema'
+import { generateBlogPostMetadata } from '@/utils/metadata'
+
+interface PageProps {
+  params: { slug: string }
+  searchParams: Record<string, string | string[] | undefined>
+}
 
 // Generate metadata for the blog post
 export async function generateMetadata({
   params
-}: {
-  params: { slug: string }
-}): Promise<Metadata> {
+}: PageProps): Promise<Metadata> {
   const post = await getContentBySlug<BlogPost>('blog', params.slug)
 
   if (!post) {
@@ -31,27 +37,12 @@ export async function generateMetadata({
       publishedTime: post.datePublished,
       authors: [post.author],
       tags: post.tags
-    },
-    robots: {
-      index: true,
-      follow: true,
-      googleBot: {
-        index: true,
-        follow: true,
-        'max-video-preview': -1,
-        'max-image-preview': 'large',
-        'max-snippet': -1
-      }
     }
   }
 }
 
 // Blog post page component
-export default async function BlogPostPage({
-  params
-}: {
-  params: { slug: string }
-}) {
+export default async function BlogPostPage({ params }: PageProps) {
   // Get blog post from the slug
   const post = await getContentBySlug<BlogPost>('blog', params.slug)
 

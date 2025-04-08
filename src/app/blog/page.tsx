@@ -1,34 +1,37 @@
 import { Metadata } from 'next'
 import { BlogPost, getContentList } from '@/utils/content-loader'
 import BlogCard from '@/components/blog/BlogCard'
+import { generateBlogIndexMetadata } from '@/utils/metadata'
 
-export const metadata: Metadata = {
-  title: 'Blog | Jeff Knowles Jr',
-  description:
-    'Thoughts and insights on web development, cloud architecture, and technical consulting.',
-  openGraph: {
-    title: 'Blog | Jeff Knowles Jr',
-    description:
-      'Thoughts and insights on web development, cloud architecture, and technical consulting.',
-    type: 'website'
-  }
-}
+// Generate metadata
+export const metadata: Metadata = generateBlogIndexMetadata()
 
 // Get blog posts from our content loader
 async function getBlogPosts(): Promise<BlogPost[]> {
   try {
-    // Try to load posts from the content directory
+    // Load posts from the content directory
     const posts = await getContentList<BlogPost>('blog')
 
     // If we have content, return it
     if (posts && posts.length > 0) {
-      return posts
+      // Sort posts by publication date (most recent first)
+      return posts.sort((a, b) => {
+        const dateA = new Date(a.datePublished || a.publishDate || '')
+        const dateB = new Date(b.datePublished || b.publishDate || '')
+        return dateB.getTime() - dateA.getTime()
+      })
     }
+
+    console.log('No blog posts found in content directory, using fallback data')
+    return getFallbackPosts()
   } catch (error) {
     console.error('Error loading blog posts from content:', error)
+    return getFallbackPosts()
   }
+}
 
-  // Fallback to hardcoded posts
+// Fallback posts in case content directory doesn't work
+function getFallbackPosts(): BlogPost[] {
   return [
     {
       id: 'directorybased-domain-splitting',
@@ -197,12 +200,16 @@ export default async function BlogPage() {
         {posts.map((post) => (
           <BlogCard
             key={post.slug}
-            id={post.id}
+            id={post.slug}
             title={post.title}
             excerpt={post.excerpt}
-            image={post.image || post.featuredImage}
+            image={
+              post.featuredImage ||
+              post.image ||
+              '/images/blog/default-post.jpg'
+            }
             author={post.author}
-            publishDate={post.publishDate || post.datePublished}
+            publishDate={post.datePublished || post.publishDate || ''}
             readingTime={post.readingTime}
             tags={post.tags}
             slug={post.slug}

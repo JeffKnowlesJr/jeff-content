@@ -30,8 +30,9 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Inter var', ...defaultTheme.fontFamily.sans],
-        serif: ['Merriweather', ...defaultTheme.fontFamily.serif]
+        sans: ['Inter', ...defaultTheme.fontFamily.sans],
+        serif: ['Merriweather', ...defaultTheme.fontFamily.serif],
+        inter: ['Inter', 'sans-serif']
       },
       colors: {
         primary: {
@@ -65,6 +66,17 @@ export default {
           700: '#374151',
           800: '#1f2937',
           900: '#111827'
+        },
+        'code-blue': '#0a1c2e',
+        syntax: {
+          base: '#e9e9e9',
+          comment: '#6c8bb9',
+          punctuation: '#7ec2ff',
+          property: '#ff7ea6',
+          string: '#25c52e',
+          operator: '#67cdff',
+          keyword: '#e6ac00',
+          function: '#f182fa'
         }
       },
       padding: {
