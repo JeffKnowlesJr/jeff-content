@@ -106,13 +106,22 @@ export async function getContentBySlug<T>(
   const contentDir = path.join(process.cwd(), 'content', type)
   const filePath = path.join(contentDir, `${slug}.md`)
 
+  console.log('Content loader - Looking for file:', filePath)
+  console.log('Content loader - Does file exist?', fs.existsSync(filePath))
+
   try {
     if (!fs.existsSync(filePath)) {
+      console.log('Content loader - File not found:', filePath)
       return null
     }
 
     const fileContents = fs.readFileSync(filePath, 'utf8')
     const { data, content } = matter(fileContents)
+
+    console.log(
+      'Content loader - File found and parsed, frontmatter:',
+      Object.keys(data).join(', ')
+    )
 
     // For blog posts, ensure consistency between datePublished and publishDate
     if (type === 'blog') {
@@ -136,6 +145,10 @@ export async function getContentBySlug<T>(
     } as T
   } catch (error) {
     console.error(`Error reading content: ${error}`)
+    console.log(
+      'Content loader - Error details:',
+      error instanceof Error ? error.message : String(error)
+    )
     return null
   }
 }

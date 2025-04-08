@@ -51,17 +51,6 @@ const nextConfig = {
         destination: '/blog/modern-website-architecture-seo-optimization',
         permanent: true
       },
-      // Fix project redirects
-      {
-        source: '/projects/project-zero-documentation',
-        destination: '/projects',
-        permanent: true
-      },
-      {
-        source: '/projects/project-omega-documentation',
-        destination: '/projects',
-        permanent: true
-      },
       // Redirect all tag and category pages to main blog
       {
         source: '/blog/tag/:tag',
@@ -81,6 +70,17 @@ const nextConfig = {
       {
         source: '/blog/categories',
         destination: '/blog',
+        permanent: true
+      },
+      // Fix for truncated project slugs
+      {
+        source: '/projects/project-zero',
+        destination: '/projects/project-zero-documentation',
+        permanent: true
+      },
+      {
+        source: '/projects/project-omega',
+        destination: '/projects/project-omega-documentation',
         permanent: true
       }
     ]

@@ -27,16 +27,23 @@ async function getProjects(): Promise<UIProject[]> {
 
     // If we have content, return it with proper formatting
     if (projects && projects.length > 0) {
-      return projects.map((project) => ({
-        id: project.id || project.slug,
-        title: project.title,
-        description: project.excerpt,
-        image: project.thumbnailImage || project.featuredImage,
-        technologies: project.techStack || [],
-        link: project.liveUrl,
-        github: project.githubUrl,
-        slug: project.slug
-      }))
+      return projects.map((project) => {
+        // Ensure slug is formatted correctly
+        const slug =
+          project.slug ||
+          `project-${project.id.toLowerCase().replace(/[^a-z0-9-]/g, '-')}`
+
+        return {
+          id: project.id || project.slug,
+          title: project.title,
+          description: project.excerpt,
+          image: project.thumbnailImage || project.featuredImage,
+          technologies: project.techStack || [],
+          link: project.liveUrl,
+          github: project.githubUrl,
+          slug: slug
+        }
+      })
     }
   } catch (error) {
     console.error('Error loading projects from content:', error)
@@ -45,7 +52,7 @@ async function getProjects(): Promise<UIProject[]> {
   // Fallback to hardcoded projects
   return [
     {
-      id: 'project-zero',
+      id: 'project-zero-documentation',
       title: 'Project Zero: Full-Stack Portfolio',
       description:
         'A modern full-stack portfolio website built with React, TypeScript, AWS, and Terraform. Features detailed architecture, security considerations, and best practices.',
@@ -63,7 +70,7 @@ async function getProjects(): Promise<UIProject[]> {
       slug: 'project-zero-documentation'
     },
     {
-      id: 'project-omega',
+      id: 'project-omega-documentation',
       title: 'Project Omega: Multi-Site Architecture',
       description:
         'A comprehensive case study on implementing a hybrid architecture that combines Next.js SSR for SEO-critical content with a React SPA for interactive functionalities.',
@@ -82,7 +89,7 @@ async function getProjects(): Promise<UIProject[]> {
       ],
       link: 'https://www.projectomega.dev',
       github: 'https://github.com/yourusername/project-omega',
-      slug: 'project-omega'
+      slug: 'project-omega-documentation'
     }
   ]
 }
@@ -92,16 +99,17 @@ export default async function ProjectsPage() {
 
   return (
     <ProjectsLayout>
-      <div className="w-full">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">
+      <div className='w-full'>
+        <h1 className='text-3xl font-bold text-gray-900 dark:text-white mb-8'>
           Projects
         </h1>
-        <p className="text-gray-600 dark:text-gray-300 mb-8 max-w-4xl">
+        <p className='text-gray-600 dark:text-gray-300 mb-8 max-w-4xl'>
           Here are some of the projects I&apos;ve worked on. Each project
           represents a unique challenge and solution in web development, cloud
           architecture, and technical implementation.
         </p>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+        <div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
           {projects.map((project) => (
             <ProjectCard
               key={project.id}

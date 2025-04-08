@@ -1,9 +1,11 @@
+'use client'
+
 import React, { useEffect } from 'react'
 import { useTheme } from '../../contexts/ThemeContext'
 import { useQuery } from '@tanstack/react-query'
 import { blogService } from '../../services/blogService'
 import { BlogPost } from '../../types/blog'
-import { Link } from 'react-router-dom'
+import Link from 'next/link'
 
 interface BlogSidebarProps {
   onLinkClick?: () => void
@@ -41,13 +43,13 @@ const BlogSidebar: React.FC<BlogSidebarProps> = ({ onLinkClick }) => {
 
   if (isLoading) {
     return (
-      <div className="animate-pulse">
-        <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-4"></div>
-        <div className="space-y-2">
+      <div className='animate-pulse'>
+        <div className='h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-4'></div>
+        <div className='space-y-2'>
           {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className="h-8 bg-gray-200 dark:bg-gray-700 rounded"
+              className='h-8 bg-gray-200 dark:bg-gray-700 rounded'
             ></div>
           ))}
         </div>
@@ -63,7 +65,7 @@ const BlogSidebar: React.FC<BlogSidebarProps> = ({ onLinkClick }) => {
         >
           Blog Posts
         </h3>
-        <div className="text-sm text-red-500 dark:text-red-400">
+        <div className='text-sm text-red-500 dark:text-red-400'>
           Error:{' '}
           {error instanceof Error ? error.message : 'Failed to load posts'}
         </div>
@@ -86,7 +88,7 @@ const BlogSidebar: React.FC<BlogSidebarProps> = ({ onLinkClick }) => {
         >
           Blog Posts
         </h3>
-        <div className="text-sm text-gray-500 dark:text-gray-400">
+        <div className='text-sm text-gray-500 dark:text-gray-400'>
           No blog posts found
         </div>
       </div>
@@ -94,17 +96,17 @@ const BlogSidebar: React.FC<BlogSidebarProps> = ({ onLinkClick }) => {
   }
 
   return (
-    <div className="transition-colors duration-300">
+    <div className='transition-colors duration-300'>
       <h3
         className={`text-lg font-bold ${textColor} mb-4 tracking-tight transition-colors duration-300`}
       >
         Blog Posts
       </h3>
-      <div className="space-y-2">
+      <div className='space-y-2'>
         {posts.map((post) => (
           <Link
             key={post.slug}
-            to={`/blog/${post.slug}`}
+            href={`/blog/${post.slug}`}
             onClick={onLinkClick}
             className={`block text-sm ${textColorDimmer} hover:text-[#52babb] transition-colors min-h-[32px] flex items-center group`}
           >
@@ -113,7 +115,7 @@ const BlogSidebar: React.FC<BlogSidebarProps> = ({ onLinkClick }) => {
                 post.tags
               )} mr-2 group-hover:text-[#52babb] transition-colors`}
             ></i>
-            <span className="font-medium">{post.title}</span>
+            <span className='font-medium'>{post.title}</span>
           </Link>
         ))}
       </div>

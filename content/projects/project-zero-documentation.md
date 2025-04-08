@@ -12,8 +12,6 @@ featuredImage: '/images/projects/project-project-zero-cover.webp'
 thumbnailImage: '/images/projects/project-project-zero-cover.webp'
 techStack:
   ['Documentation', 'Technical Writing', 'User Guides', 'API Reference']
-
-# SEO metadata
 description: 'In-depth technical documentation covering the architecture, implementation, and maintenance of a modern full-stack portfolio website using React, AWS, and Terraform.'
 keywords:
   - 'portfolio documentation'
@@ -264,19 +262,19 @@ The application uses React Router with the following main routes:
 
 ```typescript
 <Routes>
-  <Route path="/" element={<HomePage />} />
-  <Route path="/about" element={<AboutPage />} />
-  <Route path="/projects" element={<Projects />} />
-  <Route path="/portfolio" element={<Portfolio />} />
-  <Route path="/services" element={<Services />} />
-  <Route path="/services/overview" element={<ServiceOverview />} />
-  <Route path="/services/development" element={<DevelopmentServices />} />
-  <Route path="/services/design" element={<DesignServices />} />
-  <Route path="/services/cloud" element={<CloudServices />} />
-  <Route path="/blog" element={<Blog />} />
-  <Route path="/blog/:slug" element={<BlogPost />} />
-  <Route path="/resources" element={<Resources />} />
-  <Route path="/contact" element={<Contact />} />
+  <Route path='/' element={<HomePage />} />
+  <Route path='/about' element={<AboutPage />} />
+  <Route path='/projects' element={<Projects />} />
+  <Route path='/portfolio' element={<Portfolio />} />
+  <Route path='/services' element={<Services />} />
+  <Route path='/services/overview' element={<ServiceOverview />} />
+  <Route path='/services/development' element={<DevelopmentServices />} />
+  <Route path='/services/design' element={<DesignServices />} />
+  <Route path='/services/cloud' element={<CloudServices />} />
+  <Route path='/blog' element={<Blog />} />
+  <Route path='/blog/:slug' element={<BlogPost />} />
+  <Route path='/resources' element={<Resources />} />
+  <Route path='/contact' element={<Contact />} />
 </Routes>
 ```
 
@@ -968,9 +966,9 @@ const Blog = React.lazy(() => import('./pages/Blog'))
 
 // In router
 ;<Routes>
-  <Route path="/" element={<HomePage />} />
+  <Route path='/' element={<HomePage />} />
   <Route
-    path="/about"
+    path='/about'
     element={
       <Suspense fallback={<Loading />}>
         <About />
@@ -1009,9 +1007,9 @@ const ThreeJSScene = React.lazy(() => import('./components/ThreeJSScene'))
     /images/blog/optimized/${imageName}-800.webp 800w,
     /images/blog/optimized/${imageName}-1200.webp 1200w
   `}
-  sizes="(max-width: 600px) 400px, (max-width: 1200px) 800px, 1200px"
+  sizes='(max-width: 600px) 400px, (max-width: 1200px) 800px, 1200px'
   alt={altText}
-  loading="lazy"
+  loading='lazy'
 />
 ```
 
@@ -1167,7 +1165,7 @@ import Card from './Card'
 
 describe('Card Component', () => {
   it('renders with title and content', () => {
-    render(<Card title="Test Card" content="Test Content" />)
+    render(<Card title='Test Card' content='Test Content' />)
 
     expect(screen.getByText('Test Card')).toBeInTheDocument()
     expect(screen.getByText('Test Content')).toBeInTheDocument()
@@ -1176,7 +1174,7 @@ describe('Card Component', () => {
   it('handles click events', () => {
     const handleClick = vi.fn()
     render(
-      <Card title="Clickable Card" content="Click me" onClick={handleClick} />
+      <Card title='Clickable Card' content='Click me' onClick={handleClick} />
     )
 
     fireEvent.click(screen.getByText('Clickable Card'))
@@ -1185,12 +1183,12 @@ describe('Card Component', () => {
 
   it('renders in different states', () => {
     const { rerender } = render(
-      <Card title="State Card" content="Content" state="normal" />
+      <Card title='State Card' content='Content' state='normal' />
     )
 
     expect(screen.getByText('State Card')).toHaveClass('card-normal')
 
-    rerender(<Card title="State Card" content="Content" state="expanded" />)
+    rerender(<Card title='State Card' content='Content' state='expanded' />)
 
     expect(screen.getByText('State Card')).toHaveClass('card-expanded')
   })
@@ -1406,7 +1404,7 @@ const ContactForm: React.FC = () => {
         sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
         onChange={handleRecaptchaChange}
       />
-      <button type="submit" disabled={!recaptchaToken}>
+      <button type='submit' disabled={!recaptchaToken}>
         Submit
       </button>
     </form>
@@ -1698,7 +1696,7 @@ class ErrorBoundary extends Component<Props, State> {
     if (this.state.hasError) {
       return (
         this.props.fallback || (
-          <div className="error-container">
+          <div className='error-container'>
             <h2>Something went wrong</h2>
             <p>We're sorry, but an error occurred while rendering this page.</p>
             <button onClick={() => this.setState({ hasError: false })}>
@@ -2192,7 +2190,7 @@ const Component: React.FC<ComponentProps> = ({ title, onClick }) => {
   // Component logic
 
   return (
-    <div className="component" onClick={onClick}>
+    <div className='component' onClick={onClick}>
       <h2>{title}</h2>
     </div>
   )
@@ -2333,7 +2331,7 @@ const Row: React.FC<{
   const item = items[index]
 
   return (
-    <div style={style} onClick={() => onItemClick(item)} className="list-item">
+    <div style={style} onClick={() => onItemClick(item)} className='list-item'>
       {item}
     </div>
   )
@@ -2348,7 +2346,7 @@ const VirtualizedList: React.FC<{
   return (
     <List
       height={400}
-      width="100%"
+      width='100%'
       itemCount={items.length}
       itemSize={50}
       itemData={itemData}

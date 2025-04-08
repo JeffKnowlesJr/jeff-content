@@ -1,6 +1,9 @@
 import React from 'react'
 import Link from 'next/link'
 import { Metadata } from 'next'
+import fs from 'fs'
+import path from 'path'
+import matter from 'gray-matter'
 
 export const metadata: Metadata = {
   title: 'Development Log | Jeff Knowles Jr',
@@ -22,11 +25,13 @@ interface DevLogEntry {
   summary: string
   tags: string[]
   slug: string
+  status?: string
 }
 
-// This function will be replaced with actual data fetching
+// This function will load dev logs from both the file system and hardcoded entries
 async function getDevLogEntries(): Promise<DevLogEntry[]> {
-  return [
+  // Original hardcoded entries to ensure we don't lose anything
+  const hardcodedEntries: DevLogEntry[] = [
     {
       id: 'seo-metadata-implementation',
       title:
@@ -42,7 +47,8 @@ async function getDevLogEntries(): Promise<DevLogEntry[]> {
         'Metadata API',
         'Structured Data'
       ],
-      slug: 'seo-metadata-implementation'
+      slug: 'seo-metadata-implementation',
+      status: 'published'
     },
     {
       id: 'responsive-ui-gradient-redesign',
@@ -57,7 +63,8 @@ async function getDevLogEntries(): Promise<DevLogEntry[]> {
         'Tailwind',
         'Mobile Optimization'
       ],
-      slug: 'responsive-ui-gradient-redesign'
+      slug: 'responsive-ui-gradient-redesign',
+      status: 'published'
     },
     {
       id: 'seo-implementation',
@@ -66,9 +73,68 @@ async function getDevLogEntries(): Promise<DevLogEntry[]> {
       summary:
         'A comprehensive overview of implementing SEO best practices, including metadata, structured data, and performance optimizations for the JKJR Portfolio & Blog.',
       tags: ['SEO', 'Next.js', 'Performance', 'Structured Data'],
-      slug: 'initial-seo-implementation'
+      slug: 'initial-seo-implementation',
+      status: 'published'
     }
   ]
+
+  try {
+    // Dynamic entries from file system
+    const devLogDir = path.join(process.cwd(), 'content', 'dev-log')
+
+    // Check if directory exists
+    if (!fs.existsSync(devLogDir)) {
+      console.warn(`Dev log directory not found: ${devLogDir}`)
+      return hardcodedEntries // Fall back to hardcoded entries
+    }
+
+    const files = fs.readdirSync(devLogDir)
+    const markdownFiles = files.filter((file) => file.endsWith('.md'))
+
+    // Map files to entries
+    const fileEntries = markdownFiles
+      .map((fileName) => {
+        const filePath = path.join(devLogDir, fileName)
+        const fileContents = fs.readFileSync(filePath, 'utf8')
+        const { data } = matter(fileContents)
+        const slug = fileName.replace('.md', '')
+
+        // Check if we already have this entry in hardcoded list
+        const existingEntry = hardcodedEntries.find(
+          (entry) => entry.slug === (data.slug || slug) || entry.id === slug
+        )
+
+        // If it exists in hardcoded entries, skip it
+        if (existingEntry) {
+          return null
+        }
+
+        return {
+          id: slug,
+          title: data.title || 'Untitled Entry',
+          date: data.datePublished || new Date().toISOString().split('T')[0],
+          summary: data.excerpt || '',
+          tags: data.tags || [],
+          slug: data.slug || slug,
+          status: data.status || 'draft'
+        } as DevLogEntry
+      })
+      .filter(Boolean) as DevLogEntry[] // Remove nulls
+
+    // Combine hardcoded and file entries
+    const allEntries = [...hardcodedEntries, ...fileEntries]
+
+    // Filter published entries and sort by date
+    return allEntries
+      .filter((entry) => entry.status === 'published')
+      .sort((a, b) => {
+        // Sort by date, newest first
+        return new Date(b.date).getTime() - new Date(a.date).getTime()
+      })
+  } catch (error) {
+    console.error(`Error reading dev log entries: ${error}`)
+    return hardcodedEntries // Fall back to hardcoded entries on error
+  }
 }
 
 export default async function DevLogPage() {

@@ -14,24 +14,25 @@ export interface ProjectLink {
 export interface Project {
   id: string
   title: string
-  description: string
-  coverImage: string
-  technologies: Technology[]
-  links: ProjectLink[]
-  featured: boolean
-  publishDate: string
-  content: string
-  gallery?: string[]
-  stats?: {
-    stars?: number
-    forks?: number
-    downloads?: number
-  }
-  meta: {
-    title: string
-    description: string
-    keywords: string[]
-  }
+  slug: string
+  excerpt?: string
+  content?: string
+  author: string
+  status: string
+  datePublished?: string
+  dateModified?: string
+  tags?: string[]
+  readingTime?: number | string
+  featuredImage?: string
+  thumbnailImage?: string
+  contentImage?: string
+  projectType: string
+  projectStatus?: string
+  githubUrl?: string
+  liveUrl?: string
+  techStack?: string[]
+  featured?: boolean
+  publishedAt?: string
 }
 
 export interface ProjectCategory {

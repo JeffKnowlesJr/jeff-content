@@ -1,5 +1,7 @@
+'use client'
+
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTheme } from '../../contexts/ThemeContext'
 import { FaBars, FaTimes, FaSun, FaMoon } from 'react-icons/fa'
@@ -28,7 +30,7 @@ const Navbar: React.FC = () => {
         <div className='flex justify-between h-16'>
           <div className='flex'>
             <div className='flex-shrink-0 flex items-center'>
-              <Link to='/' className={`text-2xl font-bold ${logoColors}`}>
+              <Link href='/' className={`text-2xl font-bold ${logoColors}`}>
                 Jeff Knowles
               </Link>
             </div>
@@ -36,7 +38,7 @@ const Navbar: React.FC = () => {
               {menuItems.map((item) => (
                 <Link
                   key={item.path}
-                  to={item.path}
+                  href={item.path}
                   className='text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium'
                 >
                   {item.label}
@@ -75,7 +77,7 @@ const Navbar: React.FC = () => {
               {menuItems.map((item) => (
                 <Link
                   key={item.path}
-                  to={item.path}
+                  href={item.path}
                   className='text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white block px-3 py-2 rounded-md text-base font-medium'
                   onClick={() => setIsOpen(false)}
                 >

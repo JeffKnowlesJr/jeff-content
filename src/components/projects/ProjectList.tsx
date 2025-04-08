@@ -1,5 +1,7 @@
+'use client'
+
 import React from 'react'
-import { Link } from 'react-router-dom'
+import Link from 'next/link'
 import { SimpleCard } from '../../components/common/SimpleCard'
 import { Project } from '../../types/project'
 import { normalizeImagePath } from '../../utils/imageUtils'
@@ -37,7 +39,7 @@ export const ProjectList: React.FC<ProjectListProps> = ({ projects }) => {
         return (
           <Link
             key={project.slug}
-            to={`/projects/${project.slug}`}
+            href={`/projects/${project.slug}`}
             className='h-full'
           >
             <div className='h-full transition-transform hover:-translate-y-1 duration-200'>

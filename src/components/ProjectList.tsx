@@ -1,4 +1,6 @@
-import { Link } from 'react-router-dom'
+'use client'
+
+import Link from 'next/link'
 import { useTheme } from '../contexts/ThemeContext'
 import { useReset } from '../contexts/ResetContext'
 
@@ -37,7 +39,7 @@ export function ProjectList({ projects }: ProjectListProps) {
           {activeProjects.map((project) => (
             <li key={project.id}>
               <Link
-                to={`/projects/${project.slug}`}
+                href={`/projects/${project.slug}`}
                 onClick={resetApp}
                 className={`block p-2 rounded hover:bg-opacity-10 ${
                   theme === 'dark' ? 'hover:bg-white' : 'hover:bg-black'

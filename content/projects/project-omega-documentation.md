@@ -10,6 +10,11 @@ status: 'published'
 featured: true
 featuredImage: '/images/projects/project-project-omega-cover.webp'
 thumbnailImage: '/images/projects/project-project-omega-cover.webp'
+contentImage: '/images/projects/project-project-omega-cover.webp'
+projectType: 'Full-Stack Web Application'
+projectStatus: 'Completed'
+githubUrl: 'https://github.com/yourusername/project-omega'
+liveUrl: 'https://www.projectomega.dev'
 techStack:
   ['Documentation', 'Technical Writing', 'API Reference', 'Integration Guides']
 ---
@@ -355,7 +360,7 @@ export const MainNav = ({ items }) => {
   const isSPA = window.location.hostname.startsWith('app.')
 
   return (
-    <nav className="flex items-center space-x-4 lg:space-x-6">
+    <nav className='flex items-center space-x-4 lg:space-x-6'>
       {items.map((item) => {
         // Determine if this link should navigate to the other app
         const isExternalApp =
