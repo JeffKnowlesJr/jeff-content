@@ -170,7 +170,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                   <img
                     src={post.featuredImage || post.image}
                     alt={post.title}
-                    className="object-contain w-full h-full"
+                    className="object-contain object-bottom w-full h-full"
                   />
                 </div>
               )}
