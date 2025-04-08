@@ -1,21 +1,33 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
+
+// Mark this page as dynamic to prevent static generation
+export const dynamic = 'force-dynamic'
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [returnUrl, setReturnUrl] = useState('/admin/dashboard')
 
   const router = useRouter()
-  const searchParams = useSearchParams()
   const { login } = useAuth()
 
-  // Get the returnUrl from query params
-  const returnUrl = searchParams.get('returnUrl') || '/admin/dashboard'
+  // Get the returnUrl from query params safely on the client side only
+  useEffect(() => {
+    // Only run in the browser
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search)
+      const urlParam = params.get('returnUrl')
+      if (urlParam) {
+        setReturnUrl(urlParam)
+      }
+    }
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

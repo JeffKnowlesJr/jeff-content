@@ -63,7 +63,12 @@ const nextConfig = {
         permanent: true
       }
     ]
-  }
+  },
+  // Essential settings for proper SSR/dynamic routes with admin pages
+  output: 'standalone',
+  // Skip prerendering for admin routes and any dynamic routes
+  skipTrailingSlashRedirect: true,
+  trailingSlash: false
 }
 
 export default nextConfig
