@@ -115,33 +115,8 @@ function getRecentPosts(): Post[] {
     .slice(0, 5)
 }
 
-function getTopics(): string[] {
-  return [
-    'Web Development',
-    'Cloud Architecture',
-    'DevOps & CI/CD',
-    'React & Next.js',
-    'Performance Optimization',
-    'TypeScript',
-    'AWS Services'
-  ].sort()
-}
-
-function getTechnicalTags(): string[] {
-  const allPosts = getBlogPosts()
-  const tags = new Set<string>()
-
-  allPosts.forEach((post: Post) => {
-    post.tags.forEach((tag: string) => tags.add(tag))
-  })
-
-  return Array.from(tags).sort()
-}
-
 export default function BlogSidebar() {
   const recentPosts = getRecentPosts()
-  const topics = getTopics()
-  const tags = getTechnicalTags()
 
   return (
     <aside className="space-y-10">
@@ -170,44 +145,6 @@ export default function BlogSidebar() {
             </li>
           ))}
         </ul>
-      </div>
-
-      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
-        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-5 pb-3 border-b border-gray-200 dark:border-gray-700">
-          Topics
-        </h2>
-        <ul className="space-y-3">
-          {topics.map((topic) => (
-            <li key={topic}>
-              <Link
-                href={`/blog/category/${encodeURIComponent(
-                  topic.toLowerCase()
-                )}`}
-                className="text-base text-gray-600 dark:text-gray-300 hover:text-teal-600 dark:hover:text-teal-400 transition-colors flex items-center"
-              >
-                <span className="mr-2">•</span>
-                {topic}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
-        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-5 pb-3 border-b border-gray-200 dark:border-gray-700">
-          Tags
-        </h2>
-        <div className="flex flex-wrap gap-2">
-          {tags.map((tag) => (
-            <Link
-              key={tag}
-              href={`/blog/tag/${encodeURIComponent(tag.toLowerCase())}`}
-              className="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full hover:bg-teal-100 dark:hover:bg-teal-900 hover:text-teal-800 dark:hover:text-teal-200 transition-colors"
-            >
-              {tag}
-            </Link>
-          ))}
-        </div>
       </div>
 
       <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">

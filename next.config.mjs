@@ -61,6 +61,27 @@ const nextConfig = {
         source: '/projects/project-omega-documentation',
         destination: '/projects',
         permanent: true
+      },
+      // Redirect all tag and category pages to main blog
+      {
+        source: '/blog/tag/:tag',
+        destination: '/blog',
+        permanent: true
+      },
+      {
+        source: '/blog/category/:category',
+        destination: '/blog',
+        permanent: true
+      },
+      {
+        source: '/blog/tags',
+        destination: '/blog',
+        permanent: true
+      },
+      {
+        source: '/blog/categories',
+        destination: '/blog',
+        permanent: true
       }
     ]
   },

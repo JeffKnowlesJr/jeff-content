@@ -21,15 +21,15 @@ interface BlogPostProps {
 export default function BlogPost({ post }: BlogPostProps) {
   return (
     <article
-      id='blog-post-content'
-      className='prose prose-lg dark:prose-invert max-w-none'
+      id="blog-post-content"
+      className="prose prose-lg dark:prose-invert max-w-none"
     >
-      <header className='mb-10 text-center'>
-        <h1 className='text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6'>
+      <header className="mb-10 text-center">
+        <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
           {post.title}
         </h1>
 
-        <div className='flex flex-wrap items-center justify-center gap-4 text-gray-600 dark:text-gray-400 text-sm mb-8'>
+        <div className="flex flex-wrap items-center justify-center gap-4 text-gray-600 dark:text-gray-400 text-sm mb-8">
           <span>
             {new Date(post.publishDate).toLocaleDateString('en-US', {
               year: 'numeric',
@@ -44,77 +44,76 @@ export default function BlogPost({ post }: BlogPostProps) {
         </div>
 
         {post.featuredImage && (
-          <div className='relative w-full max-w-4xl mx-auto aspect-video mb-10 rounded-xl overflow-hidden shadow-lg'>
+          <div className="relative w-full max-w-4xl mx-auto aspect-video mb-10 rounded-xl overflow-hidden shadow-lg">
             <Image
               src={post.featuredImage}
               alt={post.title}
               fill
-              sizes='(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px'
-              className='object-cover'
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
+              className="object-cover"
               priority
             />
           </div>
         )}
 
         {post.tags && post.tags.length > 0 && (
-          <div className='flex flex-wrap justify-center gap-2 mb-10'>
+          <div className="flex flex-wrap justify-center gap-2 mb-10">
             {post.tags.map((tag) => (
-              <Link
+              <span
                 key={tag}
-                href={`/blog/tag/${tag.toLowerCase()}`}
-                className='inline-flex items-center rounded-full bg-teal-100 px-4 py-1 text-sm font-medium text-teal-800 dark:bg-teal-900 dark:text-teal-200 hover:bg-teal-200 dark:hover:bg-teal-800 transition-colors'
+                className="inline-flex items-center rounded-full bg-teal-100 px-4 py-1 text-sm font-medium text-teal-800 dark:bg-teal-900 dark:text-teal-200"
               >
                 {tag}
-              </Link>
+              </span>
             ))}
           </div>
         )}
       </header>
 
-      <div className='max-w-3xl mx-auto'>
+      <div className="max-w-3xl mx-auto">
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
           components={{
             h1: ({ children }) => (
-              <h1 className='text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white'>
+              <h1 className="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white">
                 {children}
               </h1>
             ),
             h2: ({ children }) => (
-              <h2 className='text-2xl font-bold mt-10 mb-4 text-gray-900 dark:text-white'>
+              <h2 className="text-2xl font-bold mt-10 mb-4 text-gray-900 dark:text-white">
                 {children}
               </h2>
             ),
             h3: ({ children }) => (
-              <h3 className='text-xl font-bold mt-8 mb-3 text-gray-900 dark:text-white'>
+              <h3 className="text-xl font-bold mt-8 mb-3 text-gray-900 dark:text-white">
                 {children}
               </h3>
             ),
             p: ({ children }) => (
-              <p className='mb-6 leading-relaxed text-gray-800 dark:text-gray-300'>
+              <p className="mb-6 leading-relaxed text-gray-800 dark:text-gray-300">
                 {children}
               </p>
             ),
             ul: ({ children }) => (
-              <ul className='list-disc pl-6 mb-6 space-y-2 text-gray-800 dark:text-gray-300'>
+              <ul className="list-disc pl-6 mb-6 space-y-2 text-gray-800 dark:text-gray-300">
                 {children}
               </ul>
             ),
             ol: ({ children }) => (
-              <ol className='list-decimal pl-6 mb-6 space-y-2 text-gray-800 dark:text-gray-300'>
+              <ol className="list-decimal pl-6 mb-6 space-y-2 text-gray-800 dark:text-gray-300">
                 {children}
               </ol>
             ),
-            li: ({ children }) => <li className='mb-2'>{children}</li>,
+            li: ({ children }) => <li className="mb-2">{children}</li>,
             blockquote: ({ children }) => (
-              <blockquote className='border-l-4 border-teal-500 pl-4 italic my-6 text-gray-700 dark:text-gray-400'>
+              <blockquote className="border-l-4 border-teal-500 pl-4 italic my-6 text-gray-700 dark:text-gray-400">
                 {children}
               </blockquote>
             ),
             a: ({ href, children }) => (
               <a
                 href={href}
-                className='text-teal-600 dark:text-teal-400 hover:underline'
+                className="text-teal-600 dark:text-teal-400 hover:underline"
                 target={href?.startsWith('http') ? '_blank' : undefined}
                 rel={
                   href?.startsWith('http') ? 'noopener noreferrer' : undefined
@@ -124,18 +123,18 @@ export default function BlogPost({ post }: BlogPostProps) {
               </a>
             ),
             img: ({ src, alt }) => (
-              <div className='my-8 rounded-lg overflow-hidden shadow-md'>
+              <div className="my-8 rounded-lg overflow-hidden shadow-md">
                 <Image
                   src={src || ''}
                   alt={alt || ''}
                   width={800}
                   height={450}
-                  className='w-full h-auto'
+                  className="w-full h-auto"
                 />
               </div>
             ),
             hr: () => (
-              <hr className='my-8 border-gray-300 dark:border-gray-700' />
+              <hr className="my-8 border-gray-300 dark:border-gray-700" />
             )
           }}
         >
