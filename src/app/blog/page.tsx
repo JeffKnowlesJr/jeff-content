@@ -38,7 +38,7 @@ function getFallbackPosts(): BlogPost[] {
       title: 'Directory-Based Domain Splitting in AWS: A Practical Approach',
       slug: 'directorybased-domain-splitting-in-aws-a-practical-approach',
       excerpt:
-        'Learn how to route different parts of your website to specialized backend services using AWS CloudFront and API Gateway while maintaining a unified frontend experience.',
+        'A technical deep dive into implementing directory-based domain splitting with AWS CloudFront, API Gateway, and Lambda@Edge for microservice architectures.',
       publishDate: '2024-04-04',
       author: 'Jeff Knowles Jr',
       readingTime: '12 min read',
@@ -59,14 +59,14 @@ function getFallbackPosts(): BlogPost[] {
     },
     {
       id: 'modern-website-architecture',
-      title: 'Modern Website Architecture: When to Split Your SPA for SEO',
-      slug: 'modern-website-architecture-seo-optimization',
+      title: 'Next.js App Router: Solving Real-World SEO Challenges',
+      slug: 'nextjs-app-router-solving-real-world-seo-challenges',
       excerpt:
-        'Learn how to optimize your React application for search engines by strategically splitting your architecture into SSR and SPA components for maximum performance and discoverability',
+        'Technical implementation of Next.js App Router for improved SEO, including metadata API usage, server components, and dynamic route optimization.',
       publishDate: '2024-04-01',
-      author: 'Jeff & Claude',
+      author: 'Jeff Knowles Jr',
       readingTime: '12 min read',
-      tags: ['Architecture', 'SEO', 'Next.js', 'React', 'AWS'],
+      tags: ['Next.js', 'SEO', 'React', 'App Router', 'Server Components'],
       image: '/images/blog/featured/sajad-nori-21mJd5NUGZU-unsplash.jpg',
       content: '',
       status: 'published',
@@ -76,14 +76,20 @@ function getFallbackPosts(): BlogPost[] {
     },
     {
       id: 'react-performance-tips',
-      title: 'React Performance Tips: Building Lightning-Fast Web Applications',
-      slug: 'react-performance-tips',
+      title: 'React Performance Optimization Techniques for Large Applications',
+      slug: 'react-performance-optimization-techniques',
       excerpt:
-        'Learn essential techniques for optimizing React applications, from code splitting to component optimization',
+        'Advanced techniques for optimizing React applications, including memo, useCallback, code splitting, and Suspense with real-world code examples.',
       publishDate: '2024-03-25',
-      author: 'Jeff & Claude',
+      author: 'Jeff Knowles Jr',
       readingTime: '10 min read',
-      tags: ['React', 'Performance', 'Web Development', 'Optimization'],
+      tags: [
+        'React',
+        'Performance',
+        'Web Development',
+        'Code Splitting',
+        'Suspense'
+      ],
       image: '/images/blog/featured/optimizing-react-performance.jpg',
       content: '',
       status: 'published',
@@ -93,14 +99,20 @@ function getFallbackPosts(): BlogPost[] {
     },
     {
       id: 'streamlining-build-processes',
-      title: 'Streamlining Build Processes with Modern DevOps',
-      slug: 'streamlining-build-processes',
+      title: 'Implementing CI/CD Pipelines with GitHub Actions and AWS',
+      slug: 'implementing-cicd-pipelines-github-actions-aws',
       excerpt:
-        'Discover how to enhance development workflows by implementing efficient build processes and CI/CD pipelines',
+        'Step-by-step guide to creating efficient CI/CD pipelines using GitHub Actions for building, testing, and deploying applications to AWS infrastructure.',
       publishDate: '2024-04-02',
-      author: 'Jeff',
+      author: 'Jeff Knowles Jr',
       readingTime: '8 min read',
-      tags: ['DevOps', 'CI/CD', 'Automation', 'Build Process'],
+      tags: [
+        'DevOps',
+        'CI/CD',
+        'GitHub Actions',
+        'AWS',
+        'Infrastructure as Code'
+      ],
       image: '/images/blog/featured/responsive-design-principles.jpg',
       content: '',
       status: 'published',
@@ -110,14 +122,14 @@ function getFallbackPosts(): BlogPost[] {
     },
     {
       id: 'optimizing-images-web',
-      title: 'Optimizing Images for the Modern Web',
-      slug: 'optimizing-images-web',
+      title: 'Implementing Modern Image Optimization in Next.js Applications',
+      slug: 'implementing-image-optimization-nextjs',
       excerpt:
-        'Learn the essential techniques for optimizing website images to enhance performance, SEO, and user experience',
+        'Technical implementation of image optimization strategies using Next.js Image component, Sharp, and content delivery networks for optimal performance.',
       publishDate: '2024-04-01',
-      author: 'Jeff',
+      author: 'Jeff Knowles Jr',
       readingTime: '8 min read',
-      tags: ['WebPerformance', 'Images', 'Optimization', 'WebDevelopment'],
+      tags: ['Next.js', 'Image Optimization', 'WebPerformance', 'Sharp', 'CDN'],
       image: '/images/blog/featured/typescript-best-practices.jpg',
       content: '',
       status: 'published',
@@ -127,14 +139,20 @@ function getFallbackPosts(): BlogPost[] {
     },
     {
       id: 'obsidian-for-developers',
-      title: 'Obsidian for Developers: Upgrading Your Knowledge Management',
-      slug: 'obsidian-for-developers',
+      title: 'Creating a Developer Knowledge Base with Obsidian and Git',
+      slug: 'developer-knowledge-base-obsidian-git',
       excerpt:
-        'How developers can leverage Obsidian for better documentation, code snippets, and knowledge organization',
+        'Implementing a structured knowledge management system for development teams using Obsidian with Git integration for code snippet synchronization.',
       publishDate: '2024-03-30',
-      author: 'Jeff',
+      author: 'Jeff Knowles Jr',
       readingTime: '9 min read',
-      tags: ['Productivity', 'Documentation', 'Knowledge Management', 'Tools'],
+      tags: [
+        'Developer Tools',
+        'Obsidian',
+        'Git',
+        'Knowledge Management',
+        'Documentation'
+      ],
       image: '/images/blog/featured/responsive-design-principles.jpg',
       content: '',
       status: 'published',
@@ -144,14 +162,21 @@ function getFallbackPosts(): BlogPost[] {
     },
     {
       id: 'building-modern-portfolio',
-      title: 'Building a Modern Portfolio Website in 2024',
-      slug: 'building-modern-portfolio',
+      title:
+        'Building a Developer Portfolio with Next.js, TypeScript and TailwindCSS',
+      slug: 'building-developer-portfolio-nextjs-typescript-tailwind',
       excerpt:
-        'A comprehensive guide to creating an impressive developer portfolio using Next.js, Tailwind CSS, and modern web practices',
+        'Technical walkthrough on building a modern developer portfolio with Next.js 14, TypeScript, and TailwindCSS, focusing on type safety and performance.',
       publishDate: '2024-03-30',
-      author: 'Jeff',
+      author: 'Jeff Knowles Jr',
       readingTime: '11 min read',
-      tags: ['Portfolio', 'Next.js', 'Tailwind CSS', 'Web Development'],
+      tags: [
+        'Next.js',
+        'TypeScript',
+        'TailwindCSS',
+        'Web Development',
+        'Portfolio'
+      ],
       image: '/images/blog/featured/building-modern-portfolio.jpg',
       content: '',
       status: 'published',
@@ -162,19 +187,19 @@ function getFallbackPosts(): BlogPost[] {
     {
       id: 'amplify-cloud-development',
       title:
-        'Amplify Your Development: AWS Amplify for Modern Web Applications',
-      slug: 'amplify-cloud-development',
+        'Implementing Server-Side Authentication with AWS Amplify and Next.js',
+      slug: 'server-side-authentication-aws-amplify-nextjs',
       excerpt:
-        'How to leverage AWS Amplify to simplify cloud infrastructure for web applications with authentication, storage, and API capabilities',
+        'Complete implementation guide for AWS Amplify authentication in Next.js applications with server-side session validation and protected routes.',
       publishDate: '2024-03-30',
-      author: 'Jeff',
+      author: 'Jeff Knowles Jr',
       readingTime: '10 min read',
       tags: [
-        'AWS',
-        'Amplify',
-        'Cloud Development',
+        'AWS Amplify',
+        'Next.js',
         'Authentication',
-        'Hosting'
+        'Server Components',
+        'JWT'
       ],
       image: '/images/blog/featured/aws-amplify-cloud-development.jpg',
       content: '',
@@ -190,13 +215,13 @@ export default async function BlogPage() {
   const posts = await getBlogPosts()
 
   return (
-    <div className='container mx-auto px-4 py-6 sm:py-8'>
-      <h1 className='text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-8'>
+    <div className="container mx-auto px-4 py-6 sm:py-8">
+      <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-8">
         Blog Posts
       </h1>
 
-      {/* Mobile-optimized grid - single column on mobile, three columns on larger screens */}
-      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6'>
+      {/* Mobile-optimized grid - single column on mobile, two columns on larger screens */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
         {posts.map((post) => (
           <BlogCard
             key={post.slug}
