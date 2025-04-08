@@ -13,7 +13,8 @@
     "new:blog": "node scripts/new-blog-post.js",
     "new:project": "node scripts/new-project.js",
     "import-legacy-content": "node --experimental-modules scripts/import-legacy-content.js",
-    "help": "node scripts/help.js"
+    "help": "node scripts/help.js",
+    "blog:json": "node scripts/blog-to-json.js"
   },
   "dependencies": {
     "@aws-sdk/client-appsync": "^3.782.0",
