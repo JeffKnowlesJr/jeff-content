@@ -1,6 +1,6 @@
 # Contact Form Debugging
 
-**Status**: 🟡 INVESTIGATING - Testing simplified DynamoDB item.
+**Status**: 🟡 INVESTIGATING - Still receiving 500 errors after policy attachment and simplified item.
 
 ## Issue Overview
 
@@ -11,6 +11,37 @@ POST https://www.jeffknowlesjr.com/api/contact/submit 500 (Internal Server Error
 ```
 
 Initial client-side errors indicated a "Server configuration error" and later "Failed to submit form. Please try again later."
+
+**Latest Errors (2023-XX-XX):**
+
+```
+api/contact/submit:1 Failed to load resource: the server responded with a status of 500 ()
+hook.js:608 Error submitting contact form: Error: Failed to submit form. Please try again later.
+```
+
+## Current Implementation
+
+The contact form submission is handled by a Next.js API route (`src/app/api/contact/submit/route.ts`) that writes directly to a DynamoDB table (`jeff-dev-contact-forms`). The implementation:
+
+1. Validates required fields (name, email, message)
+2. Creates a unique ID and timestamp
+3. Prepares a simplified DynamoDB item for debugging:
+   ```javascript
+   const item = {
+     id: uniqueId,
+     createdAt: timestamp,
+     // name, email, message fields temporarily commented out
+     status: 'new'
+     // processedAt field temporarily commented out
+   }
+   ```
+4. Attempts to save the item to DynamoDB using the AWS SDK
+5. Returns a success response or error message
+
+The AWS configuration (`src/lib/aws-config.ts`) initializes the DynamoDB client with:
+
+- Region: 'us-east-1'
+- Credentials: Automatically provided by IAM roles in production, environment variables in development
 
 ## Root Cause Analysis
 
@@ -57,6 +88,32 @@ The following steps have been taken:
 9.  **Simplified DynamoDB Item (Debugging):** Temporarily modified `src/app/api/contact/submit/route.ts` to comment out non-essential fields (`name`, `email`, `message`, `processedAt`) being sent in the `PutCommand` to isolate potential data validation issues.
 
 10. **Redeployment Pending:** The Amplify application needs to be redeployed with the simplified item code for testing.
+
+11. **Additional Debugging Required:** Despite attaching the IAM policy and simplifying the DynamoDB item, the API route is still returning a 500 error. This suggests the issue may be:
+
+    - The IAM policy might not be properly attached or effective
+    - There could be an issue with the AWS SDK configuration
+    - The DynamoDB table might have additional constraints not visible in the schema
+    - There might be a network or environment issue preventing the API route from accessing DynamoDB
+
+12. **Code Review Findings:**
+
+    - The API route implementation looks correct, with proper error handling
+    - The AWS configuration is set up to use IAM roles in production
+    - The simplified DynamoDB item includes only the essential fields (id, createdAt, status)
+    - The error handling in the API route logs detailed error information, but this isn't visible in the client-side error
+
+13. **Enhanced Error Logging:**
+
+    - Added detailed error logging for DynamoDB errors, including error name, message, code, type, and metadata
+    - Added specific error type detection for common DynamoDB errors (ResourceNotFoundException, AccessDeniedException, ValidationException)
+    - Improved type safety with proper TypeScript interfaces for error objects
+
+14. **IAM Policy Review:**
+    - The IAM policy (`jeff-content-dynamodb-policy`) correctly grants `dynamodb:PutItem` permission to the DynamoDB table
+    - The policy is attached to the `jeff-content-amplify-role` role
+    - The role is configured to trust the Amplify service principal
+    - The script (`setup-amplify-iam.sh`) correctly creates and attaches the policy to the role
 
 ## Final DynamoDB Table Configuration
 
@@ -107,11 +164,29 @@ This comprehensive approach, addressing both the code's credential handling and 
 
 ## Next Steps & Verification
 
-1.  **Redeploy Amplify App:** Trigger a new build and deployment with the simplified item code.
+1.  **Redeploy Amplify App:** Trigger a new build and deployment with the enhanced error logging.
 2.  **Test Form Submission:** After deployment completes, submit a test form on the live site.
 3.  **Verify Outcome:**
     - Check for a 200 OK response from the API.
     - If successful, uncomment fields one by one to find the problematic one.
-    - If it still fails, the issue is likely network/environment related.
+    - If it still fails, check CloudWatch logs for the detailed error message.
     - Confirm the item appears in the DynamoDB table (with only id, createdAt, status if successful).
     - If errors persist, re-examine CloudWatch logs or add further logging.
+4.  **Additional Debugging Steps:**
+    - Check CloudWatch logs for the exact error message from DynamoDB
+    - Verify the IAM role is correctly configured in the Amplify console
+    - Check if the DynamoDB table has any additional constraints or triggers
+    - Consider testing with a different AWS SDK version
+    - Verify the region settings match between the code and the DynamoDB table
+5.  **Specific Recommendations:**
+    - Check CloudWatch logs for the exact error message from DynamoDB
+    - Verify the IAM policy attached to the Amplify role has the correct permissions
+    - Consider adding a try-catch block around the DynamoDB client initialization
+    - Test with a different region if the issue persists
+    - Verify the DynamoDB table name is correct and accessible
+6.  **Potential Issues Identified:**
+    - **IAM Policy Attachment**: The policy might not be properly attached to the role, or there might be a delay in the attachment taking effect.
+    - **AWS SDK Version**: There might be compatibility issues with the specific version of the AWS SDK being used.
+    - **DynamoDB Table Constraints**: The table might have additional constraints not visible in the schema.
+    - **Network/Environment Issues**: There might be network or environment issues preventing the API route from accessing DynamoDB.
+    - **Region Mismatch**: The region in the code might not match the region where the DynamoDB table is located.

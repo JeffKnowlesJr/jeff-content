@@ -1,38 +1,51 @@
 import { NextResponse } from 'next/server'
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb'
-import { dynamoClient, CONTACT_FORM_TABLE } from '@/lib/aws-config'
+import { v4 as uuidv4 } from 'uuid'
 
-// Initialize the DynamoDB document client
-const docClient = DynamoDBDocumentClient.from(dynamoClient)
+// Initialize DynamoDB client
+const client = new DynamoDBClient({
+  region: 'us-east-1'
+  // In production, credentials are automatically provided by IAM roles
+  // In development, credentials are provided by environment variables
+})
+
+const docClient = DynamoDBDocumentClient.from(client)
+
+// Define error types for better type safety
+interface DynamoDBError extends Error {
+  name: string
+  message: string
+  code?: string
+  type?: string
+  $metadata?: {
+    requestId?: string
+    cfId?: string
+    extendedRequestId?: string
+    httpStatusCode?: number
+    attempts?: number
+    totalRetryDelay?: number
+  }
+  stack?: string
+}
 
 export async function POST(request: Request) {
   try {
-    // Check AWS credentials only in development environment
-    if (
-      process.env.NODE_ENV !== 'production' &&
-      (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY)
-    ) {
-      console.error('Missing AWS credentials in development:', {
-        hasAccessKey: !!process.env.AWS_ACCESS_KEY_ID,
-        hasSecretKey: !!process.env.AWS_SECRET_ACCESS_KEY,
-        timestamp: new Date().toISOString()
-      })
-      return NextResponse.json(
-        { error: 'Server configuration error' },
-        { status: 500 }
-      )
-    }
-
-    const data = await request.json()
-    const { name, email, message } = data
+    // Parse the request body
+    const body = await request.json()
+    console.log('Received contact form data:', {
+      name: body.name,
+      email: body.email,
+      subject: body.subject,
+      messageLength: body.message ? body.message.length : 0
+    })
 
     // Validate required fields
-    if (!name || !email || !message) {
+    if (!body.name || !body.email || !body.message) {
       console.error('Missing required fields:', {
-        hasName: !!name,
-        hasEmail: !!email,
-        hasMessage: !!message,
-        timestamp: new Date().toISOString()
+        hasName: !!body.name,
+        hasEmail: !!body.email,
+        hasMessage: !!body.message
       })
       return NextResponse.json(
         { error: 'All fields are required' },
@@ -40,82 +53,90 @@ export async function POST(request: Request) {
       )
     }
 
-    // Log the received data for debugging (without sensitive info)
-    console.log('Received contact form data:', {
-      hasName: !!name,
-      hasEmail: !!email,
-      messageLength: message.length,
-      timestamp: new Date().toISOString()
+    // Create a unique ID and timestamp
+    const uniqueId = uuidv4()
+    const timestamp = new Date().toISOString()
+
+    // Prepare the item for DynamoDB
+    const item = {
+      id: uniqueId,
+      createdAt: timestamp,
+      name: body.name,
+      email: body.email,
+      subject: body.subject || '',
+      message: body.message,
+      status: 'new',
+      processedAt: ''
+    }
+
+    console.log('Attempting to save to DynamoDB:', {
+      tableName: 'jeff-dev-contact-forms',
+      itemId: uniqueId,
+      itemKeys: Object.keys(item)
     })
 
     try {
-      // Create unique ID and timestamp
-      const timestamp = new Date().toISOString()
-      const uniqueId = `contact-${Date.now()}-${Math.random()
-        .toString(36)
-        .substring(2, 10)}`
-
-      // Prepare item for DynamoDB (TEMPORARY SIMPLIFIED VERSION FOR DEBUGGING)
-      const item = {
-        id: uniqueId,
-        createdAt: timestamp,
-        // name: name.trim(), // Temporarily commented out
-        // email: email.trim(), // Temporarily commented out
-        // message: message.trim(), // Temporarily commented out
-        status: 'new' // Required field based on table schema
-        // processedAt: '' // Temporarily commented out
-      }
-
       // Save to DynamoDB
       await docClient.send(
         new PutCommand({
-          TableName: CONTACT_FORM_TABLE,
+          TableName: 'jeff-dev-contact-forms',
           Item: item
         })
       )
 
-      // Log success (without sensitive info)
-      console.log('Contact form submitted successfully:', {
-        id: uniqueId,
-        timestamp: new Date().toISOString()
+      console.log('Successfully saved to DynamoDB:', {
+        itemId: uniqueId,
+        timestamp
       })
 
-      return NextResponse.json({
-        success: true,
-        id: uniqueId,
-        message: 'Contact form submitted successfully'
-      })
-    } catch (error) {
-      // Log detailed error information
-      console.error('Error saving to DynamoDB:', {
-        error: error instanceof Error ? error.message : 'Unknown error',
-        stack: error instanceof Error ? error.stack : undefined,
-        timestamp: new Date().toISOString()
+      return NextResponse.json({ success: true })
+    } catch (dbError: unknown) {
+      // Enhanced error logging for DynamoDB errors
+      const error = dbError as DynamoDBError
+      console.error('DynamoDB error details:', {
+        errorName: error.name,
+        errorMessage: error.message,
+        errorCode: error.code,
+        errorType: error.type,
+        requestId: error.$metadata?.requestId,
+        cfId: error.$metadata?.cfId,
+        extendedRequestId: error.$metadata?.extendedRequestId,
+        httpStatusCode: error.$metadata?.httpStatusCode,
+        attempts: error.$metadata?.attempts,
+        totalRetryDelay: error.$metadata?.totalRetryDelay,
+        stack: error.stack
       })
 
-      // Return a more specific error message
+      // Check for specific error types
+      if (error.name === 'ResourceNotFoundException') {
+        console.error('DynamoDB table not found. Verify table name and region.')
+      } else if (error.name === 'AccessDeniedException') {
+        console.error(
+          'Access denied. Check IAM permissions for the Amplify role.'
+        )
+      } else if (error.name === 'ValidationException') {
+        console.error(
+          'Validation error. Check item structure against table schema.'
+        )
+      }
+
       return NextResponse.json(
-        {
-          error: 'Failed to submit form. Please try again later.',
-          details: error instanceof Error ? error.message : 'Unknown error'
-        },
+        { error: 'Failed to submit form. Please try again later.' },
         { status: 500 }
       )
     }
-  } catch (error) {
-    // Log parsing errors
+  } catch (error: unknown) {
+    // Enhanced error logging for general errors
+    const err = error as Error
     console.error('Error processing contact form:', {
-      error: error instanceof Error ? error.message : 'Unknown error',
-      stack: error instanceof Error ? error.stack : undefined,
-      timestamp: new Date().toISOString()
+      errorName: err.name,
+      errorMessage: err.message,
+      stack: err.stack
     })
 
     return NextResponse.json(
-      {
-        error: 'Invalid request data',
-        details: error instanceof Error ? error.message : 'Unknown error'
-      },
-      { status: 400 }
+      { error: 'Failed to submit form. Please try again later.' },
+      { status: 500 }
     )
   }
 }
