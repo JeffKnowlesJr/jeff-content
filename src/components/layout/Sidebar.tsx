@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useTheme } from '../../contexts/ThemeContext'
 import ProjectSidebar from './ProjectSidebar'
-import BlogSidebar from './BlogSidebar'
 import NavMenu from './NavMenu'
-import { Link } from 'react-router-dom'
 
 /**
  * SIDEBAR COMPONENT
@@ -16,7 +14,7 @@ import { Link } from 'react-router-dom'
  * visual consistency across the interface.
  *
  * ICON STYLING:
- * - Blog and project icons use larger sizes (text-2xl)
+ * - Project icons use larger sizes (text-2xl)
  * - Icons have distinct colors to improve visual hierarchy
  * - Hover effects enhance interactive feedback
  *
@@ -70,18 +68,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle }) => {
       ? 'bg-gray-900/70 backdrop-blur-sm'
       : 'bg-white/70 backdrop-blur-sm'
   const textColor = theme === 'dark' ? 'text-white' : 'text-gray-800'
-  const textColorDimmed = theme === 'dark' ? 'text-white/80' : 'text-gray-600'
   const borderColor =
     theme === 'dark' ? 'border-[#52babb]/20' : 'border-[#52babb]/30'
-  const accentBgColor = theme === 'dark' ? 'bg-[#52babb]/15' : 'bg-[#52babb]/15'
-  const accentHoverBgColor =
-    theme === 'dark' ? 'bg-[#52babb]/25' : 'bg-[#52babb]/25'
-
-  // Icon colors - more varied and vibrant
-  const overviewIconColor = 'text-[#52babb]' // Brand green for overview/about
-  const blogIconColor = 'text-blue-500' // Blue for blog
-  const projectIconColor = 'text-purple-600' // Purple for projects
-  const contactIconColor = 'text-orange-500' // Orange (oj) for contact
 
   // Dynamic width calculation based on desktop or mobile
   const sidebarWidth = isMobile
@@ -148,7 +136,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle }) => {
           {(isOpen || isMobile) && (
             <div className='space-y-8'>
               <ProjectSidebar onLinkClick={handleLinkClick} />
-              <BlogSidebar onLinkClick={handleLinkClick} />
             </div>
           )}
         </div>

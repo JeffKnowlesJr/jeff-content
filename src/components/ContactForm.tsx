@@ -2,8 +2,34 @@
 
 import { useState } from 'react'
 
+// Define interface for form data
+interface ContactFormData {
+  name: string
+  email: string
+  subject: string
+  message: string
+}
+
+// Form submission function
+async function submitContactForm(formData: ContactFormData) {
+  const response = await fetch('/api/contact/submit', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(formData)
+  })
+
+  if (!response.ok) {
+    const errorData = await response.json()
+    throw new Error(errorData.error || 'Failed to submit contact form')
+  }
+
+  return await response.json()
+}
+
 export function ContactForm() {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<ContactFormData>({
     name: '',
     email: '',
     subject: '',
@@ -20,13 +46,16 @@ export function ContactForm() {
     setErrorMessage('')
 
     try {
-      // TODO: Replace with your actual form submission logic
-      await new Promise((resolve) => setTimeout(resolve, 1000)) // Simulated API call
+      await submitContactForm(formData)
       setStatus('success')
       setFormData({ name: '', email: '', subject: '', message: '' })
     } catch (error) {
       setStatus('error')
-      setErrorMessage('Failed to send message. Please try again later.')
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : 'Failed to send message. Please try again later.'
+      )
     }
   }
 
@@ -55,7 +84,7 @@ export function ContactForm() {
           value={formData.name}
           onChange={handleChange}
           required
-          className='form-input w-full text-gray-900 dark:text-white'
+          className='form-input w-full text-gray-900 dark:text-white bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700'
           placeholder='Your name'
         />
       </div>
@@ -74,7 +103,7 @@ export function ContactForm() {
           value={formData.email}
           onChange={handleChange}
           required
-          className='form-input w-full text-gray-900 dark:text-white'
+          className='form-input w-full text-gray-900 dark:text-white bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700'
           placeholder='your.email@example.com'
         />
       </div>
@@ -92,7 +121,7 @@ export function ContactForm() {
           value={formData.subject}
           onChange={handleChange}
           required
-          className='form-select w-full text-gray-900 dark:text-white'
+          className='form-select w-full text-gray-900 dark:text-white bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700'
         >
           <option value=''>Select a subject</option>
           <option value='project'>Project Inquiry</option>
@@ -116,7 +145,7 @@ export function ContactForm() {
           onChange={handleChange}
           required
           rows={4}
-          className='form-textarea w-full text-gray-900 dark:text-white'
+          className='form-textarea w-full text-gray-900 dark:text-white bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700'
           placeholder='Your message...'
         />
       </div>
