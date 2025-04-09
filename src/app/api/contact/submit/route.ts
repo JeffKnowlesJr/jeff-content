@@ -28,11 +28,30 @@ export async function POST(request: Request) {
   try {
     // Check for AppSync configuration
     const APPSYNC_API_URL = process.env.APPSYNC_API_URL
-    const IS_LOCAL_DEV =
-      !APPSYNC_API_URL || process.env.NODE_ENV === 'development'
+    const CONTACT_FORM_TABLE =
+      process.env.CONTACT_FORM_TABLE || 'jeff-dev-contact-forms'
+
+    // Force production mode for testing
+    const IS_LOCAL_DEV = false // Override local dev check
+
+    // Enhanced logging of environment
+    console.log('Environment Configuration:', {
+      APPSYNC_API_URL,
+      CONTACT_FORM_TABLE,
+      NODE_ENV: process.env.NODE_ENV,
+      IS_LOCAL_DEV
+    })
 
     const body = await request.json()
     const { name, email, message, subject } = body
+
+    // Log the incoming request
+    console.log('Received form submission:', {
+      name,
+      email,
+      subject,
+      messageLength: message?.length
+    })
 
     // Validate required fields
     if (!name || !email || !message) {
@@ -89,6 +108,7 @@ export async function POST(request: Request) {
       }
     `
 
+    // Prepare the input with the table name (can help with debugging)
     const variables = {
       input: {
         id,
@@ -96,10 +116,12 @@ export async function POST(request: Request) {
         name: name.trim(),
         email: email.trim(),
         message: message.trim(),
-        subject: subject?.trim(), // Optional field
+        subject: subject?.trim() || '', // Optional field
         status: 'NEW',
         processedAt: timestamp,
-        updatedAt: timestamp
+        updatedAt: timestamp,
+        __typename: 'ContactForm',
+        _tableName: CONTACT_FORM_TABLE // For debugging
       }
     }
 
@@ -109,6 +131,15 @@ export async function POST(request: Request) {
       region,
       variables
     })
+
+    // Make sure we have an API URL
+    if (!APPSYNC_API_URL) {
+      console.error('AppSync API URL is missing')
+      return NextResponse.json(
+        { error: 'Server configuration error: Missing AppSync URL' },
+        { status: 500 }
+      )
+    }
 
     /**
      * IAM Authentication Flow for AppSync
@@ -123,6 +154,11 @@ export async function POST(request: Request) {
 
     // Prepare the request for signing
     const endpoint = parseUrl(APPSYNC_API_URL)
+    console.log('Parsed endpoint:', {
+      hostname: endpoint.hostname,
+      path: endpoint.path
+    })
+
     const requestToBeSigned = new HttpRequest({
       hostname: endpoint.hostname || '',
       path: endpoint.path || '/',
@@ -139,6 +175,9 @@ export async function POST(request: Request) {
 
     // Create a signer with the AWS SDK
     try {
+      // Log detailed credential process
+      console.log('Getting credentials from provider chain...')
+
       // Use the credentials provider chain to get credentials from environment
       // In Amplify, this will use the Amplify role credentials
       // In local dev, this will use credentials from AWS CLI configuration
@@ -149,8 +188,16 @@ export async function POST(request: Request) {
         sha256: Sha256
       })
 
+      console.log('Signing request with SigV4...')
       // Sign the request with AWS SigV4
       const signedRequest = await signer.sign(requestToBeSigned)
+
+      // Log headers for debugging (excluding Authorization which is sensitive)
+      const debugHeaders = { ...signedRequest.headers }
+      if (debugHeaders.Authorization) {
+        debugHeaders.Authorization = 'REDACTED (for security)'
+      }
+      console.log('Signed request headers:', debugHeaders)
 
       // Convert signed request to fetch API format
       const fetchOptions = {
@@ -159,6 +206,7 @@ export async function POST(request: Request) {
         body: signedRequest.body
       }
 
+      console.log('Sending request to AppSync...')
       // Send the signed request to AppSync
       const response = await fetch(APPSYNC_API_URL, fetchOptions)
 
@@ -174,6 +222,7 @@ export async function POST(request: Request) {
       }
 
       const result = await response.json()
+      console.log('Full AppSync response:', result)
 
       if (result.errors) {
         console.error('AppSync GraphQL Errors:', result.errors)
@@ -188,16 +237,23 @@ export async function POST(request: Request) {
       })
     } catch (signingError) {
       console.error('AWS signing error:', signingError)
-      return NextResponse.json(
-        { error: 'Failed to authenticate with AWS services' },
-        { status: 500 }
-      )
+      // More detailed error message
+      let errorMessage = 'Failed to authenticate with AWS services'
+      if (signingError instanceof Error) {
+        errorMessage += `: ${signingError.message}`
+        console.error('Error stack:', signingError.stack)
+      }
+
+      return NextResponse.json({ error: errorMessage }, { status: 500 })
     }
   } catch (error) {
     console.error('Error saving contact form:', error)
-    return NextResponse.json(
-      { error: 'Failed to submit form. Please try again later.' },
-      { status: 500 }
-    )
+    let errorMessage = 'Failed to submit form. Please try again later.'
+    if (error instanceof Error) {
+      errorMessage += ` Details: ${error.message}`
+      console.error('Error stack:', error.stack)
+    }
+
+    return NextResponse.json({ error: errorMessage }, { status: 500 })
   }
 }

@@ -1,0 +1,36 @@
+type ContactForm {
+  id: ID!
+  createdAt: String!
+  name: String!
+  email: String!
+  message: String!
+  subject: String
+  status: String!
+  processedAt: String!
+  updatedAt: String!
+}
+
+input CreateContactFormInput {
+  id: ID!
+  createdAt: String!
+  name: String!
+  email: String!
+  message: String!
+  subject: String
+  status: String!
+  processedAt: String!
+  updatedAt: String!
+}
+
+type Mutation {
+  createContactForm(input: CreateContactFormInput!): ContactForm
+}
+
+type Query {
+  getContactForm(id: ID!): ContactForm
+}
+
+schema {
+  query: Query
+  mutation: Mutation
+}
