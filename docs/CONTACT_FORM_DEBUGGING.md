@@ -261,3 +261,5 @@ If the contact form still fails in production:
 
 4. **Check Table Schema Compliance**:
    - Ensure all required fields (id, createdAt, status) are included in the submission
+
+User: So.. I'm reading your reports and running the commands myself. I've done the test, I am getting failed to save everytime on the deployed app now. Does... the app need permission to access dynamo? that's what it seems like? because then it's dyna lambda and ses right?

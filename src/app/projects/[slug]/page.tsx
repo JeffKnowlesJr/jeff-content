@@ -13,6 +13,18 @@ type Params = {
   slug: string
 }
 
+// Add proper types for markdown components
+type MarkdownComponentProps = {
+  children: React.ReactNode
+  className?: string
+  ordered?: boolean
+  node?: any
+  href?: string
+  src?: string
+  alt?: string
+  inline?: boolean
+}
+
 // Generate metadata for the project page
 export async function generateMetadata({
   params
@@ -193,9 +205,14 @@ export default async function ProjectDetailPage({
             <div className='prose dark:prose-invert max-w-none prose-p:text-base sm:prose-p:text-lg prose-li:text-base sm:prose-li:text-lg prose-p:leading-relaxed prose-li:leading-relaxed'>
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
-                // @ts-ignore: ReactMarkdown component types are hard to get right
+                // @ts-expect-error: ReactMarkdown component types are hard to get right
                 components={{
-                  code: ({ inline, className, children, ...props }) => {
+                  code: ({
+                    inline,
+                    className,
+                    children,
+                    ...props
+                  }: MarkdownComponentProps) => {
                     const match = /language-(\w+)/.exec(className || '')
                     return !inline && match ? (
                       <div className='relative group'>
@@ -216,7 +233,7 @@ export default async function ProjectDetailPage({
                       </code>
                     )
                   },
-                  a: ({ href, children, ...props }) => (
+                  a: ({ href, children, ...props }: MarkdownComponentProps) => (
                     <a
                       href={href}
                       className='text-primary dark:text-primary-light hover:underline'
@@ -227,7 +244,7 @@ export default async function ProjectDetailPage({
                       {children}
                     </a>
                   ),
-                  h2: ({ children, ...props }) => (
+                  h2: ({ children, ...props }: MarkdownComponentProps) => (
                     <h2
                       className='text-2xl font-bold mt-8 mb-4 border-b border-gray-200 dark:border-gray-700 pb-2'
                       {...props}
@@ -235,17 +252,25 @@ export default async function ProjectDetailPage({
                       {children}
                     </h2>
                   ),
-                  h3: ({ children, ...props }) => (
+                  h3: ({ children, ...props }: MarkdownComponentProps) => (
                     <h3 className='text-xl font-bold mt-6 mb-3' {...props}>
                       {children}
                     </h3>
                   ),
-                  ul: ({ children, ...props }) => (
+                  ul: ({
+                    children,
+                    ordered,
+                    ...props
+                  }: MarkdownComponentProps) => (
                     <ul className='list-disc pl-6 my-4' {...props}>
                       {children}
                     </ul>
                   ),
-                  ol: ({ node, ordered, children, ...props }: any) => (
+                  ol: ({
+                    children,
+                    ordered,
+                    ...props
+                  }: MarkdownComponentProps) => (
                     <ol
                       className='list-decimal pl-6 my-4'
                       {...(ordered === false ? {} : props)}
@@ -253,7 +278,10 @@ export default async function ProjectDetailPage({
                       {children}
                     </ol>
                   ),
-                  blockquote: ({ children, ...props }) => (
+                  blockquote: ({
+                    children,
+                    ...props
+                  }: MarkdownComponentProps) => (
                     <blockquote
                       className='border-l-4 border-primary pl-4 italic my-4'
                       {...props}
@@ -261,7 +289,7 @@ export default async function ProjectDetailPage({
                       {children}
                     </blockquote>
                   ),
-                  img: ({ src, alt }) => (
+                  img: ({ src, alt }: MarkdownComponentProps) => (
                     <img
                       src={src}
                       alt={alt}
