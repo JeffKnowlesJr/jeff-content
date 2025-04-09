@@ -11,6 +11,15 @@ const docClient = DynamoDBDocumentClient.from(client)
 
 export async function POST(request: Request) {
   try {
+    // Log environment variables (without sensitive values)
+    console.log('Environment check:', {
+      hasRegion: !!process.env.AWS_REGION,
+      region: process.env.AWS_REGION,
+      hasTable: !!process.env.CONTACT_FORM_TABLE,
+      tableName: process.env.CONTACT_FORM_TABLE,
+      nodeEnv: process.env.NODE_ENV
+    })
+
     const body = await request.json()
     const { name, email, message, subject } = body
 
@@ -40,13 +49,27 @@ export async function POST(request: Request) {
       updatedAt: timestamp
     }
 
+    console.log('Attempting to save to DynamoDB:', {
+      tableName: process.env.CONTACT_FORM_TABLE || 'jeff-dev-contact-forms',
+      itemId: id
+    })
+
     // Save to DynamoDB
-    await docClient.send(
-      new PutCommand({
-        TableName: process.env.CONTACT_FORM_TABLE || 'jeff-dev-contact-forms',
-        Item: item
-      })
-    )
+    try {
+      await docClient.send(
+        new PutCommand({
+          TableName: process.env.CONTACT_FORM_TABLE || 'jeff-dev-contact-forms',
+          Item: item
+        })
+      )
+      console.log('Successfully saved to DynamoDB:', { id })
+    } catch (dbError) {
+      console.error('DynamoDB error:', dbError)
+      return NextResponse.json(
+        { error: 'Database error. Please try again later.' },
+        { status: 500 }
+      )
+    }
 
     return NextResponse.json({ success: true, id })
   } catch (error) {

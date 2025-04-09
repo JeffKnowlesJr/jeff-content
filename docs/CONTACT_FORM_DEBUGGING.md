@@ -1,14 +1,20 @@
 # Contact Form Debugging
 
-## Current Status: 🟡 INVESTIGATING
+## Current Status: �� INVESTIGATING
 
-### Latest Implementation
+### Current Implementation
 
 - Using direct DynamoDB access via AWS SDK v3
 - Table: `jeff-dev-contact-forms`
 - Region: `us-east-1`
 - Composite key: `id` (hash) + `createdAt` (range)
 - StatusIndex: `status` (hash) + `processedAt` (range)
+
+### Implementation History
+
+1. Initially used AppSync with GraphQL mutations
+2. Switched to direct DynamoDB access for better reliability
+3. Added comprehensive error logging and testing endpoints
 
 ### Current Flow
 
@@ -30,24 +36,73 @@
    }
    ```
 
+### Testing Endpoints
+
+1. `/api/contact/submit` - Main endpoint for form submissions
+2. `/api/contact/test-db` - Test endpoint to verify DynamoDB access
+3. `scripts/test-dynamodb-access.js` - Standalone script for testing DynamoDB access
+
 ### Local Testing Results
 
 - Server running on port 3001 (3000 in use)
 - POST requests to `/api/contact/submit` return 200
-- DynamoDB write operations succeed
-- No errors in server logs
+- DynamoDB write operations succeed locally
+- No errors in server logs when testing locally
+- Test endpoint `/api/contact/test-db` successfully writes and reads from DynamoDB
+
+### Production Error
+
+- POST to `https://www.jeffknowlesjr.com/api/contact/submit` returns 500
+- Error message: `{"error":"Server configuration error"}`
+- Client-side error: `Error submitting contact form: Error: Failed to submit form. Please try again later.`
+- Additional error: `Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received`
+
+### Root Cause Analysis
+
+After extensive debugging, the most likely causes are:
+
+1. **Missing Environment Variables in Production**:
+
+   - The Amplify deployment may not have the required environment variables
+   - `AWS_REGION` and `CONTACT_FORM_TABLE` need to be set in the Amplify console
+
+2. **IAM Role Permissions**:
+
+   - The IAM role attached to the Amplify app may not have the correct permissions
+   - The policy needs to allow `dynamodb:PutItem`, `dynamodb:GetItem`, and `dynamodb:Query`
+
+3. **DynamoDB Table Configuration**:
+   - The table has a composite key (id + createdAt) which requires both fields for operations
+   - The StatusIndex requires both status and processedAt fields
+
+### Debugging Steps Taken
+
+1. Added comprehensive logging to the API route
+2. Created a test endpoint to verify DynamoDB access
+3. Created a standalone test script
+4. Verified local DynamoDB access works correctly
+5. Confirmed the table schema and permissions
 
 ### Next Steps
 
-1. Verify DynamoDB table permissions in production
-2. Test form submission in production environment
-3. Monitor CloudWatch logs for any errors
-4. Consider adding more detailed error logging
+1. **Verify Amplify Environment Variables**:
 
-### Known Issues
+   - Check if `AWS_REGION` and `CONTACT_FORM_TABLE` are set in the Amplify console
+   - Ensure they match the local values
 
-- None currently identified in local testing
-- Need to verify production environment configuration
+2. **Verify IAM Role Permissions**:
+
+   - Confirm the role has access to the DynamoDB table
+   - Check if the table ARN is correct
+
+3. **Test in Production**:
+
+   - Visit `/api/contact/test-db` in production to test DynamoDB access
+   - Check CloudWatch logs for detailed error messages
+
+4. **Deploy Updated Code**:
+   - Ensure the latest code with enhanced error logging is deployed
+   - Monitor logs after deployment
 
 ### Environment Variables Required
 
@@ -70,3 +125,11 @@ CONTACT_FORM_TABLE=jeff-dev-contact-forms
   ]
 }
 ```
+
+### Lessons Learned
+
+1. Always verify environment variables in production deployments
+2. Use comprehensive error logging to identify issues
+3. Create test endpoints to isolate and verify functionality
+4. Ensure IAM permissions are correctly configured
+5. Test locally with the same configuration as production
