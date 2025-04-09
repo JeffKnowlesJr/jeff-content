@@ -56,10 +56,10 @@ export function generateBaseMetadata(): Metadata {
         'Personal portfolio and blog showcasing web development projects, technical articles, and professional services.',
       images: [
         {
-          url: `${BASE_URL}/images/og-default.jpg`,
+          url: `${BASE_URL}/images/projects/project-project-omega-cover.webp`,
           width: 1200,
           height: 630,
-          alt: 'Jeff Knowles Jr - Portfolio & Blog'
+          alt: 'Project Omega - Jeff Knowles Jr Portfolio'
         }
       ]
     },
@@ -69,7 +69,8 @@ export function generateBaseMetadata(): Metadata {
       creator: '@jeffknowlesjr',
       title: 'Jeff Knowles Jr - Portfolio & Blog',
       description:
-        'Personal portfolio and blog showcasing web development projects, technical articles, and professional services.'
+        'Personal portfolio and blog showcasing web development projects, technical articles, and professional services.',
+      images: [`${BASE_URL}/images/projects/project-project-omega-cover.webp`]
     }
   }
 }
@@ -150,10 +151,10 @@ export function generateBlogIndexMetadata(): Metadata {
         'Technical articles and insights about web development, cloud architecture, and analytics engineering.',
       images: [
         {
-          url: `${BASE_URL}/images/og-default.jpg`,
+          url: `${BASE_URL}/images/projects/project-project-omega-cover.webp`,
           width: 1200,
           height: 630,
-          alt: 'Jeff Knowles Jr Blog'
+          alt: 'Project Omega - Jeff Knowles Jr Blog'
         }
       ]
     },
@@ -163,7 +164,8 @@ export function generateBlogIndexMetadata(): Metadata {
       creator: '@jeffknowlesjr',
       title: 'Blog | Jeff Knowles Jr',
       description:
-        'Technical articles and insights about web development, cloud architecture, and analytics engineering.'
+        'Technical articles and insights about web development, cloud architecture, and analytics engineering.',
+      images: [`${BASE_URL}/images/projects/project-project-omega-cover.webp`]
     },
     alternates: {
       canonical: blogUrl
@@ -234,7 +236,7 @@ export function generateProjectMetadata(project: Project): Metadata {
 }
 
 /**
- * Generates metadata for the main projects page
+ * Generates metadata for the projects index page
  */
 export function generateProjectsIndexMetadata(): Metadata {
   const projectsUrl = `${BASE_URL}/projects`
@@ -242,19 +244,19 @@ export function generateProjectsIndexMetadata(): Metadata {
   return {
     title: 'Projects',
     description:
-      'Browse web development projects and applications created by Jeff Knowles Jr.',
+      'Explore web development projects by Jeff Knowles Jr, including full-stack applications, cloud architecture, and more.',
     openGraph: {
       type: 'website',
       url: projectsUrl,
       title: 'Projects | Jeff Knowles Jr',
       description:
-        'Explore my portfolio of web development projects, applications, and open-source contributions.',
+        'Portfolio of web development projects showcasing frontend, backend, and full-stack development skills.',
       images: [
         {
-          url: `${BASE_URL}/images/og-default.jpg`,
+          url: `${BASE_URL}/images/projects/project-project-omega-cover.webp`,
           width: 1200,
           height: 630,
-          alt: 'Jeff Knowles Jr Projects'
+          alt: 'Project Omega - Jeff Knowles Jr Projects'
         }
       ]
     },
@@ -264,7 +266,8 @@ export function generateProjectsIndexMetadata(): Metadata {
       creator: '@jeffknowlesjr',
       title: 'Projects | Jeff Knowles Jr',
       description:
-        'Explore my portfolio of web development projects, applications, and open-source contributions.'
+        'Portfolio of web development projects showcasing frontend, backend, and full-stack development skills.',
+      images: [`${BASE_URL}/images/projects/project-project-omega-cover.webp`]
     },
     alternates: {
       canonical: projectsUrl
