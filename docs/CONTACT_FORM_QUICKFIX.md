@@ -18,6 +18,16 @@ npm install @aws-sdk/client-ses@^3.398.0 @aws-sdk/credential-provider-node@^3.39
 
 The contact form uses AWS AppSync and IAM authentication to store contact form submissions. The form submission code is located in `src/app/api/contact/submit/route.ts`.
 
+### Email Notifications
+
+The system sends email notifications for new contact form submissions via:
+
+1. DynamoDB Streams: Triggers when new contact form entries are added
+2. Lambda Function: `contact-form-notifications` processes the stream events
+3. Amazon SES: Sends the notification emails to configured recipients
+
+For detailed information about the notification system, see [CONTACT_FORM_SYSTEM.md](./CONTACT_FORM_SYSTEM.md).
+
 ### Required Environment Variables
 
 Create a `.env.local` file in the project root with the following variables:
@@ -27,6 +37,8 @@ Create a `.env.local` file in the project root with the following variables:
 APPSYNC_API_URL=https://5o56c4gzlfaohlo7gnaauyffsy.appsync-api.us-east-1.amazonaws.com/graphql
 # Region specification (not using AWS_ prefix since it's reserved in Amplify)
 REGION=us-east-1
+# DynamoDB table for contact form submissions
+CONTACT_FORM_TABLE=jeff-dev-contact-forms
 ```
 
 **Note:** AWS credentials should be configured through IAM roles in production. For local development, use your AWS CLI configuration (in `~/.aws/credentials`).
@@ -50,6 +62,7 @@ Environment variables are set in Amplify (not using AWS\_ prefix as it's reserve
 
 - `APPSYNC_API_URL`: The GraphQL API endpoint
 - `REGION`: AWS region (e.g., 'us-east-1')
+- `CONTACT_FORM_TABLE`: DynamoDB table name
 
 ### IAM Authentication
 
@@ -100,5 +113,11 @@ If you encounter errors with the contact form submission:
    - 403 errors indicate AWS authorization problems
 
 4. Review server logs
+
    - In development, check your terminal for detailed logs
    - In production, check Amplify's CloudWatch logs
+
+5. Email notification issues
+   - Check spam/junk folders for notification emails
+   - Verify Lambda function settings in AWS Console
+   - See [CONTACT_FORM_SYSTEM.md](./CONTACT_FORM_SYSTEM.md) for more troubleshooting
