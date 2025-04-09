@@ -116,8 +116,11 @@ export async function POST(request: Request) {
           name
           email
           message
+          subject
           createdAt
           status
+          processedAt
+          updatedAt
         }
       }
     `
@@ -132,7 +135,8 @@ export async function POST(request: Request) {
         message: message.trim(),
         subject: subject?.trim() || '',
         status: 'NEW',
-        processedAt: timestamp
+        processedAt: timestamp,
+        updatedAt: timestamp
       }
     }
 
