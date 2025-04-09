@@ -115,7 +115,8 @@ export async function POST(request: Request) {
       input: {
         name: name.trim(),
         email: email.trim(),
-        message: message.trim()
+        message: message.trim(),
+        status: 'NEW'
       }
     }
 
