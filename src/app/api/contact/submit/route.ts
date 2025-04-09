@@ -3,15 +3,28 @@ import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb'
 import { NextResponse } from 'next/server'
 import { v4 as uuidv4 } from 'uuid'
 
-// Initialize DynamoDB client
+// Initialize DynamoDB client with explicit credentials configuration
 const client = new DynamoDBClient({
-  region: process.env.AWS_REGION || 'us-east-1'
+  region: process.env.AWS_REGION || 'us-east-1',
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || ''
+  }
 })
 
 const docClient = DynamoDBDocumentClient.from(client)
 
 export async function POST(request: Request) {
   try {
+    // Verify credentials are available
+    if (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY) {
+      console.error('AWS credentials missing. Check environment variables.')
+      return NextResponse.json(
+        { error: 'Server configuration error' },
+        { status: 500 }
+      )
+    }
+
     const body = await request.json()
     const { name, email, message } = body
 

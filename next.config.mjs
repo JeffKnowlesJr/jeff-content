@@ -32,6 +32,11 @@ const nextConfig = {
         permanent: true
       },
       {
+        source: '/port-inc',
+        destination: '/projects',
+        permanent: true
+      },
+      {
         source: '/blog/tag/tailwind%20css',
         destination: '/blog/tag/tailwind-css',
         permanent: true
