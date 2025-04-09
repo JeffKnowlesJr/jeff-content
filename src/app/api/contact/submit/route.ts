@@ -6,6 +6,9 @@ import { defaultProvider } from '@aws-sdk/credential-provider-node'
 import { HttpRequest } from '@aws-sdk/protocol-http'
 import { parseUrl } from '@aws-sdk/url-parser'
 
+// Mock storage for local development
+const localSubmissions = []
+
 /**
  * Contact Form Submission API Route
  *
@@ -25,14 +28,8 @@ export async function POST(request: Request) {
   try {
     // Check for AppSync configuration
     const APPSYNC_API_URL = process.env.APPSYNC_API_URL
-
-    if (!APPSYNC_API_URL) {
-      console.error('AppSync API URL missing')
-      return NextResponse.json(
-        { error: 'Server configuration error' },
-        { status: 500 }
-      )
-    }
+    const IS_LOCAL_DEV =
+      !APPSYNC_API_URL || process.env.NODE_ENV === 'development'
 
     const body = await request.json()
     const { name, email, message, subject } = body
@@ -49,6 +46,34 @@ export async function POST(request: Request) {
     // Create a unique ID and timestamp
     const id = uuidv4()
     const timestamp = new Date().toISOString()
+
+    // Use local implementation if in development or no AppSync URL
+    if (IS_LOCAL_DEV) {
+      console.log('Using local development mock implementation')
+
+      // Store submission in local array
+      const submission = {
+        id,
+        createdAt: timestamp,
+        name: name.trim(),
+        email: email.trim(),
+        message: message.trim(),
+        subject: subject?.trim() || '',
+        status: 'NEW',
+        processedAt: timestamp,
+        updatedAt: timestamp
+      }
+
+      localSubmissions.push(submission)
+      console.log('Stored local submission:', submission)
+
+      return NextResponse.json({
+        success: true,
+        id,
+        data: submission,
+        mode: 'local_development'
+      })
+    }
 
     // GraphQL mutation for AppSync
     const mutation = `
@@ -78,7 +103,7 @@ export async function POST(request: Request) {
       }
     }
 
-    const region = process.env.AWS_REGION || 'us-east-1'
+    const region = process.env.REGION || 'us-east-1'
     console.log('Attempting IAM auth AppSync mutation with:', {
       url: APPSYNC_API_URL,
       region,

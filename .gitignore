@@ -32,6 +32,10 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
 # vercel
 .vercel
@@ -55,3 +59,15 @@ legacy.app/
 
 # Allow public images
 !/public/images/**
+
+# Security and credentials
+scripts/update-amplify-env.sh
+scripts/deploy-to-amplify.sh
+scripts/*-env*.sh
+scripts/*-cred*.sh
+scripts/*-secret*.sh
+scripts/*-key*.sh
+scripts/*-token*.sh
+**/aws-credentials*
+**/credentials.json
+**/secrets.json
