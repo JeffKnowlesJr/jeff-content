@@ -16,6 +16,12 @@ Client-side error:
 Error submitting contact form: Error: Failed to submit form. Please try again later.
 ```
 
+Test route error:
+
+```
+{"success":false,"error":"AppSync configuration is missing"}
+```
+
 ## CLI Investigation Findings
 
 After checking the AWS configuration using the CLI, the following issues were identified:
@@ -25,6 +31,8 @@ After checking the AWS configuration using the CLI, the following issues were id
 2. **Insufficient IAM Permissions**: The IAM role `jeff-content-amplify-role` has a DynamoDB policy attached, but it only grants `PutItem` permission. It's missing permissions for `GetItem` and `Query` operations.
 
 3. **DynamoDB Table**: The table `jeff-dev-contact-forms` exists and is accessible, but the IAM role doesn't have sufficient permissions to interact with it properly.
+
+4. **AppSync vs DynamoDB**: The test route was still using AppSync instead of directly accessing DynamoDB, causing the "AppSync configuration is missing" error.
 
 ## Build Log Analysis
 
@@ -52,6 +60,8 @@ The Amplify build logs reveal several potential issues:
 
 3. **DynamoDB Table Access**: The production environment might not have proper access to the DynamoDB table due to missing permissions.
 
+4. **Inconsistent Implementation**: The test route was still using AppSync while the submit route was updated to use DynamoDB directly.
+
 ## Resolution Steps
 
 1. **Add Required Environment Variables**: Set the following environment variables in the Amplify console for the main branch:
@@ -74,9 +84,12 @@ The Amplify build logs reveal several potential issues:
    ```
 
 3. **Enhanced Error Logging**: Updated the API route to capture more details about DynamoDB errors, including:
+
    - Using environment variables for table name and region
    - Adding more detailed error logging
    - Handling specific error types with appropriate responses
+
+4. **Update Test Route**: Modified the test route to use DynamoDB directly instead of AppSync, ensuring consistency with the submit route.
 
 ## Changes Made
 
@@ -85,9 +98,12 @@ The Amplify build logs reveal several potential issues:
 2. **Set Environment Variables**: Added the `CONTACT_FORM_TABLE` environment variable to the main branch.
 
 3. **Enhanced API Route**: Updated the contact form submission API route with:
+
    - Environment variable support for table name and region
    - More detailed error logging
    - Better error handling for specific DynamoDB error types
+
+4. **Updated Test Route**: Modified the test route to use DynamoDB directly instead of AppSync, ensuring consistency with the submit route.
 
 ## Next Steps
 
