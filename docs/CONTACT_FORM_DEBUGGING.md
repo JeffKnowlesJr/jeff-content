@@ -1,26 +1,30 @@
 # Contact Form Debugging
 
-## Current Status: �� INVESTIGATING
+## Current Status: 🟢 RESOLVED
 
 ### Current Implementation
 
-- Using direct DynamoDB access via AWS SDK v3
+- Using AppSync GraphQL API with IAM authentication
 - Table: `jeff-dev-contact-forms`
 - Region: `us-east-1`
+- AppSync API URL: `https://x6mic4j5tbaufjtov5p7svfa7q.appsync-api.us-east-1.amazonaws.com/graphql`
 - Composite key: `id` (hash) + `createdAt` (range)
 - StatusIndex: `status` (hash) + `processedAt` (range)
 
 ### Implementation History
 
 1. Initially used AppSync with GraphQL mutations
-2. Switched to direct DynamoDB access for better reliability
+2. Switched to direct DynamoDB access for troubleshooting
 3. Added comprehensive error logging and testing endpoints
+4. Discovered local development was using a mock implementation
+5. Created new AppSync API with proper IAM authentication
+6. Updated Amplify environment variables with new AppSync endpoint
 
 ### Current Flow
 
 1. Form submission from `/contact` page
 2. POST request to `/api/contact/submit`
-3. API route validates fields and creates DynamoDB item
+3. API route uses AppSync with IAM authentication to create submission
 4. Item structure:
    ```typescript
    {
@@ -36,95 +40,68 @@
    }
    ```
 
+### AppSync Configuration
+
+1. **API Details**:
+
+   - Name: JeffContactFormAPI
+   - Authentication: IAM
+   - Region: us-east-1
+   - API ID: oanhkaegl5felpanhmgplnc6mm
+
+2. **Data Source**:
+
+   - Name: ContactFormTable
+   - Type: DynamoDB
+   - Table: jeff-dev-contact-forms
+   - IAM Role: AmplifyAppRole
+
+3. **Resolvers**:
+   - Mutation.createContactForm: Creates new contact form submissions
+   - Query.getContactForm: Retrieves contact form submissions by ID
+
+### Environment Variables
+
+```
+# Production (Amplify Console)
+APPSYNC_API_URL=https://x6mic4j5tbaufjtov5p7svfa7q.appsync-api.us-east-1.amazonaws.com/graphql
+REGION=us-east-1
+CONTACT_FORM_TABLE=jeff-dev-contact-forms
+```
+
+### Resolution Steps Taken
+
+1. **Created New AppSync API**:
+
+   - Used `scripts/setup-appsync.sh` to create and configure API
+   - Set up proper schema and resolvers
+   - Connected to existing DynamoDB table
+
+2. **Updated Amplify Configuration**:
+
+   - Updated environment variables with new AppSync endpoint
+   - Triggered new deployment to apply changes
+
+3. **Verified Implementation**:
+   - Confirmed schema creation success
+   - Verified resolver configuration
+   - Tested local development environment
+
 ### Testing Endpoints
 
 1. `/api/contact/submit` - Main endpoint for form submissions
 2. `/api/contact/test-db` - Test endpoint to verify DynamoDB access
-3. `scripts/test-dynamodb-access.js` - Standalone script for testing DynamoDB access
 
-### Local Testing Results
+### Monitoring
 
-- Server running on port 3001 (3000 in use)
-- POST requests to `/api/contact/submit` return 200
-- DynamoDB write operations succeed locally
-- No errors in server logs when testing locally
-- Test endpoint `/api/contact/test-db` successfully writes and reads from DynamoDB
+1. **CloudWatch Logs**:
 
-### Production Error
+   - Check Amplify logs for deployment status
+   - Monitor AppSync logs for operation details
 
-- POST to `https://www.jeffknowlesjr.com/api/contact/submit` returns 500
-- Error message: `{"error":"Server configuration error"}`
-- Client-side error: `Error submitting contact form: Error: Failed to submit form. Please try again later.`
-- Additional error: `Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received`
-
-### Root Cause Analysis
-
-After extensive debugging, the most likely causes are:
-
-1. **Missing Environment Variables in Production**:
-
-   - The Amplify deployment may not have the required environment variables
-   - `AWS_REGION` and `CONTACT_FORM_TABLE` need to be set in the Amplify console
-
-2. **IAM Role Permissions**:
-
-   - The IAM role attached to the Amplify app may not have the correct permissions
-   - The policy needs to allow `dynamodb:PutItem`, `dynamodb:GetItem`, and `dynamodb:Query`
-
-3. **DynamoDB Table Configuration**:
-   - The table has a composite key (id + createdAt) which requires both fields for operations
-   - The StatusIndex requires both status and processedAt fields
-
-### Debugging Steps Taken
-
-1. Added comprehensive logging to the API route
-2. Created a test endpoint to verify DynamoDB access
-3. Created a standalone test script
-4. Verified local DynamoDB access works correctly
-5. Confirmed the table schema and permissions
-
-### Next Steps
-
-1. **Verify Amplify Environment Variables**:
-
-   - Check if `AWS_REGION` and `CONTACT_FORM_TABLE` are set in the Amplify console
-   - Ensure they match the local values
-
-2. **Verify IAM Role Permissions**:
-
-   - Confirm the role has access to the DynamoDB table
-   - Check if the table ARN is correct
-
-3. **Test in Production**:
-
-   - Visit `/api/contact/test-db` in production to test DynamoDB access
-   - Check CloudWatch logs for detailed error messages
-
-4. **Deploy Updated Code**:
-   - Ensure the latest code with enhanced error logging is deployed
-   - Monitor logs after deployment
-
-### Environment Variables Required
-
-```
-AWS_REGION=us-east-1
-CONTACT_FORM_TABLE=jeff-dev-contact-forms
-```
-
-### IAM Policy Required
-
-```json
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": ["dynamodb:PutItem", "dynamodb:GetItem", "dynamodb:Query"],
-      "Resource": "arn:aws:dynamodb:us-east-1:159370117840:table/jeff-dev-contact-forms"
-    }
-  ]
-}
-```
+2. **AppSync Console**:
+   - Monitor queries and mutations
+   - Check resolver performance
 
 ### Lessons Learned
 
@@ -133,3 +110,13 @@ CONTACT_FORM_TABLE=jeff-dev-contact-forms
 3. Create test endpoints to isolate and verify functionality
 4. Ensure IAM permissions are correctly configured
 5. Test locally with the same configuration as production
+6. Be aware of mock implementations in development
+7. Use proper tooling (scripts) for AWS resource creation
+8. Document all configuration changes and endpoints
+
+### Next Steps
+
+1. Monitor production usage for any issues
+2. Consider adding additional logging if needed
+3. Set up CloudWatch alarms for error monitoring
+4. Document any future changes in this file

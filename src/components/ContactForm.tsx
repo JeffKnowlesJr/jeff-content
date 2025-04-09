@@ -64,6 +64,13 @@ export function ContactForm() {
     }
   }
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+      e.preventDefault()
+      handleSubmit(e as unknown as React.FormEvent)
+    }
+  }
+
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -74,7 +81,11 @@ export function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className='space-y-6'>
+    <form
+      onSubmit={handleSubmit}
+      onKeyDown={handleKeyDown}
+      className='space-y-6'
+    >
       <div>
         <label
           htmlFor='name'
@@ -151,7 +162,7 @@ export function ContactForm() {
           required
           rows={4}
           className='form-textarea w-full text-gray-900 dark:text-white bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700'
-          placeholder='Your message...'
+          placeholder='Your message... (Press Ctrl+Enter to send)'
         />
       </div>
 

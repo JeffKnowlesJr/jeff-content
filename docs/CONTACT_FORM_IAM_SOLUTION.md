@@ -1,6 +1,159 @@
 # Contact Form IAM Authentication Solution
 
-This document explains the implementation of IAM authentication for our contact form submission to AppSync.
+## Current Implementation
+
+The contact form uses AWS AppSync with IAM authentication to securely store submissions in DynamoDB.
+
+### Architecture
+
+```
+Client -> AppSync API -> DynamoDB Table
+   ↑          ↑             ↑
+   └──────────┴─────────────┘
+        IAM Authentication
+```
+
+### Components
+
+1. **AppSync API**:
+
+   - Name: JeffContactFormAPI
+   - API ID: oanhkaegl5felpanhmgplnc6mm
+   - URL: https://x6mic4j5tbaufjtov5p7svfa7q.appsync-api.us-east-1.amazonaws.com/graphql
+   - Authentication: AWS IAM
+   - Region: us-east-1
+
+2. **DynamoDB Table**:
+
+   - Name: jeff-dev-contact-forms
+   - Region: us-east-1
+   - Key Schema:
+     - Hash Key: id (String)
+     - Range Key: createdAt (String)
+   - GSI: StatusIndex
+     - Hash Key: status (String)
+     - Range Key: processedAt (String)
+
+3. **IAM Roles**:
+   - AmplifyAppRole: Used by the Amplify app to access AppSync
+   - Required Permissions:
+     ```json
+     {
+       "Version": "2012-10-17",
+       "Statement": [
+         {
+           "Effect": "Allow",
+           "Action": ["appsync:GraphQL"],
+           "Resource": "arn:aws:appsync:us-east-1:159370117840:apis/oanhkaegl5felpanhmgplnc6mm/*"
+         }
+       ]
+     }
+     ```
+
+### Environment Configuration
+
+```bash
+# Production (Amplify Console)
+APPSYNC_API_URL=https://x6mic4j5tbaufjtov5p7svfa7q.appsync-api.us-east-1.amazonaws.com/graphql
+REGION=us-east-1
+CONTACT_FORM_TABLE=jeff-dev-contact-forms
+```
+
+### GraphQL Schema
+
+```graphql
+type ContactForm {
+  id: ID!
+  createdAt: String!
+  name: String!
+  email: String!
+  message: String!
+  subject: String
+  status: String!
+  processedAt: String!
+  updatedAt: String!
+}
+
+input CreateContactFormInput {
+  id: ID!
+  createdAt: String!
+  name: String!
+  email: String!
+  message: String!
+  subject: String
+  status: String!
+  processedAt: String!
+  updatedAt: String!
+}
+
+type Mutation {
+  createContactForm(input: CreateContactFormInput!): ContactForm
+}
+
+type Query {
+  getContactForm(id: ID!): ContactForm
+}
+```
+
+### Setup Scripts
+
+The AppSync API setup is automated using `scripts/setup-appsync.sh`, which:
+
+1. Creates the AppSync API with IAM authentication
+2. Configures the GraphQL schema
+3. Creates the DynamoDB data source
+4. Sets up resolvers for mutations and queries
+
+### Security Considerations
+
+1. **Authentication**:
+
+   - Uses IAM roles instead of API keys
+   - No credentials stored in code or environment variables
+   - Leverages AWS's secure credential management
+
+2. **Authorization**:
+
+   - AppSync API restricted to authenticated requests only
+   - DynamoDB access controlled through AppSync
+   - Fine-grained access control through IAM policies
+
+3. **Best Practices**:
+   - No hardcoded credentials
+   - Principle of least privilege
+   - Audit logging through CloudWatch
+
+### Monitoring
+
+1. **CloudWatch Logs**:
+
+   - AppSync operation logs
+   - Resolver performance metrics
+   - Error tracking
+
+2. **AppSync Console**:
+   - Real-time operation monitoring
+   - Schema validation
+   - Resolver testing
+
+### Maintenance
+
+1. **Updating Schema**:
+
+   ```bash
+   ./scripts/setup-appsync.sh
+   ```
+
+2. **Updating IAM Policies**:
+
+   ```bash
+   aws iam update-role-policy --role-name AmplifyAppRole --policy-name AppSyncAccess --policy-document file://policies/appsync-access.json
+   ```
+
+3. **Deploying Changes**:
+   ```bash
+   aws amplify start-job --app-id dopcvdkp4snbc --branch-name main --job-type RELEASE
+   ```
 
 ## Problem Statement
 

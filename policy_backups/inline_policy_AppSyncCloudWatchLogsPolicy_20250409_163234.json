@@ -1,0 +1,20 @@
+{
+    "RoleName": "AppSyncLoggingRole",
+    "PolicyName": "AppSyncCloudWatchLogsPolicy",
+    "PolicyDocument": {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Effect": "Allow",
+                "Action": [
+                    "logs:CreateLogGroup",
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents"
+                ],
+                "Resource": [
+                    "arn:aws:logs:us-east-1:159370117840:log-group:/aws/appsync/*"
+                ]
+            }
+        ]
+    }
+}
