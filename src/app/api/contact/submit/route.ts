@@ -66,7 +66,7 @@ export async function POST(request: Request) {
       subject: body.subject || '',
       message: body.message,
       status: 'new',
-      processedAt: ''
+      processedAt: timestamp
     }
 
     console.log('Attempting to save to DynamoDB:', {
