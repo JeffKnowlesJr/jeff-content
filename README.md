@@ -181,6 +181,7 @@ This project is configured to deploy to AWS Amplify. To deploy:
 
 1. Push your changes to the GitHub repository
 2. In the AWS Management Console:
+
    - Go to AWS Amplify
    - Select "New app" > "Host web app"
    - Choose GitHub as the repository source
@@ -188,6 +189,11 @@ This project is configured to deploy to AWS Amplify. To deploy:
    - Keep the default branch (main)
    - Review the build settings (should automatically detect Next.js)
    - Confirm and deploy
+
+3. **Set up IAM Role for Contact Form**:
+   - Run the setup script: `./scripts/setup-amplify-iam.sh`
+   - Follow the instructions to attach the role to your Amplify app
+   - Redeploy your app after attaching the role
 
 ## Local Development
 

@@ -1,13 +1,21 @@
 import { NextResponse } from 'next/server'
-import { submitContactFormServer } from '@/services/server-api'
+import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb'
+import { dynamoClient, CONTACT_FORM_TABLE } from '@/lib/aws-config'
+
+// Initialize the DynamoDB document client
+const docClient = DynamoDBDocumentClient.from(dynamoClient)
 
 export async function POST(request: Request) {
   try {
-    // Check environment variables
-    if (!process.env.APPSYNC_API_URL || !process.env.APPSYNC_API_KEY) {
-      console.error('Missing AppSync configuration in API route:', {
-        hasApiUrl: !!process.env.APPSYNC_API_URL,
-        hasApiKey: !!process.env.APPSYNC_API_KEY
+    // Check AWS credentials only in development environment
+    if (
+      process.env.NODE_ENV !== 'production' &&
+      (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY)
+    ) {
+      console.error('Missing AWS credentials in development:', {
+        hasAccessKey: !!process.env.AWS_ACCESS_KEY_ID,
+        hasSecretKey: !!process.env.AWS_SECRET_ACCESS_KEY,
+        timestamp: new Date().toISOString()
       })
       return NextResponse.json(
         { error: 'Server configuration error' },
@@ -23,7 +31,8 @@ export async function POST(request: Request) {
       console.error('Missing required fields:', {
         hasName: !!name,
         hasEmail: !!email,
-        hasMessage: !!message
+        hasMessage: !!message,
+        timestamp: new Date().toISOString()
       })
       return NextResponse.json(
         { error: 'All fields are required' },
@@ -40,35 +49,48 @@ export async function POST(request: Request) {
     })
 
     try {
-      // Submit to AppSync using server-side service
-      const result = await submitContactFormServer(data)
+      // Create unique ID and timestamp
+      const timestamp = new Date().toISOString()
+      const uniqueId = `contact-${Date.now()}-${Math.random()
+        .toString(36)
+        .substring(2, 10)}`
 
-      if (!result) {
-        console.error('No result returned from submitContactFormServer')
-        throw new Error('No result returned from form submission')
+      // Prepare item for DynamoDB
+      const item = {
+        id: uniqueId,
+        createdAt: timestamp,
+        name: name.trim(),
+        email: email.trim(),
+        message: message.trim(),
+        status: 'new', // Required field based on table schema
+        processedAt: null // Required for the GSI
       }
+
+      // Save to DynamoDB
+      await docClient.send(
+        new PutCommand({
+          TableName: CONTACT_FORM_TABLE,
+          Item: item
+        })
+      )
 
       // Log success (without sensitive info)
       console.log('Contact form submitted successfully:', {
-        id: result.id,
+        id: uniqueId,
         timestamp: new Date().toISOString()
       })
 
       return NextResponse.json({
         success: true,
-        id: result.id,
+        id: uniqueId,
         message: 'Contact form submitted successfully'
       })
     } catch (error) {
       // Log detailed error information
-      console.error('Error submitting to AppSync:', {
+      console.error('Error saving to DynamoDB:', {
         error: error instanceof Error ? error.message : 'Unknown error',
         stack: error instanceof Error ? error.stack : undefined,
-        timestamp: new Date().toISOString(),
-        env: {
-          hasApiUrl: !!process.env.APPSYNC_API_URL,
-          hasApiKey: !!process.env.APPSYNC_API_KEY
-        }
+        timestamp: new Date().toISOString()
       })
 
       // Return a more specific error message

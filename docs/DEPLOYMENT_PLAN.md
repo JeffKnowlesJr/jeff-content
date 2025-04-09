@@ -77,6 +77,12 @@ Since we already have an AppSync API set up, we'll integrate it with our new Amp
    export { configureAmplifyAPI }
    ```
 
+4. **IAM Role Setup for Contact Form**
+
+   - Create a custom IAM role for the Amplify app with permissions to write to DynamoDB
+   - Attach the role to the Amplify app in the console
+   - See [AMPLIFY_IAM_POLICY.md](./AMPLIFY_IAM_POLICY.md) for detailed instructions
+
 ### Phase 3: Build Configuration
 
 Create an `amplify.yml` file at the project root:
