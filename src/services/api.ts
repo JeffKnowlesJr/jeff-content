@@ -67,15 +67,21 @@ export async function submitContactForm(data: ContactFormData) {
 
     if (!response.ok) {
       const errorText = await response.text()
+      let errorDetails
+      try {
+        const errorJson = JSON.parse(errorText)
+        errorDetails = errorJson.details || errorJson.error || errorText
+      } catch {
+        errorDetails = errorText
+      }
+
       console.error('AppSync Error Response:', {
         status: response.status,
         statusText: response.statusText,
         headers: Object.fromEntries(response.headers.entries()),
-        body: errorText
+        body: errorDetails
       })
-      throw new Error(
-        `HTTP error! status: ${response.status}, details: ${errorText}`
-      )
+      throw new Error(`Failed to submit form: ${errorDetails}`)
     }
 
     const result = await response.json()
