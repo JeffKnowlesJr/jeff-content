@@ -27,7 +27,9 @@ cat > policy.json << EOF
     {
       "Effect": "Allow",
       "Action": [
-        "dynamodb:PutItem"
+        "dynamodb:PutItem",
+        "dynamodb:GetItem",
+        "dynamodb:Query"
       ],
       "Resource": "arn:aws:dynamodb:${REGION}:${ACCOUNT_ID}:table/${TABLE_NAME}"
     }
@@ -51,25 +53,55 @@ cat > trust-policy.json << EOF
 }
 EOF
 
-# Create the IAM role
-echo "Creating IAM role: $ROLE_NAME"
-aws iam create-role \
-  --role-name $ROLE_NAME \
-  --assume-role-policy-document file://trust-policy.json
+# Check if the role already exists
+if aws iam get-role --role-name $ROLE_NAME &> /dev/null; then
+    echo "Role $ROLE_NAME already exists. Updating policy..."
+    
+    # Check if the policy already exists
+    if aws iam get-policy --policy-arn "arn:aws:iam::${ACCOUNT_ID}:policy/${POLICY_NAME}" &> /dev/null; then
+        echo "Policy $POLICY_NAME already exists. Creating new version..."
+        
+        # Create a new version of the policy
+        aws iam create-policy-version \
+            --policy-arn "arn:aws:iam::${ACCOUNT_ID}:policy/${POLICY_NAME}" \
+            --policy-document file://policy.json \
+            --set-as-default
+    else
+        echo "Creating new policy: $POLICY_NAME"
+        # Create the policy
+        POLICY_ARN=$(aws iam create-policy \
+            --policy-name $POLICY_NAME \
+            --policy-document file://policy.json \
+            --query "Policy.Arn" \
+            --output text)
+        
+        # Attach the policy to the role
+        echo "Attaching policy to role"
+        aws iam attach-role-policy \
+            --role-name $ROLE_NAME \
+            --policy-arn $POLICY_ARN
+    fi
+else
+    echo "Creating IAM role: $ROLE_NAME"
+    # Create the IAM role
+    aws iam create-role \
+        --role-name $ROLE_NAME \
+        --assume-role-policy-document file://trust-policy.json
 
-# Create the policy
-echo "Creating IAM policy: $POLICY_NAME"
-POLICY_ARN=$(aws iam create-policy \
-  --policy-name $POLICY_NAME \
-  --policy-document file://policy.json \
-  --query "Policy.Arn" \
-  --output text)
+    # Create the policy
+    echo "Creating IAM policy: $POLICY_NAME"
+    POLICY_ARN=$(aws iam create-policy \
+        --policy-name $POLICY_NAME \
+        --policy-document file://policy.json \
+        --query "Policy.Arn" \
+        --output text)
 
-# Attach the policy to the role
-echo "Attaching policy to role"
-aws iam attach-role-policy \
-  --role-name $ROLE_NAME \
-  --policy-arn $POLICY_ARN
+    # Attach the policy to the role
+    echo "Attaching policy to role"
+    aws iam attach-role-policy \
+        --role-name $ROLE_NAME \
+        --policy-arn $POLICY_ARN
+fi
 
 # Clean up
 rm policy.json trust-policy.json
@@ -82,5 +114,5 @@ echo "1. Go to the AWS Amplify console"
 echo "2. Select your app"
 echo "3. Go to 'App settings' > 'Access control'"
 echo "4. Select 'Custom IAM role'"
-echo "5. Choose the role you just created: ${ROLE_NAME}"
+echo "5. Choose the role: ${ROLE_NAME}"
 echo "6. Redeploy your app" 

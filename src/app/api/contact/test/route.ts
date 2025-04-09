@@ -2,7 +2,7 @@ import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb'
 import { NextResponse } from 'next/server'
 
-// Initialize DynamoDB client
+// Initialize DynamoDB client with region only - will use IAM role in production
 const client = new DynamoDBClient({
   region: process.env.AWS_REGION || 'us-east-1'
 })

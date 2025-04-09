@@ -3,28 +3,16 @@ import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb'
 import { NextResponse } from 'next/server'
 import { v4 as uuidv4 } from 'uuid'
 
-// Initialize DynamoDB client with explicit credentials configuration
+// Initialize DynamoDB client with region only - will use IAM role in production
 const client = new DynamoDBClient({
-  region: process.env.AWS_REGION || 'us-east-1',
-  credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || ''
-  }
+  region: process.env.AWS_REGION || 'us-east-1'
 })
 
 const docClient = DynamoDBDocumentClient.from(client)
 
 export async function POST(request: Request) {
   try {
-    // Verify credentials are available
-    if (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY) {
-      console.error('AWS credentials missing. Check environment variables.')
-      return NextResponse.json(
-        { error: 'Server configuration error' },
-        { status: 500 }
-      )
-    }
-
+    // Remove explicit credentials check - will rely on IAM role
     const body = await request.json()
     const { name, email, message } = body
 

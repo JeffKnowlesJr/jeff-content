@@ -10,7 +10,7 @@ This document outlines the IAM policy that needs to be added to the Amplify app 
   "Statement": [
     {
       "Effect": "Allow",
-      "Action": ["dynamodb:PutItem"],
+      "Action": ["dynamodb:PutItem", "dynamodb:GetItem", "dynamodb:Query"],
       "Resource": "arn:aws:dynamodb:us-east-1:159370117840:table/jeff-dev-contact-forms"
     }
   ]
@@ -19,24 +19,17 @@ This document outlines the IAM policy that needs to be added to the Amplify app 
 
 ## Implementation Steps
 
-1. **Create a Custom IAM Role for Amplify**:
+1. **Update the Existing IAM Role for Amplify**:
 
    - Go to the AWS IAM console
-   - Create a new role named `jeff-content-amplify-role`
-   - Select "AWS service" as the trusted entity type
-   - Select "Amplify" as the use case
-   - Attach the policy document above as a custom policy
+   - Find the existing role named `jeff-content-amplify-role`
+   - Go to the "Permissions" tab
+   - Find the existing policy and click "Edit"
+   - Replace the policy document with the one above
+   - Save the changes
 
-2. **Attach the Role to the Amplify App**:
-
-   - Go to the AWS Amplify console
-   - Select your app
-   - Go to "App settings" > "Access control"
-   - Select "Custom IAM role"
-   - Choose the `jeff-content-amplify-role` you created
-
-3. **Verify the Configuration**:
-   - After attaching the role, redeploy your app
+2. **Verify the Configuration**:
+   - After updating the policy, redeploy your app
    - Test the contact form to ensure it can write to DynamoDB
 
 ## Troubleshooting
@@ -52,4 +45,4 @@ If the contact form still fails after implementing these changes:
 
 - The policy follows the principle of least privilege, only granting the minimum permissions needed
 - The policy is scoped to a specific DynamoDB table
-- The policy only allows PutItem operations, not read or delete operations
+- The policy allows PutItem, GetItem, and Query operations, which are necessary for the contact form to function properly
