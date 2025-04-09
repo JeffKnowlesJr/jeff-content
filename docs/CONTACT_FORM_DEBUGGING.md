@@ -1,6 +1,6 @@
 # Contact Form Debugging
 
-**Status**: 🟡 INVESTIGATING - 500 error persists during DynamoDB write
+**Status**: 🟡 INVESTIGATING - Testing simplified DynamoDB item.
 
 ## Issue Overview
 
@@ -30,7 +30,7 @@ The investigation revealed several contributing factors:
 
 ## Resolution Path
 
-The following steps were taken to resolve the issue:
+The following steps have been taken:
 
 1.  **Direct DynamoDB Interaction:** Confirmed the approach of having the Next.js API route write directly to the `jeff-dev-contact-forms` DynamoDB table, bypassing the previously considered Lambda/AppSync path.
 
@@ -51,6 +51,12 @@ The following steps were taken to resolve the issue:
 6.  **GSI Compatibility (Minor Adjustment):** Modified the API route to set `processedAt: ''` instead of `null` when creating the DynamoDB item to ensure compatibility with the GSI, although the core issue was permissions.
 
 7.  **Redeployment:** Redeployed the Amplify application after applying the code changes and updating the service role.
+
+8.  **Manually Attached IAM Policy:** The missing policy (`jeff-content-dynamodb-policy`) was manually attached to the `jeff-content-amplify-role` using the AWS CLI.
+
+9.  **Simplified DynamoDB Item (Debugging):** Temporarily modified `src/app/api/contact/submit/route.ts` to comment out non-essential fields (`name`, `email`, `message`, `processedAt`) being sent in the `PutCommand` to isolate potential data validation issues.
+
+10. **Redeployment Pending:** The Amplify application needs to be redeployed with the simplified item code for testing.
 
 ## Final DynamoDB Table Configuration
 
@@ -98,3 +104,14 @@ After implementing the above steps and redeploying:
 4.  Checked CloudWatch logs for the API route to ensure no errors were logged during submission.
 
 This comprehensive approach, addressing both the code's credential handling and the necessary cloud infrastructure permissions, successfully resolved the 500 error.
+
+## Next Steps & Verification
+
+1.  **Redeploy Amplify App:** Trigger a new build and deployment with the simplified item code.
+2.  **Test Form Submission:** After deployment completes, submit a test form on the live site.
+3.  **Verify Outcome:**
+    - Check for a 200 OK response from the API.
+    - If successful, uncomment fields one by one to find the problematic one.
+    - If it still fails, the issue is likely network/environment related.
+    - Confirm the item appears in the DynamoDB table (with only id, createdAt, status if successful).
+    - If errors persist, re-examine CloudWatch logs or add further logging.

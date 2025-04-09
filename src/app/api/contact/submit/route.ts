@@ -55,15 +55,15 @@ export async function POST(request: Request) {
         .toString(36)
         .substring(2, 10)}`
 
-      // Prepare item for DynamoDB
+      // Prepare item for DynamoDB (TEMPORARY SIMPLIFIED VERSION FOR DEBUGGING)
       const item = {
         id: uniqueId,
         createdAt: timestamp,
-        name: name.trim(),
-        email: email.trim(),
-        message: message.trim(),
-        status: 'new', // Required field based on table schema
-        processedAt: '' // Use empty string instead of null for GSI compatibility
+        // name: name.trim(), // Temporarily commented out
+        // email: email.trim(), // Temporarily commented out
+        // message: message.trim(), // Temporarily commented out
+        status: 'new' // Required field based on table schema
+        // processedAt: '' // Temporarily commented out
       }
 
       // Save to DynamoDB
