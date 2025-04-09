@@ -111,17 +111,9 @@ export async function POST(request: Request) {
     // Prepare the input with the table name (can help with debugging)
     const variables = {
       input: {
-        id,
-        createdAt: timestamp,
         name: name.trim(),
         email: email.trim(),
-        message: message.trim(),
-        subject: subject?.trim() || '', // Optional field
-        status: 'NEW',
-        processedAt: timestamp,
-        updatedAt: timestamp,
-        __typename: 'ContactForm',
-        _tableName: CONTACT_FORM_TABLE // For debugging
+        message: message.trim()
       }
     }
 
