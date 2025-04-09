@@ -63,7 +63,7 @@ export async function POST(request: Request) {
         email: email.trim(),
         message: message.trim(),
         status: 'new', // Required field based on table schema
-        processedAt: null // Required for the GSI
+        processedAt: '' // Use empty string instead of null for GSI compatibility
       }
 
       // Save to DynamoDB

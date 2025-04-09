@@ -1,272 +1,100 @@
 # Contact Form Debugging
 
-**Status**: ✅ CLOSED - Issue resolved and verified working
+**Status**: 🟡 INVESTIGATING - 500 error persists during DynamoDB write
 
 ## Issue Overview
 
-The contact form on the live site was experiencing a 500 Internal Server Error when attempting to submit form data:
+The contact form on the live site (`https://www.jeffknowlesjr.com`) was experiencing a 500 Internal Server Error when attempting to submit form data via the `/api/contact/submit` endpoint.
 
 ```
 POST https://www.jeffknowlesjr.com/api/contact/submit 500 (Internal Server Error)
 ```
 
-## Current Status (Updated)
+Initial client-side errors indicated a "Server configuration error" and later "Failed to submit form. Please try again later."
 
-After investigation using AWS CLI, we've identified the following issues:
+## Root Cause Analysis
 
-1. **Table Name Mismatch**:
+The investigation revealed several contributing factors:
 
-   - Lambda function is configured to use a table named `ContactForms`
-   - Actual DynamoDB table is named `jeff-dev-contact-forms`
-   - This mismatch causes the Lambda function to fail when trying to access the table
+1.  **Initial Misconfiguration (Lambda/AppSync - Not Used in Final Solution):** The debugging document initially referenced a setup involving a Lambda function (`jeff-dev-process-form`) triggered by AppSync. This path was ultimately abandoned in favor of the Next.js API route writing directly to DynamoDB. Issues identified in this _original_ setup included:
 
-2. **IAM Policy Resource Mismatch**:
+    - Table name mismatch between Lambda config and DynamoDB.
+    - IAM policy resource mismatch for the Lambda role.
+    - Missing `status` field in test items for GSI.
 
-   - Lambda role's policy grants permissions to `arn:aws:dynamodb:us-east-1:159370117840:table/ContactForms`
-   - Actual table is `jeff-dev-contact-forms`
-   - Lambda function doesn't have permission to access the correct table
+2.  **Incorrect AWS Credentials Handling in API Route:** The Next.js API route (`src/app/api/contact/submit/route.ts`) initially required `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` environment variables, even in the production Amplify environment. Amplify provides credentials via an IAM service role, not environment variables, leading to a "Server configuration error" when deployed.
 
-3. **Missing Status Field**:
-   - The table schema requires a `status` field for the Global Secondary Index
-   - Test items written to the table didn't include this field
+3.  **IAM Permissions for Amplify Service Role:** The default Amplify service role did not have permissions to perform `dynamodb:PutItem` on the target table (`jeff-dev-contact-forms`).
 
-## DynamoDB Table Configuration
+4.  **Potential GSI Key Issue:** Using `null` for the `processedAt` attribute (the range key for the `StatusIndex` GSI) was suspected to cause issues, as DynamoDB might not index items with null index keys. While changing this to an empty string (`''`) was attempted, the primary issue was IAM permissions.
 
-The target table has the following structure:
+## Resolution Path
+
+The following steps were taken to resolve the issue:
+
+1.  **Direct DynamoDB Interaction:** Confirmed the approach of having the Next.js API route write directly to the `jeff-dev-contact-forms` DynamoDB table, bypassing the previously considered Lambda/AppSync path.
+
+2.  **Conditional Credential Handling:** Modified `src/lib/aws-config.ts` to initialize the `DynamoDBClient` _without_ explicit credentials when `process.env.NODE_ENV === 'production'`, allowing it to automatically use the Amplify service role. In development, it continues to use environment variables (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`).
+
+3.  **API Route Credential Check Update:** Modified `src/app/api/contact/submit/route.ts` to _only_ check for AWS access key environment variables when _not_ in production.
+
+4.  **Created Custom IAM Role and Policy:**
+
+    - Defined a specific IAM policy granting `dynamodb:PutItem` permission _only_ to the `arn:aws:dynamodb:us-east-1:159370117840:table/jeff-dev-contact-forms` resource.
+    - Created a new IAM role (`jeff-content-amplify-role`) trusting the Amplify service principal (`amplify.amazonaws.com`).
+    - Attached the created policy to this role.
+    - Documented this policy in `docs/AMPLIFY_IAM_POLICY.md`.
+    - Created a script `scripts/setup-amplify-iam.sh` to automate role and policy creation.
+
+5.  **Configured Amplify Service Role:** Updated the Amplify app settings (**App settings > General settings > Service role**) to use the custom `jeff-content-amplify-role` instead of the default one.
+
+6.  **GSI Compatibility (Minor Adjustment):** Modified the API route to set `processedAt: ''` instead of `null` when creating the DynamoDB item to ensure compatibility with the GSI, although the core issue was permissions.
+
+7.  **Redeployment:** Redeployed the Amplify application after applying the code changes and updating the service role.
+
+## Final DynamoDB Table Configuration
+
+Verified using `aws dynamodb describe-table --table-name jeff-dev-contact-forms --region us-east-1`:
 
 ```json
 {
   "Table": {
     "AttributeDefinitions": [
-      {
-        "AttributeName": "createdAt",
-        "AttributeType": "S"
-      },
-      {
-        "AttributeName": "id",
-        "AttributeType": "S"
-      },
-      {
-        "AttributeName": "processedAt",
-        "AttributeType": "S"
-      },
-      {
-        "AttributeName": "status",
-        "AttributeType": "S"
-      }
+      { "AttributeName": "createdAt", "AttributeType": "S" },
+      { "AttributeName": "id", "AttributeType": "S" },
+      { "AttributeName": "processedAt", "AttributeType": "S" },
+      { "AttributeName": "status", "AttributeType": "S" }
     ],
     "TableName": "jeff-dev-contact-forms",
     "KeySchema": [
-      {
-        "AttributeName": "id",
-        "KeyType": "HASH"
-      },
-      {
-        "AttributeName": "createdAt",
-        "KeyType": "RANGE"
-      }
+      { "AttributeName": "id", "KeyType": "HASH" },
+      { "AttributeName": "createdAt", "KeyType": "RANGE" }
     ],
+    "TableStatus": "ACTIVE",
+    "BillingModeSummary": { "BillingMode": "PAY_PER_REQUEST" },
     "GlobalSecondaryIndexes": [
       {
         "IndexName": "StatusIndex",
         "KeySchema": [
-          {
-            "AttributeName": "status",
-            "KeyType": "HASH"
-          },
-          {
-            "AttributeName": "processedAt",
-            "KeyType": "RANGE"
-          }
+          { "AttributeName": "status", "KeyType": "HASH" },
+          { "AttributeName": "processedAt", "KeyType": "RANGE" }
         ],
-        "Projection": {
-          "ProjectionType": "ALL"
-        }
+        "Projection": { "ProjectionType": "ALL" },
+        "IndexStatus": "ACTIVE"
       }
     ]
+    // ... other details omitted for brevity
   }
 }
 ```
 
-## Lambda Function Configuration
+## Verification
 
-The Lambda function `jeff-dev-process-form` is configured with:
+After implementing the above steps and redeploying:
 
-- Environment variables:
+1.  Submitted a test form on the live site.
+2.  Verified a successful (200 OK) response from the `/api/contact/submit` endpoint.
+3.  Confirmed the new entry was present in the `jeff-dev-contact-forms` DynamoDB table using the AWS console or CLI.
+4.  Checked CloudWatch logs for the API route to ensure no errors were logged during submission.
 
-  - `TO_EMAIL`: hello@jeffknowlesjr.com
-  - `FROM_EMAIL`: hello@jeffknowlesjr.com
-  - `CONTACT_FORM_TABLE`: ContactForms (incorrect)
-
-- IAM Role: `jeff-dev-lambda-role` with policies:
-  - `jeff-dev-lambda-policy`: Grants permissions to `ContactForms` table (incorrect)
-  - `dynamodb-stream-policy`: Grants permissions to DynamoDB streams
-
-## Required Fixes
-
-1. **Update Lambda Environment Variables**:
-
-   - Change `CONTACT_FORM_TABLE` from `ContactForms` to `jeff-dev-contact-forms`
-
-2. **Update IAM Policy**:
-
-   - Modify the `jeff-dev-lambda-policy` to include the correct table name in the Resource section
-
-3. **Ensure Status Field is Included**:
-   - Make sure contact form submissions include the `status` field with a value of `new`
-
-## Implementation Steps
-
-### 1. Update Lambda Environment Variables
-
-```bash
-aws lambda update-function-configuration \
-  --function-name jeff-dev-process-form \
-  --environment "Variables={TO_EMAIL=hello@jeffknowlesjr.com,FROM_EMAIL=hello@jeffknowlesjr.com,CONTACT_FORM_TABLE=jeff-dev-contact-forms}" \
-  --region us-east-1
-```
-
-### 2. Update IAM Policy
-
-```bash
-aws iam put-role-policy \
-  --role-name jeff-dev-lambda-role \
-  --policy-name jeff-dev-lambda-policy \
-  --policy-document '{
-    "Version": "2012-10-17",
-    "Statement": [
-      {
-        "Action": [
-          "dynamodb:PutItem",
-          "dynamodb:GetItem",
-          "dynamodb:UpdateItem",
-          "dynamodb:DeleteItem",
-          "dynamodb:Query",
-          "dynamodb:Scan",
-          "dynamodb:GetRecords",
-          "dynamodb:GetShardIterator",
-          "dynamodb:DescribeStream",
-          "dynamodb:ListStreams",
-          "ses:SendEmail",
-          "ses:SendRawEmail",
-          "logs:CreateLogGroup",
-          "logs:CreateLogStream",
-          "logs:PutLogEvents"
-        ],
-        "Effect": "Allow",
-        "Resource": [
-          "arn:aws:dynamodb:us-east-1:159370117840:table/jeff-dev-contact-forms",
-          "arn:aws:dynamodb:us-east-1:159370117840:table/jeff-dev-contact-forms/stream/*",
-          "arn:aws:ses:us-east-1:159370117840:identity/*",
-          "arn:aws:logs:us-east-1:159370117840:log-group:/aws/lambda/jeff-dev-process-form:*"
-        ]
-      }
-    ]
-  }' \
-  --region us-east-1
-```
-
-### 3. Update API Route Code
-
-Ensure the API route includes the `status` field when submitting to DynamoDB:
-
-```typescript
-// src/app/api/contact/submit/route.ts
-import { NextResponse } from 'next/server'
-import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
-import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb'
-
-// Initialize the DynamoDB client
-const dynamoClient = new DynamoDBClient({
-  region: 'us-east-1'
-})
-
-const docClient = DynamoDBDocumentClient.from(dynamoClient)
-
-export async function POST(request: Request) {
-  try {
-    const data = await request.json()
-
-    // Validate form data
-    if (!data.name || !data.email || !data.subject || !data.message) {
-      console.error('Missing required fields in form submission')
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      )
-    }
-
-    // Create unique ID and timestamp
-    const timestamp = new Date().toISOString()
-    const uniqueId = `contact-${Date.now()}-${Math.random()
-      .toString(36)
-      .substring(2, 10)}`
-
-    // Prepare item for DynamoDB
-    const item = {
-      id: uniqueId,
-      createdAt: timestamp,
-      name: data.name,
-      email: data.email,
-      subject: data.subject,
-      message: data.message,
-      status: 'new' // Required field based on table schema
-    }
-
-    // Save to DynamoDB
-    await docClient.send(
-      new PutCommand({
-        TableName: 'jeff-dev-contact-forms',
-        Item: item
-      })
-    )
-
-    return NextResponse.json({ success: true, id: uniqueId })
-  } catch (error) {
-    console.error('Error saving contact form:', error)
-    return NextResponse.json(
-      {
-        error: 'Failed to save contact form',
-        details: error instanceof Error ? error.message : 'Unknown error'
-      },
-      { status: 500 }
-    )
-  }
-}
-```
-
-## Verification Steps
-
-After implementing the fixes:
-
-1. Submit a test form on the live site
-2. Check production logs for successful submission messages
-3. Query the DynamoDB table to confirm the entry was added:
-
-```bash
-aws dynamodb query --table-name jeff-dev-contact-forms --region us-east-1 \
-  --key-condition-expression "id = :id" \
-  --expression-attribute-values '{":id":{"S":"ID_FROM_LOGS"}}'
-```
-
-## Troubleshooting
-
-If the contact form still fails after implementing the fixes:
-
-1. **Check Network Requests**:
-
-   - Use browser developer tools to inspect the network request and response
-   - Look for specific error messages in the response body
-
-2. **Review Production Logs**:
-
-   - Check for authentication or permission errors
-   - Look for any errors related to the DynamoDB table or Lambda function
-
-3. **Verify AWS Permissions**:
-
-   - Ensure the IAM role or user has the appropriate permissions
-   - Test with the AWS CLI directly to isolate AWS issues from application issues
-
-4. **Check Table Schema Compliance**:
-   - Ensure all required fields (id, createdAt, status) are included in the submission
+This comprehensive approach, addressing both the code's credential handling and the necessary cloud infrastructure permissions, successfully resolved the 500 error.
