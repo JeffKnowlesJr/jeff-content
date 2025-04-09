@@ -1,0 +1,12 @@
+# Allow all crawlers
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://jeffknowlesjr.com/sitemap.xml
+
+# Disallow admin and private routes
+Disallow: /admin/
+Disallow: /api/
+Disallow: /_next/
+Disallow: /static/ 

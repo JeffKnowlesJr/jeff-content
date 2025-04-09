@@ -36,6 +36,78 @@ const nextConfig = {
         destination: '/projects',
         permanent: true
       },
+      // Add new redirects for 404 URLs
+      {
+        source: '/projects/modules/appsync',
+        destination: '/projects',
+        permanent: true
+      },
+      {
+        source: '/projects/modules/dynamodb',
+        destination: '/projects',
+        permanent: true
+      },
+      {
+        source: '/projects/modules/s3-cloudfront',
+        destination: '/projects',
+        permanent: true
+      },
+      {
+        source: '/projects/modules/cognito',
+        destination: '/projects',
+        permanent: true
+      },
+      {
+        source: '/projects/modules/amplify',
+        destination: '/projects',
+        permanent: true
+      },
+      {
+        source: '/prod',
+        destination: '/',
+        permanent: true
+      },
+      {
+        source: '/app',
+        destination: '/',
+        permanent: true
+      },
+      {
+        source: '/app/index.html',
+        destination: '/',
+        permanent: true
+      },
+      {
+        source: '/users',
+        destination: '/',
+        permanent: true
+      },
+      {
+        source: '/docs',
+        destination: '/resources',
+        permanent: true
+      },
+      {
+        source: '/downloads/marketing-guide',
+        destination: '/resources',
+        permanent: true
+      },
+      {
+        source: '/about',
+        destination: '/',
+        permanent: true
+      },
+      {
+        source: '/admin/index.html',
+        destination: '/admin',
+        permanent: true
+      },
+      {
+        source: '/admin',
+        destination: '/admin',
+        permanent: true
+      },
+      // Existing redirects
       {
         source: '/blog/tag/tailwind%20css',
         destination: '/blog/tag/tailwind-css',
