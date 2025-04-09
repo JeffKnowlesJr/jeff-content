@@ -3,6 +3,18 @@ import { submitContactFormServer } from '@/services/server-api'
 
 export async function POST(request: Request) {
   try {
+    // Check environment variables
+    if (!process.env.APPSYNC_API_URL || !process.env.APPSYNC_API_KEY) {
+      console.error('Missing AppSync configuration in API route:', {
+        hasApiUrl: !!process.env.APPSYNC_API_URL,
+        hasApiKey: !!process.env.APPSYNC_API_KEY
+      })
+      return NextResponse.json(
+        { error: 'Server configuration error' },
+        { status: 500 }
+      )
+    }
+
     const data = await request.json()
     const { name, email, message } = data
 
@@ -52,7 +64,11 @@ export async function POST(request: Request) {
       console.error('Error submitting to AppSync:', {
         error: error instanceof Error ? error.message : 'Unknown error',
         stack: error instanceof Error ? error.stack : undefined,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        env: {
+          hasApiUrl: !!process.env.APPSYNC_API_URL,
+          hasApiKey: !!process.env.APPSYNC_API_KEY
+        }
       })
 
       // Return a more specific error message

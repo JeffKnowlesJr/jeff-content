@@ -5,8 +5,8 @@ interface ContactFormData {
   status?: string
 }
 
-const APPSYNC_API_URL = process.env.NEXT_PUBLIC_APPSYNC_API_URL
-const APPSYNC_API_KEY = process.env.NEXT_PUBLIC_APPSYNC_API_KEY
+const APPSYNC_API_URL = process.env.APPSYNC_API_URL
+const APPSYNC_API_KEY = process.env.APPSYNC_API_KEY
 
 if (!APPSYNC_API_URL || !APPSYNC_API_KEY) {
   console.error(
