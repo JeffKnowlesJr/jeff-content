@@ -3,11 +3,9 @@ import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb'
 import { v4 as uuidv4 } from 'uuid'
 
-// Initialize DynamoDB client
+// Initialize DynamoDB client - in production, it will automatically use instance role
 const client = new DynamoDBClient({
-  region: process.env.AWS_REGION || 'us-east-1'
-  // In production, credentials are automatically provided by IAM roles
-  // In development, credentials are provided by environment variables
+  region: 'us-east-1'
 })
 
 const docClient = DynamoDBDocumentClient.from(client)
@@ -120,6 +118,12 @@ export async function POST(request: Request) {
         )
       } else if (error.name === 'AccessDeniedException') {
         console.error('Access denied to DynamoDB table:', tableName)
+        return NextResponse.json(
+          { error: 'Server configuration error. Please try again later.' },
+          { status: 500 }
+        )
+      } else if (error.name === 'CredentialsProviderError') {
+        console.error('AWS credentials not available:', error.message)
         return NextResponse.json(
           { error: 'Server configuration error. Please try again later.' },
           { status: 500 }

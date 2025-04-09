@@ -3,11 +3,9 @@ import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb'
 import { v4 as uuidv4 } from 'uuid'
 
-// Initialize DynamoDB client
+// Initialize DynamoDB client - in production, it will automatically use instance role
 const client = new DynamoDBClient({
-  region: process.env.AWS_REGION || 'us-east-1'
-  // In production, credentials are automatically provided by IAM roles
-  // In development, credentials are provided by environment variables
+  region: 'us-east-1'
 })
 
 const docClient = DynamoDBDocumentClient.from(client)
