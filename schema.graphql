@@ -1,0 +1,149 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+type BlogPost {
+  author: String!
+  content: String!
+  createdAt: AWSDateTime!
+  excerpt: String!
+  featuredImage: String
+  publishedAt: AWSDateTime!
+  readingTime: Int!
+  slug: String!
+  status: String!
+  tags: [String!]!
+  title: String!
+  updatedAt: AWSDateTime!
+}
+
+type BlogPostConnection {
+  items: [BlogPost!]!
+  nextToken: String
+}
+
+type ContactForm {
+  createdAt: AWSDateTime!
+  email: String!
+  id: ID!
+  message: String!
+  name: String!
+  status: String!
+  updatedAt: AWSDateTime!
+}
+
+type Mutation {
+  createBlogPost(input: CreateBlogPostInput!): BlogPost!
+  createContactForm(input: CreateContactFormInput!): ContactForm!
+  createProject(input: CreateProjectInput!): Project!
+  deleteBlogPost(input: DeleteBlogPostInput!): BlogPost!
+  deleteProject(slug: String!): Boolean!
+  updateBlogPost(input: UpdateBlogPostInput!): BlogPost!
+  updateProject(input: UpdateProjectInput!): Project!
+}
+
+type Project {
+  author: String
+  content: String
+  contentImage: String
+  createdAt: AWSDateTime
+  excerpt: String
+  featuredImage: String
+  githubUrl: String
+  id: ID!
+  liveUrl: String
+  projectStatus: String
+  projectType: String!
+  publishedAt: AWSDateTime
+  slug: String!
+  status: String!
+  tags: [String]
+  techStack: [String]
+  thumbnailImage: String
+  title: String!
+  updatedAt: AWSDateTime
+}
+
+type Query {
+  getBlogPost(slug: String!): BlogPost
+  getContactForm(id: ID!): ContactForm
+  getProject(slug: String!): Project
+  listBlogPosts(limit: Int, nextToken: String): BlogPostConnection
+  listContactForms(limit: Int, nextToken: String): [ContactForm!]!
+  listProjects: [Project!]!
+}
+
+input CreateBlogPostInput {
+  author: String!
+  content: String!
+  excerpt: String!
+  featuredImage: String
+  publishedAt: AWSDateTime!
+  readingTime: Int!
+  slug: String!
+  status: String!
+  tags: [String!]!
+  title: String!
+}
+
+input CreateContactFormInput {
+  email: String!
+  message: String!
+  name: String!
+}
+
+input CreateProjectInput {
+  author: String!
+  content: String!
+  contentImage: String
+  excerpt: String!
+  featuredImage: String
+  githubUrl: String
+  liveUrl: String
+  projectStatus: String
+  projectType: String!
+  publishedAt: AWSDateTime!
+  slug: String!
+  status: String!
+  tags: [String!]!
+  techStack: [String!]
+  thumbnailImage: String
+  title: String!
+}
+
+input DeleteBlogPostInput {
+  slug: String!
+}
+
+input UpdateBlogPostInput {
+  author: String!
+  content: String!
+  excerpt: String!
+  featuredImage: String
+  publishedAt: AWSDateTime!
+  readingTime: Int!
+  slug: String!
+  status: String!
+  tags: [String!]!
+  title: String!
+}
+
+input UpdateProjectInput {
+  author: String!
+  content: String!
+  contentImage: String
+  excerpt: String!
+  featuredImage: String
+  githubUrl: String
+  liveUrl: String
+  projectStatus: String
+  projectType: String!
+  publishedAt: AWSDateTime!
+  slug: String!
+  status: String!
+  tags: [String!]!
+  techStack: [String!]
+  thumbnailImage: String
+  title: String!
+}

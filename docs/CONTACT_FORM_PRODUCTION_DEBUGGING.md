@@ -8,47 +8,25 @@ Contact form is experiencing a 500 Internal Server Error in production, with the
 
 ## Root Cause
 
-1. **IAM Role Configuration**: The IAM role `jeff-content-amplify-role` needed expanded permissions and trust relationships:
-   - Limited DynamoDB permissions (only PutItem)
-   - Incomplete trust relationship for service principals
+1. **Inconsistent Implementation**: The application was trying to use both direct DynamoDB access and AppSync, causing credential issues:
+   - API routes were attempting to use IAM roles for DynamoDB access
+   - Other parts of the application were using AppSync
+   - This mixed approach led to credential provider errors
 
 ## Resolution Steps Taken
 
-1. **Updated DynamoDB Policy**: Enhanced permissions to include:
+1. **Standardized on AppSync**: Updated both API routes to use AppSync consistently:
 
-   ```json
-   {
-     "Effect": "Allow",
-     "Action": [
-       "dynamodb:PutItem",
-       "dynamodb:GetItem",
-       "dynamodb:Query",
-       "dynamodb:Scan",
-       "dynamodb:UpdateItem",
-       "dynamodb:DeleteItem"
-     ],
-     "Resource": "arn:aws:dynamodb:us-east-1:159370117840:table/jeff-dev-contact-forms"
-   }
-   ```
+   - Modified `/api/contact/submit` to use AppSync instead of direct DynamoDB access
+   - Modified `/api/contact/test` to use AppSync instead of direct DynamoDB access
+   - Removed DynamoDB client initialization code
 
-2. **Updated Trust Relationship**: Added necessary service principals:
+2. **Environment Variables**: Ensured proper AppSync configuration:
 
-   ```json
-   {
-     "Version": "2012-10-17",
-     "Statement": [
-       {
-         "Effect": "Allow",
-         "Principal": {
-           "Service": ["amplify.amazonaws.com", "cloudfront.amazonaws.com"]
-         },
-         "Action": "sts:AssumeRole"
-       }
-     ]
-   }
-   ```
+   - `APPSYNC_API_URL`: The GraphQL API endpoint
+   - `APPSYNC_API_KEY`: The API key for authentication
 
-3. **Deployment**: Initiated new deployment to apply IAM changes (Job ID: 235)
+3. **Deployment**: Initiated new deployment to apply changes (Job ID: 235)
 
 ## Verification Steps
 
@@ -69,6 +47,6 @@ Contact form is experiencing a 500 Internal Server Error in production, with the
 
 ## Lessons Learned
 
-1. IAM roles require both appropriate permissions AND trust relationships
-2. CloudFront service principal is needed alongside Amplify for proper credential chain
-3. Comprehensive DynamoDB permissions are necessary for full functionality
+1. Consistency in API access patterns is crucial - mixing direct DynamoDB access with AppSync causes credential issues
+2. AppSync provides a more secure and consistent way to access DynamoDB in serverless environments
+3. Environment variables must be properly configured in the Amplify environment
