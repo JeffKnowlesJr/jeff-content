@@ -32,6 +32,14 @@ This project uses Next.js for:
 - React Context API
 - Framer Motion for animations
 
+### Backend & API
+
+- AWS AppSync (GraphQL API)
+- AWS DynamoDB
+- IAM Role-based Authentication
+- AWS Lambda
+- AWS Amplify Hosting
+
 ### Build & Deploy
 
 - Node.js
@@ -43,6 +51,52 @@ This project uses Next.js for:
 - MDX for blog posts
 - Image optimization pipeline
 - WebP with PNG fallbacks
+
+## Documentation Flow & Hierarchy
+
+This project follows a bidirectional documentation flow to maintain consistency across the codebase:
+
+1. **README.md (Top Level)**: Contains high-level project overview, architecture, features, and setup instructions.
+2. **Documentation Files (/docs)**: Detailed documentation on specific aspects of the system.
+3. **Code Comments**: Implementation details and local explanations.
+
+The documentation follows this hierarchy:
+
+- Core concepts flow from README → docs → code comments
+- Implementation details flow from code comments → docs → README
+- Updates in any level should propagate to maintain consistency
+
+This bidirectional flow ensures that our AI Vibe Agent can maintain better content in working memory while assisting with development.
+
+## AppSync IAM Authentication
+
+This project uses IAM role-based authentication for AppSync integration instead of API keys:
+
+```typescript
+// Example of IAM authentication with AppSync in the contact form API
+const signer = new SignatureV4({
+  credentials: defaultProvider(),
+  region: process.env.AWS_REGION || 'us-east-1',
+  service: 'appsync',
+  sha256: Sha256
+})
+
+// Sign the request with SigV4
+const signedRequest = await signer.sign(requestToBeSigned)
+```
+
+Benefits of this approach:
+
+- Improved security through temporary credentials
+- Fine-grained access control with IAM policies
+- No need to manage API keys in environment variables
+- Consistent authentication pattern across services
+
+For detailed implementation, see:
+
+- [AppSync IAM Authentication Docs](docs/APPSYNC_IAM_AUTHENTICATION.md)
+- [Contact Form IAM Solution](docs/CONTACT_FORM_IAM_SOLUTION.md)
+- Implementation script: `scripts/setup-appsync-iam.sh`
 
 ## Project Structure
 
@@ -63,10 +117,13 @@ This project uses Next.js for:
 │   ├── MIGRATION_PLAN.md
 │   ├── VISUAL_SYSTEM.md
 │   ├── CODEBASE.md
-│   └── ANIMATION_TROUBLESHOOTING.md
+│   ├── APPSYNC_IAM_AUTHENTICATION.md
+│   └── CONTACT_FORM_IAM_SOLUTION.md
 ├── public/               # Static assets
 │   └── images/
 ├── scripts/             # Build and utility scripts
+│   ├── process-images.js
+│   └── setup-appsync-iam.sh
 ├── styles/              # Global styles
 └── types/               # TypeScript definitions
 ```
@@ -78,13 +135,21 @@ This project uses Next.js for:
 - Node.js 18+
 - npm 9+
 - Git
+- AWS CLI (for IAM policy setup)
 
 ### Setup
 
 1. Clone the repository
 2. Install dependencies: `npm install`
-3. Run development server: `npm run dev`
-4. Open http://localhost:3000
+3. Set up AWS credentials for local development
+4. Configure AppSync IAM authentication: `./scripts/setup-appsync-iam.sh --api-id YOUR_API_ID`
+5. Create `.env.local` with required environment variables:
+   ```
+   APPSYNC_API_URL=https://your-appsync-endpoint.appsync-api.us-east-1.amazonaws.com/graphql
+   AWS_REGION=us-east-1
+   ```
+6. Run development server: `npm run dev`
+7. Open http://localhost:3000
 
 ### Available Scripts
 
@@ -103,6 +168,8 @@ This project uses Next.js for:
 - [Animation Troubleshooting](docs/ANIMATION_TROUBLESHOOTING.md) - Animation component documentation
 - [Tailwind Troubleshooting](docs/TAILWIND_TROUBLESHOOTING.md) - Tailwind CSS configuration and troubleshooting
 - [Website Retooling](docs/WEBSITE_RETOOLING.md) - Website retooling plan and progress
+- [AppSync IAM Authentication](docs/APPSYNC_IAM_AUTHENTICATION.md) - IAM authentication implementation for AppSync
+- [Contact Form IAM Solution](docs/CONTACT_FORM_IAM_SOLUTION.md) - Contact form authentication solution
 
 ## Performance Targets
 
@@ -117,6 +184,8 @@ This project uses Next.js for:
 - CSP headers
 - Input sanitization
 - Regular dependency updates
+- IAM role-based authentication for AWS services
+- Fine-grained access control with IAM policies
 
 ## Accessibility
 
@@ -190,10 +259,12 @@ This project is configured to deploy to AWS Amplify. To deploy:
    - Review the build settings (should automatically detect Next.js)
    - Confirm and deploy
 
-3. **Set up IAM Role for Contact Form**:
-   - Run the setup script: `./scripts/setup-amplify-iam.sh`
-   - Follow the instructions to attach the role to your Amplify app
-   - Redeploy your app after attaching the role
+3. **Set up IAM Roles for Authentication**:
+   - For contact form: `./scripts/setup-amplify-iam.sh`
+   - For AppSync authentication: `./scripts/setup-appsync-iam.sh --api-id YOUR_API_ID`
+   - Follow the instructions to attach the roles to your Amplify app
+   - Redeploy your app after attaching the roles
+   - Set required environment variables in the Amplify Console
 
 ## Local Development
 
