@@ -17,9 +17,15 @@
     "blog:json": "node scripts/blog-to-json.js"
   },
   "dependencies": {
-    "@aws-sdk/client-appsync": "^3.782.0",
-    "@aws-sdk/client-dynamodb": "^3.782.0",
-    "@aws-sdk/lib-dynamodb": "^3.782.0",
+    "@aws-crypto/sha256-js": "^2.0.0",
+    "@aws-sdk/client-appsync": "^3.360.0",
+    "@aws-sdk/client-dynamodb": "^3.360.0",
+    "@aws-sdk/client-ses": "^3.360.0",
+    "@aws-sdk/credential-provider-node": "^3.360.0",
+    "@aws-sdk/lib-dynamodb": "^3.360.0",
+    "@aws-sdk/protocol-http": "^3.360.0",
+    "@aws-sdk/signature-v4": "^3.360.0",
+    "@aws-sdk/url-parser": "^3.360.0",
     "@fortawesome/fontawesome-free": "^6.7.2",
     "@types/react-syntax-highlighter": "^15.5.13",
     "framer-motion": "^12.6.3",
