@@ -6,7 +6,7 @@ frontend:
         - npm install
     build:
       commands:
-        - env | grep -e NEXT_PUBLIC_ >> .env.production || true
+        - env | grep -e NEXT_PUBLIC_ -e APPSYNC_ -e AWS_ -e CONTACT_FORM_ >> .env.production || true
         - echo "NEXT_PUBLIC_ADMIN_ROUTES_DYNAMIC=true" >> .env.production
         - npm run build
   artifacts:

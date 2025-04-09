@@ -37,12 +37,24 @@ export async function POST(request: Request) {
 
     // Enhanced logging of environment
     console.log('Environment Configuration:', {
-      APPSYNC_API_URL,
+      APPSYNC_API_URL: APPSYNC_API_URL || 'MISSING',
       APPSYNC_API_KEY: APPSYNC_API_KEY ? 'Present' : 'Missing',
       CONTACT_FORM_TABLE,
       NODE_ENV: process.env.NODE_ENV,
       IS_LOCAL_DEV
     })
+
+    // Check for required environment variables
+    if (!APPSYNC_API_URL) {
+      console.error('AppSync API URL is missing')
+      return NextResponse.json(
+        {
+          error:
+            'Server configuration error: Missing AppSync URL. Please check environment variables.'
+        },
+        { status: 500 }
+      )
+    }
 
     const body = await request.json()
     const { name, email, message, subject } = body
@@ -130,15 +142,6 @@ export async function POST(request: Request) {
       region,
       variables
     })
-
-    // Make sure we have an API URL
-    if (!APPSYNC_API_URL) {
-      console.error('AppSync API URL is missing')
-      return NextResponse.json(
-        { error: 'Server configuration error: Missing AppSync URL' },
-        { status: 500 }
-      )
-    }
 
     // Determine authentication method
     const useApiKey = true // Force API Key authentication
