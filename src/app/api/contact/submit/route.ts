@@ -28,6 +28,7 @@ export async function POST(request: Request) {
   try {
     // Check for AppSync configuration
     const APPSYNC_API_URL = process.env.APPSYNC_API_URL
+    const APPSYNC_API_KEY = process.env.APPSYNC_API_KEY
     const CONTACT_FORM_TABLE =
       process.env.CONTACT_FORM_TABLE || 'jeff-dev-contact-forms'
 
@@ -37,6 +38,7 @@ export async function POST(request: Request) {
     // Enhanced logging of environment
     console.log('Environment Configuration:', {
       APPSYNC_API_URL,
+      APPSYNC_API_KEY: APPSYNC_API_KEY ? 'Present' : 'Missing',
       CONTACT_FORM_TABLE,
       NODE_ENV: process.env.NODE_ENV,
       IS_LOCAL_DEV
@@ -118,7 +120,7 @@ export async function POST(request: Request) {
     }
 
     const region = process.env.REGION || 'us-east-1'
-    console.log('Attempting IAM auth AppSync mutation with:', {
+    console.log('Attempting AppSync mutation with:', {
       url: APPSYNC_API_URL,
       region,
       variables
@@ -133,111 +135,136 @@ export async function POST(request: Request) {
       )
     }
 
-    /**
-     * IAM Authentication Flow for AppSync
-     *
-     * 1. Prepare the HTTP request with GraphQL mutation
-     * 2. Sign the request using AWS Signature Version 4 (SigV4)
-     * 3. Send the signed request to AppSync endpoint
-     *
-     * This implements the pattern described in docs/APPSYNC_IAM_AUTHENTICATION.md
-     * See scripts/setup-appsync-iam.sh for setting up required IAM policies
-     */
+    // Determine authentication method
+    const useApiKey = !!APPSYNC_API_KEY
+    console.log(`Using ${useApiKey ? 'API Key' : 'IAM'} authentication`)
 
-    // Prepare the request for signing
-    const endpoint = parseUrl(APPSYNC_API_URL)
-    console.log('Parsed endpoint:', {
-      hostname: endpoint.hostname,
-      path: endpoint.path
-    })
+    let response
 
-    const requestToBeSigned = new HttpRequest({
-      hostname: endpoint.hostname || '',
-      path: endpoint.path || '/',
-      body: JSON.stringify({
-        query: mutation,
-        variables
-      }),
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        host: endpoint.hostname || ''
-      }
-    })
-
-    // Create a signer with the AWS SDK
-    try {
-      // Log detailed credential process
-      console.log('Getting credentials from provider chain...')
-
-      // Use the credentials provider chain to get credentials from environment
-      // In Amplify, this will use the Amplify role credentials
-      // In local dev, this will use credentials from AWS CLI configuration
-      const signer = new SignatureV4({
-        credentials: defaultProvider(),
-        region,
-        service: 'appsync',
-        sha256: Sha256
-      })
-
-      console.log('Signing request with SigV4...')
-      // Sign the request with AWS SigV4
-      const signedRequest = await signer.sign(requestToBeSigned)
-
-      // Log headers for debugging (excluding Authorization which is sensitive)
-      const debugHeaders = { ...signedRequest.headers }
-      if (debugHeaders.Authorization) {
-        debugHeaders.Authorization = 'REDACTED (for security)'
-      }
-      console.log('Signed request headers:', debugHeaders)
-
-      // Convert signed request to fetch API format
-      const fetchOptions = {
-        method: signedRequest.method,
-        headers: signedRequest.headers,
-        body: signedRequest.body
-      }
-
-      console.log('Sending request to AppSync...')
-      // Send the signed request to AppSync
-      const response = await fetch(APPSYNC_API_URL, fetchOptions)
-
-      if (!response.ok) {
-        const errorText = await response.text()
-        console.error('AppSync Error Response:', {
-          status: response.status,
-          statusText: response.statusText,
-          headers: Object.fromEntries(response.headers.entries()),
-          body: errorText
+    if (useApiKey) {
+      // Use API Key authentication
+      console.log('Using API Key authentication')
+      response = await fetch(APPSYNC_API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': APPSYNC_API_KEY
+        },
+        body: JSON.stringify({
+          query: mutation,
+          variables
         })
-        throw new Error(`Failed to submit form: ${errorText}`)
-      }
-
-      const result = await response.json()
-      console.log('Full AppSync response:', result)
-
-      if (result.errors) {
-        console.error('AppSync GraphQL Errors:', result.errors)
-        throw new Error(result.errors[0].message)
-      }
-
-      console.log('AppSync mutation successful:', result.data)
-      return NextResponse.json({
-        success: true,
-        id,
-        data: result.data.createContactForm
       })
-    } catch (signingError) {
-      console.error('AWS signing error:', signingError)
-      // More detailed error message
-      let errorMessage = 'Failed to authenticate with AWS services'
-      if (signingError instanceof Error) {
-        errorMessage += `: ${signingError.message}`
-        console.error('Error stack:', signingError.stack)
-      }
+    } else {
+      // Use IAM authentication
+      console.log('Using IAM authentication')
 
-      return NextResponse.json({ error: errorMessage }, { status: 500 })
+      /**
+       * IAM Authentication Flow for AppSync
+       *
+       * 1. Prepare the HTTP request with GraphQL mutation
+       * 2. Sign the request using AWS Signature Version 4 (SigV4)
+       * 3. Send the signed request to AppSync endpoint
+       *
+       * This implements the pattern described in docs/APPSYNC_IAM_AUTHENTICATION.md
+       * See scripts/setup-appsync-iam.sh for setting up required IAM policies
+       */
+
+      // Prepare the request for signing
+      const endpoint = parseUrl(APPSYNC_API_URL)
+      console.log('Parsed endpoint:', {
+        hostname: endpoint.hostname,
+        path: endpoint.path
+      })
+
+      const requestToBeSigned = new HttpRequest({
+        hostname: endpoint.hostname || '',
+        path: endpoint.path || '/',
+        body: JSON.stringify({
+          query: mutation,
+          variables
+        }),
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          host: endpoint.hostname || ''
+        }
+      })
+
+      // Create a signer with the AWS SDK
+      try {
+        // Log detailed credential process
+        console.log('Getting credentials from provider chain...')
+
+        // Use the credentials provider chain to get credentials from environment
+        // In Amplify, this will use the Amplify role credentials
+        // In local dev, this will use credentials from AWS CLI configuration
+        const signer = new SignatureV4({
+          credentials: defaultProvider(),
+          region,
+          service: 'appsync',
+          sha256: Sha256
+        })
+
+        console.log('Signing request with SigV4...')
+        // Sign the request with AWS SigV4
+        const signedRequest = await signer.sign(requestToBeSigned)
+
+        // Log headers for debugging (excluding Authorization which is sensitive)
+        const debugHeaders = { ...signedRequest.headers }
+        if (debugHeaders.Authorization) {
+          debugHeaders.Authorization = 'REDACTED (for security)'
+        }
+        console.log('Signed request headers:', debugHeaders)
+
+        // Convert signed request to fetch API format
+        const fetchOptions = {
+          method: signedRequest.method,
+          headers: signedRequest.headers,
+          body: signedRequest.body
+        }
+
+        console.log('Sending request to AppSync...')
+        // Send the signed request to AppSync
+        response = await fetch(APPSYNC_API_URL, fetchOptions)
+      } catch (signingError) {
+        console.error('AWS signing error:', signingError)
+        // More detailed error message
+        let errorMessage = 'Failed to authenticate with AWS services'
+        if (signingError instanceof Error) {
+          errorMessage += `: ${signingError.message}`
+          console.error('Error stack:', signingError.stack)
+        }
+
+        return NextResponse.json({ error: errorMessage }, { status: 500 })
+      }
     }
+
+    if (!response.ok) {
+      const errorText = await response.text()
+      console.error('AppSync Error Response:', {
+        status: response.status,
+        statusText: response.statusText,
+        headers: Object.fromEntries(response.headers.entries()),
+        body: errorText
+      })
+      throw new Error(`Failed to submit form: ${errorText}`)
+    }
+
+    const result = await response.json()
+    console.log('Full AppSync response:', result)
+
+    if (result.errors) {
+      console.error('AppSync GraphQL Errors:', result.errors)
+      throw new Error(result.errors[0].message)
+    }
+
+    console.log('AppSync mutation successful:', result.data)
+    return NextResponse.json({
+      success: true,
+      id,
+      data: result.data.createContactForm
+    })
   } catch (error) {
     console.error('Error saving contact form:', error)
     let errorMessage = 'Failed to submit form. Please try again later.'
