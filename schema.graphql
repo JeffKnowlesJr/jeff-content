@@ -29,7 +29,9 @@ type ContactForm {
   id: ID!
   message: String!
   name: String!
+  processedAt: AWSDateTime!
   status: String!
+  subject: String
   updatedAt: AWSDateTime!
 }
 
@@ -88,9 +90,15 @@ input CreateBlogPostInput {
 }
 
 input CreateContactFormInput {
+  createdAt: AWSDateTime!
   email: String!
+  id: ID!
   message: String!
   name: String!
+  processedAt: AWSDateTime!
+  status: String!
+  subject: String
+  updatedAt: AWSDateTime!
 }
 
 input CreateProjectInput {

@@ -113,10 +113,14 @@ export async function POST(request: Request) {
     // Prepare the input with the table name (can help with debugging)
     const variables = {
       input: {
+        id,
+        createdAt: timestamp,
         name: name.trim(),
         email: email.trim(),
         message: message.trim(),
-        status: 'NEW'
+        subject: subject?.trim() || '',
+        status: 'NEW',
+        processedAt: timestamp
       }
     }
 
@@ -137,7 +141,7 @@ export async function POST(request: Request) {
     }
 
     // Determine authentication method
-    const useApiKey = !!APPSYNC_API_KEY
+    const useApiKey = true // Force API Key authentication
     console.log(`Using ${useApiKey ? 'API Key' : 'IAM'} authentication`)
 
     let response
@@ -145,6 +149,16 @@ export async function POST(request: Request) {
     if (useApiKey) {
       // Use API Key authentication
       console.log('Using API Key authentication')
+
+      // Make sure we have an API key
+      if (!APPSYNC_API_KEY) {
+        console.error('AppSync API Key is missing')
+        return NextResponse.json(
+          { error: 'Server configuration error: Missing AppSync API Key' },
+          { status: 500 }
+        )
+      }
+
       response = await fetch(APPSYNC_API_URL, {
         method: 'POST',
         headers: {

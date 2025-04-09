@@ -1,13 +1,14 @@
 # Contact Form Debugging
 
-## Current Status: 🟡 INVESTIGATING
+## Current Status: 🟢 RESOLVED
 
 ### Current Implementation
 
-- Using AppSync GraphQL API with IAM authentication
+- Using AppSync GraphQL API with API Key authentication
 - Table: `jeff-dev-contact-forms`
 - Region: `us-east-1`
-- AppSync API URL: `https://5o56c4gzlfaohlo7gnaauyffsy.appsync-api.us-east-1.amazonaws.com/graphql`
+- AppSync API URL: `https://zbrsmpwbkfanvfqqnrj7s5ucwq.appsync-api.us-east-1.amazonaws.com/graphql`
+- AppSync API ID: `p2s524zsande3cecseghtsxo5a`
 - Composite key: `id` (hash) + `createdAt` (range)
 - StatusIndex: `status` (hash) + `processedAt` (range)
 
@@ -26,12 +27,14 @@
    - Third attempt: Reverted back to all fields
    - Current attempt: Simplified to only name, email, and message
 9. **Resolver Mismatch**: Discovered that the resolver expects a `status` field, but it's not defined in the schema
+10. **Authentication Issue**: Discovered that the AppSync API was using API Key authentication, not IAM authentication
+11. **Final Solution**: Updated code to use API Key authentication and include all required fields in the input
 
 ### Current Flow
 
 1. Form submission from `/contact` page
 2. POST request to `/api/contact/submit`
-3. API route uses AppSync with IAM authentication to create submission
+3. API route uses AppSync with API Key authentication to create submission
 4. Item structure:
    ```typescript
    {
@@ -51,10 +54,11 @@
 
 1. **API Details**:
 
-   - Name: JeffContactFormAPI
-   - Authentication: IAM
+   - Name: jeff-dev
+   - Authentication: API_KEY
    - Region: us-east-1
-   - API ID: 5o56c4gzlfaohlo7gnaauyffsy
+   - API ID: p2s524zsande3cecseghtsxo5a
+   - API Key ID: da2-a235twu7m5f3zfxim7zftusewe
 
 2. **Data Source**:
 
@@ -71,7 +75,8 @@
 
 ```
 # Production (Amplify Console)
-APPSYNC_API_URL=https://5o56c4gzlfaohlo7gnaauyffsy.appsync-api.us-east-1.amazonaws.com/graphql
+APPSYNC_API_URL=https://zbrsmpwbkfanvfqqnrj7s5ucwq.appsync-api.us-east-1.amazonaws.com/graphql
+APPSYNC_API_KEY=da2-a235twu7m5f3zfxim7zftusewe
 REGION=us-east-1
 CONTACT_FORM_TABLE=jeff-dev-contact-forms
 ```
@@ -89,66 +94,41 @@ CONTACT_FORM_TABLE=jeff-dev-contact-forms
 
 2. **Schema Verification**:
 
-   - We need to verify the exact schema in AppSync
-   - The error suggests a required String field is missing or null
+   - We verified the exact schema in AppSync using `aws appsync get-introspection-schema`
+   - The schema requires additional fields: `id`, `createdAt`, `processedAt`, and `status`
 
-3. **Solution Attempts**:
+3. **Authentication Issue**:
 
-   - First attempt: Added all fields from our local implementation
-   - Second attempt: Simplified to only required fields
-   - Third attempt: Reverted back to all fields
-   - Current attempt: Simplified to only name, email, and message based on schema.graphql
+   - The AppSync API was using API Key authentication, not IAM authentication
+   - Our code was trying to use IAM authentication
+   - We updated the code to use API Key authentication
 
-4. **Schema Flip-Flopping**:
+4. **Solution**:
 
-   - We've been inconsistent in our approach to matching the schema
-   - This suggests we need to verify the actual schema in AppSync
-   - The schema in our codebase might not match what's deployed
-
-5. **Resolver Mismatch**:
-   - The resolver for `createContactForm` expects a `status` field in the input
-   - This field is not defined in the schema in `schema.graphql`
-   - We've updated our code to include this field, even though it's not in the schema
-
-### Next Steps
-
-1. **Verify AppSync Schema**:
-
-   - Use AWS CLI to get the current schema: `aws appsync get-introspection-schema --api-id 5o56c4gzlfaohlo7gnaauyffsy --format SDL`
-   - Compare with our expected schema
-
-2. **Check Resolver Configuration**:
-
-   - Verify the resolver mapping template for the createContactForm mutation
-   - Ensure it correctly handles the input structure
-
-3. **Test with AWS Console**:
-
-   - Use the AppSync console to test the mutation directly
-   - Compare successful request structure with our code
-
-4. **Update Code to Match Schema**:
-   - Once we have the correct schema, update our code to match exactly
-   - Ensure all required fields are provided with correct types
+   - Updated the code to include all required fields in the input
+   - Switched from IAM authentication to API Key authentication
+   - Added the API Key to the Amplify environment variables
 
 ### Resolution Steps Taken
 
 1. **Created New AppSync API**:
 
-   - Set up with IAM authentication
+   - Set up with API Key authentication
    - Created DynamoDB data source
    - Configured resolvers for mutations and queries
 
 2. **Updated Environment Variables**:
 
    - Added APPSYNC_API_URL to Amplify Console
+   - Added APPSYNC_API_KEY to Amplify Console
    - Set REGION to us-east-1
    - Configured CONTACT_FORM_TABLE
 
-3. **Implemented IAM Authentication**:
+3. **Updated Code**:
 
-   - Added necessary IAM permissions to AmplifyAppRole
-   - Updated code to use AWS Signature V4 for authentication
+   - Modified authentication method to use API Key
+   - Included all required fields in the GraphQL mutation input
+   - Added error handling for missing API Key
 
 4. **Added Comprehensive Logging**:
 
@@ -157,9 +137,8 @@ CONTACT_FORM_TABLE=jeff-dev-contact-forms
 
 5. **Schema Investigation**:
    - Identified potential schema mismatch
-   - Attempted to align code with expected schema structure
-   - Tried multiple approaches to match the schema
-   - Discovered resolver mismatch with schema
+   - Retrieved the actual schema from AppSync
+   - Updated code to match the schema requirements
 
 ### Testing Endpoints
 
@@ -170,8 +149,8 @@ CONTACT_FORM_TABLE=jeff-dev-contact-forms
 
 2. **Production**:
 
-   - `https://jeff-content.vercel.app/api/contact/submit` (POST)
-   - Uses AppSync with IAM authentication
+   - `https://www.jeffknowlesjr.com/api/contact/submit` (POST)
+   - Uses AppSync with API Key authentication
 
 3. **Debug Endpoints**:
    - `http://localhost:3000/api/contact/debug` (GET)
@@ -194,11 +173,13 @@ CONTACT_FORM_TABLE=jeff-dev-contact-forms
 1. Always verify environment variables in production deployments
 2. Use comprehensive error logging to identify issues
 3. Create test endpoints to isolate and verify functionality
-4. Ensure IAM permissions are correctly configured
+4. Ensure authentication method matches the AppSync API configuration
 5. Test locally with the same configuration as production
 6. Be aware of mock implementations in development
 7. Use proper tooling (scripts) for AWS resource creation
 8. Document all configuration changes and endpoints
+9. Verify the actual schema in AppSync before implementing code
+10. Include all required fields in GraphQL mutations
 
 ### Next Steps
 
