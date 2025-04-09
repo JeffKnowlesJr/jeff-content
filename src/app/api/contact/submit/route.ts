@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid'
 
 // Initialize DynamoDB client
 const client = new DynamoDBClient({
-  region: 'us-east-1'
+  region: process.env.AWS_REGION || 'us-east-1'
   // In production, credentials are automatically provided by IAM roles
   // In development, credentials are provided by environment variables
 })
@@ -57,6 +57,10 @@ export async function POST(request: Request) {
     const uniqueId = uuidv4()
     const timestamp = new Date().toISOString()
 
+    // Get the table name from environment variables
+    const tableName = process.env.CONTACT_FORM_TABLE || 'jeff-dev-contact-forms'
+    console.log('Using DynamoDB table:', tableName)
+
     // Prepare the item for DynamoDB
     const item = {
       id: uniqueId,
@@ -70,7 +74,7 @@ export async function POST(request: Request) {
     }
 
     console.log('Attempting to save to DynamoDB:', {
-      tableName: 'jeff-dev-contact-forms',
+      tableName,
       itemId: uniqueId,
       itemKeys: Object.keys(item)
     })
@@ -79,7 +83,7 @@ export async function POST(request: Request) {
       // Save to DynamoDB
       await docClient.send(
         new PutCommand({
-          TableName: 'jeff-dev-contact-forms',
+          TableName: tableName,
           Item: item
         })
       )
@@ -98,42 +102,38 @@ export async function POST(request: Request) {
         errorMessage: error.message,
         errorCode: error.code,
         errorType: error.type,
-        requestId: error.$metadata?.requestId,
-        cfId: error.$metadata?.cfId,
-        extendedRequestId: error.$metadata?.extendedRequestId,
-        httpStatusCode: error.$metadata?.httpStatusCode,
-        attempts: error.$metadata?.attempts,
-        totalRetryDelay: error.$metadata?.totalRetryDelay,
+        metadata: error.$metadata,
         stack: error.stack
       })
 
       // Check for specific error types
-      if (error.name === 'ResourceNotFoundException') {
-        console.error('DynamoDB table not found. Verify table name and region.')
-      } else if (error.name === 'AccessDeniedException') {
-        console.error(
-          'Access denied. Check IAM permissions for the Amplify role.'
+      if (error.name === 'ValidationException') {
+        return NextResponse.json(
+          { error: 'Invalid data format. Please check your input.' },
+          { status: 400 }
         )
-      } else if (error.name === 'ValidationException') {
-        console.error(
-          'Validation error. Check item structure against table schema.'
+      } else if (error.name === 'ResourceNotFoundException') {
+        console.error('DynamoDB table not found:', tableName)
+        return NextResponse.json(
+          { error: 'Server configuration error. Please try again later.' },
+          { status: 500 }
+        )
+      } else if (error.name === 'AccessDeniedException') {
+        console.error('Access denied to DynamoDB table:', tableName)
+        return NextResponse.json(
+          { error: 'Server configuration error. Please try again later.' },
+          { status: 500 }
         )
       }
 
+      // Generic error response
       return NextResponse.json(
         { error: 'Failed to submit form. Please try again later.' },
         { status: 500 }
       )
     }
   } catch (error: unknown) {
-    // Enhanced error logging for general errors
-    const err = error as Error
-    console.error('Error processing contact form:', {
-      errorName: err.name,
-      errorMessage: err.message,
-      stack: err.stack
-    })
-
+    console.error('Unexpected error in contact form submission:', error)
     return NextResponse.json(
       { error: 'Failed to submit form. Please try again later.' },
       { status: 500 }
