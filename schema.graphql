@@ -24,15 +24,15 @@ type BlogPostConnection {
 }
 
 type ContactForm {
-  createdAt: AWSDateTime!
-  email: String!
   id: ID!
-  message: String!
+  createdAt: AWSDateTime!
   name: String!
-  processedAt: AWSDateTime!
-  status: String!
+  email: String!
+  message: String!
   subject: String
-  updatedAt: AWSDateTime!
+  status: String!
+  processedAt: AWSDateTime!
+  updatedAt: AWSDateTime
 }
 
 type Mutation {
@@ -90,15 +90,15 @@ input CreateBlogPostInput {
 }
 
 input CreateContactFormInput {
-  createdAt: AWSDateTime!
-  email: String!
   id: ID!
-  message: String!
+  createdAt: AWSDateTime!
   name: String!
-  processedAt: AWSDateTime!
-  status: String!
+  email: String!
+  message: String!
   subject: String
-  updatedAt: AWSDateTime!
+  status: String!
+  processedAt: AWSDateTime!
+  updatedAt: AWSDateTime
 }
 
 input CreateProjectInput {
