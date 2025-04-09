@@ -1,5 +1,7 @@
 # Legacy App Structure Documentation
 
+**Status**: 📦 ARCHIVED - Legacy app structure has been migrated to new Next.js app
+
 This document provides a comprehensive overview of the legacy app's structure and key components.
 
 ## Documentation References

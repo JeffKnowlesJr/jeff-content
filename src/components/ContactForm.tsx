@@ -12,20 +12,25 @@ interface ContactFormData {
 
 // Form submission function
 async function submitContactForm(formData: ContactFormData) {
-  const response = await fetch('/api/contact/submit', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(formData)
-  })
+  try {
+    const response = await fetch('/api/contact/submit', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formData)
+    })
 
-  if (!response.ok) {
-    const errorData = await response.json()
-    throw new Error(errorData.error || 'Failed to submit contact form')
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.error || 'Failed to submit contact form')
+    }
+
+    return await response.json()
+  } catch (error) {
+    console.error('Error submitting contact form:', error)
+    throw error
   }
-
-  return await response.json()
 }
 
 export function ContactForm() {

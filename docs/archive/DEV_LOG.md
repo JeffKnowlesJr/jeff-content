@@ -1,5 +1,7 @@
 # Development Log Documentation
 
+**Status**: 📦 ARCHIVED - Implementation complete in /src/app/dev-log
+
 ## Overview
 
 The Development Log (Dev Log) is a feature of the JKJR Portfolio & Blog website that documents the development progress, challenges, and solutions encountered during the website's creation. It serves as a technical blog that provides insights into the development process and can be useful for other developers working on similar projects.

@@ -25,7 +25,7 @@ export default function BackgroundAnimation() {
       ref={canvasRef}
       className='fixed inset-0 w-full h-full'
       style={{
-        opacity: 0.7,
+        opacity: 0.9,
         pointerEvents: 'none'
       }}
     />

@@ -40,7 +40,7 @@ class Box {
     this.x = Math.random() * (width - this.width)
     this.y = Math.random() * (height - this.height)
     this.depth = Math.random() * 800 // Random depth between 0-800
-    this.baseOpacity = Math.random() * 0.015 + 0.005 // Very subtle opacity (0.5-2%)
+    this.baseOpacity = Math.random() * 0.03 + 0.01 // Increased opacity (1-4%)
     this.color =
       theme === 'dark'
         ? `rgba(255, 255, 255, ${this.baseOpacity})`
@@ -58,7 +58,7 @@ class Box {
     this.hoverProgress = 0
     this.hoverSpeed = 0.05 // Speed of hover transition
     this.frameColor =
-      theme === 'dark' ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.15)'
+      theme === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)'
     this.frameWidth = 1.5
     this.isDragging = false
     this.dragStartX = 0
@@ -67,8 +67,8 @@ class Box {
     this.originalY = this.y
     this.highlightColor =
       theme === 'dark'
-        ? 'rgba(100, 200, 255, 0.25)' // Light blue for dark theme
-        : 'rgba(255, 100, 100, 0.25)' // Light red for light theme
+        ? 'rgba(100, 200, 255, 0.3)' // Light blue for dark theme
+        : 'rgba(255, 100, 100, 0.3)' // Light red for light theme
     this.highlightProgress = 0
     this.highlightSpeed = 0.1 // Speed of highlight transition
     this.isPainted = false
@@ -429,27 +429,31 @@ class Box {
         finalCubeSize
       )
 
-      // Draw connecting lines
+      // Draw connecting lines - FIXED to correctly connect the corners
       ctx.beginPath()
+      // Front top-left to back top-left
       ctx.moveTo(-finalCubeSize / 2, -finalCubeSize / 2)
       ctx.lineTo(
         -finalCubeSize / 2 + depthOffset,
         -finalCubeSize / 2 + depthOffset
       )
+      // Front top-right to back top-right
       ctx.moveTo(finalCubeSize / 2, -finalCubeSize / 2)
       ctx.lineTo(
         finalCubeSize / 2 + depthOffset,
         -finalCubeSize / 2 + depthOffset
       )
+      // Front bottom-right to back bottom-right
       ctx.moveTo(finalCubeSize / 2, finalCubeSize / 2)
       ctx.lineTo(
         finalCubeSize / 2 + depthOffset,
         finalCubeSize / 2 + depthOffset
       )
+      // Front bottom-left to back bottom-left
       ctx.moveTo(-finalCubeSize / 2, finalCubeSize / 2)
       ctx.lineTo(
         -finalCubeSize / 2 + depthOffset,
-        -finalCubeSize / 2 + depthOffset
+        finalCubeSize / 2 + depthOffset
       )
       ctx.stroke()
 
@@ -479,6 +483,7 @@ class Box {
 
         // Draw connecting faces
         ctx.beginPath()
+        // Top face
         ctx.moveTo(-finalCubeSize / 2, -finalCubeSize / 2)
         ctx.lineTo(
           -finalCubeSize / 2 + depthOffset,
@@ -492,6 +497,7 @@ class Box {
         ctx.closePath()
         ctx.fill()
 
+        // Right face
         ctx.beginPath()
         ctx.moveTo(finalCubeSize / 2, -finalCubeSize / 2)
         ctx.lineTo(
@@ -506,6 +512,7 @@ class Box {
         ctx.closePath()
         ctx.fill()
 
+        // Bottom face
         ctx.beginPath()
         ctx.moveTo(finalCubeSize / 2, finalCubeSize / 2)
         ctx.lineTo(
@@ -520,6 +527,7 @@ class Box {
         ctx.closePath()
         ctx.fill()
 
+        // Left face
         ctx.beginPath()
         ctx.moveTo(-finalCubeSize / 2, finalCubeSize / 2)
         ctx.lineTo(
@@ -633,13 +641,10 @@ export const createPerspectiveBoxes: AnimationCreator = (
   }
 
   const handleMouseUp = (e: MouseEvent) => {
-    // Check if we're over an interactive element
-    const target = e.target as HTMLElement
+    const target = e.target
     const isOverInteractiveElement =
-      target &&
-      (target.tagName === 'A' ||
-        target.tagName === 'BUTTON' ||
-        target.tagName === 'INPUT' ||
+      target instanceof Element &&
+      (target.tagName === 'INPUT' ||
         target.tagName === 'SELECT' ||
         target.tagName === 'TEXTAREA' ||
         target.closest(

@@ -1,44 +1,58 @@
 import { NextResponse } from 'next/server'
-import { submitContactForm } from '@/services/api'
+import { submitContactFormServer } from '@/services/server-api'
 
 export async function POST(request: Request) {
   try {
     const data = await request.json()
+    const { name, email, subject, message } = data
 
-    // Log received data (excluding sensitive info)
-    console.log('Contact form submission received:', {
-      hasName: !!data.name,
-      hasEmail: !!data.email,
-      hasSubject: !!data.subject,
-      messageLength: data.message?.length || 0
-    })
-
-    // Validate form data
-    if (!data.name || !data.email || !data.subject || !data.message) {
-      console.error('Missing required fields in form submission')
+    // Validate required fields
+    if (!name || !email || !subject || !message) {
+      console.error('Missing required fields:', {
+        name,
+        email,
+        subject,
+        message
+      })
       return NextResponse.json(
-        { error: 'Missing required fields' },
+        { error: 'All fields are required' },
         { status: 400 }
       )
     }
 
-    // Submit to AppSync
-    const result = await submitContactForm({
-      name: data.name,
-      email: data.email,
-      subject: data.subject,
-      message: data.message
+    // Log the received data for debugging
+    console.log('Received contact form data:', {
+      name,
+      email,
+      subject,
+      messageLength: message.length
     })
 
-    return NextResponse.json({ success: true, id: result.id })
+    try {
+      // Submit to AppSync using server-side service
+      const result = await submitContactFormServer(data)
+      if (!result) {
+        console.error('No result returned from submitContactFormServer')
+        throw new Error('No result returned from form submission')
+      }
+      return NextResponse.json({ success: true, id: result.id })
+    } catch (error) {
+      console.error('Error submitting to AppSync:', {
+        error,
+        message: error instanceof Error ? error.message : 'Unknown error',
+        stack: error instanceof Error ? error.stack : undefined
+      })
+      return NextResponse.json(
+        { error: 'Failed to submit form. Please try again later.' },
+        { status: 500 }
+      )
+    }
   } catch (error) {
-    console.error('Error saving contact form:', error)
-    return NextResponse.json(
-      {
-        error: 'Failed to save contact form',
-        details: error instanceof Error ? error.message : 'Unknown error'
-      },
-      { status: 500 }
-    )
+    console.error('Error processing contact form:', {
+      error,
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined
+    })
+    return NextResponse.json({ error: 'Invalid request data' }, { status: 400 })
   }
 }
