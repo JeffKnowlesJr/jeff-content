@@ -9,6 +9,11 @@ import { parseUrl } from '@aws-sdk/url-parser'
 // Mock storage for local development
 const localSubmissions = []
 
+// Simple cache to prevent duplicate submissions
+// Store recent submissions with email+timestamp as key
+const submissionCache = new Map<string, number>()
+const CACHE_EXPIRY = 5 * 60 * 1000 // 5 minutes in milliseconds
+
 /**
  * Contact Form Submission API Route
  *
@@ -74,6 +79,34 @@ export async function POST(request: Request) {
         { error: 'Missing required fields' },
         { status: 400 }
       )
+    }
+
+    // Check for recent duplicate submissions
+    const now = Date.now()
+    const cacheKey = `${email}-${message.slice(0, 20)}` // Create a unique key based on email and first part of message
+
+    if (submissionCache.has(cacheKey)) {
+      const cachedTime = submissionCache.get(cacheKey)
+
+      // If the submission was within the last 5 minutes, reject it as a duplicate
+      if (cachedTime && now - cachedTime < CACHE_EXPIRY) {
+        console.log('Detected duplicate submission:', cacheKey)
+        return NextResponse.json({
+          success: true,
+          id: 'cached', // Don't generate a real ID for duplicates
+          message: 'Your message has already been received. Thank you!'
+        })
+      }
+    }
+
+    // Store the submission in cache to prevent duplicates
+    submissionCache.set(cacheKey, now)
+
+    // Clean up old cache entries
+    for (const [key, timestamp] of submissionCache.entries()) {
+      if (now - timestamp > CACHE_EXPIRY) {
+        submissionCache.delete(key)
+      }
     }
 
     // Create a unique ID and timestamp

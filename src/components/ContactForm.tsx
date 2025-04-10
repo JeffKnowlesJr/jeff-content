@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 
 // Define interface for form data
 interface ContactFormData {
@@ -45,8 +45,32 @@ export function ContactForm() {
   >('idle')
   const [errorMessage, setErrorMessage] = useState('')
 
+  // Add a ref to track if a submission is in progress to prevent duplicates
+  const isSubmittingRef = useRef(false)
+  // Add a submission timestamp to debounce multiple rapid submissions
+  const lastSubmitTimeRef = useRef(0)
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    // Prevent multiple rapid submissions (within 2 seconds)
+    const now = Date.now()
+    if (now - lastSubmitTimeRef.current < 2000) {
+      console.log(
+        'Preventing duplicate submission - too soon after last submit'
+      )
+      return
+    }
+
+    // Prevent concurrent submissions
+    if (isSubmittingRef.current || status === 'submitting') {
+      console.log('Submission already in progress, ignoring duplicate submit')
+      return
+    }
+
+    // Set flags to prevent duplicate submissions
+    isSubmittingRef.current = true
+    lastSubmitTimeRef.current = now
     setStatus('submitting')
     setErrorMessage('')
 
@@ -61,6 +85,9 @@ export function ContactForm() {
           ? error.message
           : 'Failed to send message. Please try again later.'
       )
+    } finally {
+      // Reset the submitting flag regardless of outcome
+      isSubmittingRef.current = false
     }
   }
 

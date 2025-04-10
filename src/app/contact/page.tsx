@@ -1,12 +1,6 @@
-import { Metadata } from 'next'
-import { ContactForm } from '@/components/ContactForm'
-import ServicesAnimation from '@/components/animations/ServicesAnimation'
+'use client'
 
-export const metadata: Metadata = {
-  title: 'Contact | Jeff Knowles Jr.',
-  description:
-    'Get in touch with Jeff Knowles Jr. for collaboration opportunities, consulting, or just to say hello.'
-}
+import { ContactForm } from '@/components/ContactForm'
 
 export default function ContactPage() {
   return (
@@ -25,9 +19,50 @@ export default function ContactPage() {
 
         {/* Contact Form Section */}
         <div className='grid md:grid-cols-2 gap-12 max-w-6xl mx-auto'>
-          {/* Form */}
-          <div className='card p-8'>
+          {/* Form with Tooltip */}
+          <div className='card p-8 relative'>
             <ContactForm />
+
+            {/* Contact Tips Section with CSS Tooltip */}
+            <div className='mt-6 text-center'>
+              <div className='group relative inline-block'>
+                <button
+                  type='button'
+                  className='inline-flex items-center px-4 py-2 bg-teal-500 text-white rounded-md text-sm font-medium hover:bg-teal-600 transition-colors'
+                  onClick={(e) => e.preventDefault()}
+                >
+                  <svg
+                    className='w-4 h-4 mr-2'
+                    fill='none'
+                    stroke='currentColor'
+                    viewBox='0 0 24 24'
+                  >
+                    <path
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                      strokeWidth={2}
+                      d='M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'
+                    />
+                  </svg>
+                  Contact Tips
+                </button>
+
+                {/* CSS Tooltip that appears on hover - using group class instead of styled-jsx */}
+                <div className='absolute left-1/2 bottom-full mb-2 -translate-x-1/2 w-64 bg-gray-800 text-white p-3 rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300'>
+                  <div className='text-left space-y-1.5 text-sm'>
+                    <p className='font-medium text-teal-300 border-b border-gray-700 pb-1 mb-1'>
+                      Tips for reaching out:
+                    </p>
+                    <p>• Start with a quick intro about yourself</p>
+                    <p>• Share what inspired you to reach out</p>
+                    <p>• Ask a specific question if you have one</p>
+                    <p>• Be yourself - I appreciate authenticity!</p>
+                  </div>
+                  {/* Triangle pointer */}
+                  <div className='absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-t-[8px] border-t-gray-800'></div>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Contact Information */}
@@ -93,10 +128,84 @@ export default function ContactPage() {
               </div>
             </div>
 
-            {/* 3D Services Animation */}
-            <div className='card p-8 flex justify-center items-center'>
-              <div className='w-64 h-64'>
-                <ServicesAnimation />
+            {/* Services Information */}
+            <div className='card p-8'>
+              <h2 className='text-2xl font-bold text-gray-900 dark:text-white mb-6'>
+                Services
+              </h2>
+              <div className='space-y-4'>
+                <div className='flex items-start'>
+                  <div className='flex-shrink-0 mt-1'>
+                    <svg
+                      className='w-5 h-5 text-primary'
+                      fill='currentColor'
+                      viewBox='0 0 20 20'
+                    >
+                      <path
+                        fillRule='evenodd'
+                        d='M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z'
+                        clipRule='evenodd'
+                      />
+                    </svg>
+                  </div>
+                  <div className='ml-3'>
+                    <h3 className='text-lg font-medium text-gray-900 dark:text-white'>
+                      Web Development
+                    </h3>
+                    <p className='mt-1 text-gray-600 dark:text-gray-300'>
+                      Custom websites and web applications built with modern
+                      technologies.
+                    </p>
+                  </div>
+                </div>
+                <div className='flex items-start'>
+                  <div className='flex-shrink-0 mt-1'>
+                    <svg
+                      className='w-5 h-5 text-primary'
+                      fill='currentColor'
+                      viewBox='0 0 20 20'
+                    >
+                      <path
+                        fillRule='evenodd'
+                        d='M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z'
+                        clipRule='evenodd'
+                      />
+                    </svg>
+                  </div>
+                  <div className='ml-3'>
+                    <h3 className='text-lg font-medium text-gray-900 dark:text-white'>
+                      Technical Consulting
+                    </h3>
+                    <p className='mt-1 text-gray-600 dark:text-gray-300'>
+                      Expert advice on technology choices, architecture, and
+                      implementation strategies.
+                    </p>
+                  </div>
+                </div>
+                <div className='flex items-start'>
+                  <div className='flex-shrink-0 mt-1'>
+                    <svg
+                      className='w-5 h-5 text-primary'
+                      fill='currentColor'
+                      viewBox='0 0 20 20'
+                    >
+                      <path
+                        fillRule='evenodd'
+                        d='M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z'
+                        clipRule='evenodd'
+                      />
+                    </svg>
+                  </div>
+                  <div className='ml-3'>
+                    <h3 className='text-lg font-medium text-gray-900 dark:text-white'>
+                      Performance Optimization
+                    </h3>
+                    <p className='mt-1 text-gray-600 dark:text-gray-300'>
+                      Improve your website&apos;s speed, accessibility, and SEO
+                      performance.
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
