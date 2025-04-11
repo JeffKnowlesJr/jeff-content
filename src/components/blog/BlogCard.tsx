@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import Image from 'next/image'
+import BlogImage from '@/components/common/BlogImage'
 
 interface BlogCardProps {
   id?: string
@@ -65,13 +65,6 @@ export default function BlogCard({
   const defaultImage = '/images/blog/featured/getting-started-with-nextjs.jpg'
   const imageUrl = image || defaultImage
 
-  // Function to handle image loading error
-  const handleImageError = () => {
-    console.error(`Failed to load image: ${imageUrl}`)
-    // We can't directly set a new src in Next.js Image component on error
-    // This would be handled by the fallback in the component
-  }
-
   return (
     <div
       onClick={handleCardClick}
@@ -80,14 +73,11 @@ export default function BlogCard({
       <article className='h-full flex flex-col overflow-hidden relative'>
         {/* Image container with fixed aspect ratio */}
         <div className='aspect-[16/9] relative overflow-hidden'>
-          <Image
+          <BlogImage
             src={imageUrl}
             alt={title}
-            fill
-            sizes='(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw'
             className='object-cover w-full h-full transition-transform duration-500 group-hover:scale-105'
             priority
-            onError={handleImageError}
           />
           <div className='absolute inset-0 bg-gradient-to-b from-transparent to-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300'></div>
 

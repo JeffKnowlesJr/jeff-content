@@ -7,6 +7,7 @@ import remarkGfm from 'remark-gfm'
 import { BlogPost, getContentBySlug } from '@/utils/content-loader'
 import { generateBlogPostMetadata } from '@/utils/metadata'
 import BlogLayout from '@/components/blog/BlogLayout'
+import BlogImage from '@/components/common/BlogImage'
 import { fetchBlogPostBySlug } from '@/services/blogApi'
 
 type Params = {
@@ -258,8 +259,12 @@ export default async function BlogPostPage({ params }: { params: Params }) {
 
               {post.featuredImage && (
                 <div className='w-full max-h-[500px] relative mb-6 rounded-lg overflow-hidden shadow-md'>
-                  <img
-                    src={post.featuredImage || post.image}
+                  <BlogImage
+                    src={
+                      post.featuredImage ||
+                      post.image ||
+                      '/images/fallback-image.webp'
+                    }
                     alt={post.title}
                     className='object-contain w-full h-full'
                   />
