@@ -128,6 +128,47 @@ For detailed implementation, see:
 └── types/               # TypeScript definitions
 ```
 
+## Image Management
+
+This project uses a structured approach to manage blog and project images:
+
+### Image Processing Workflow
+
+1. **Source Images**
+
+   - Place original images in `/public/content/assets/`
+   - Use naming convention with "blog-" prefix for blog images
+   - Use naming convention with "project-" prefix for project images
+
+2. **Process Images**
+
+   ```bash
+   npm run process-images
+   ```
+
+   This optimizes images and converts them to WebP format.
+
+3. **Reference in Content**
+   - Blog posts: `featuredImage: "/images/blog/featured/your-image.webp"`
+   - Projects: `featuredImage: "/images/projects/your-image.webp"`
+
+### Image Error Handling
+
+The `BlogImage` component (`components/common/BlogImage.tsx`) is used to handle image loading errors gracefully:
+
+- Automatically falls back to a placeholder when images are missing
+- Shows debugging information in development mode
+- Maintains the same API as Next.js Image component
+
+### Common Image Issues
+
+If you encounter 404 errors for blog images:
+
+1. Check image references in blog posts
+2. Verify images exist in the correct directories
+3. Run the image processing script
+4. See `docs/IMAGE_LOADING_FIXES.md` for detailed troubleshooting
+
 ## Development
 
 ### Prerequisites
