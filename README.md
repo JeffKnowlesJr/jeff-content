@@ -176,6 +176,7 @@ For detailed implementation, see:
 - [Content Management Guide](docs/CONTENT_MANAGEMENT.md) - Guide for managing content with dual-source architecture
 - [Content Workflow](docs/CONTENT_WORKFLOW.md) - Detailed content creation and publishing workflow
 - [Database Schema](docs/DATABASE_SCHEMA.md) - DynamoDB and GraphQL schema documentation
+- [GraphQL API Implementation](docs/GRAPHQL_API.md) - GraphQL API implementation and schema compatibility
 - [Testing Guide](docs/TESTING.md) - Guide for testing production and development code
 - [Backend SPA Setup](docs/BACKEND_SPA_SETUP.md) - Backend admin SPA setup and configuration
 
