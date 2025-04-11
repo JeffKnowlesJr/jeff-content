@@ -177,6 +177,7 @@ For detailed implementation, see:
 - [Content Workflow](docs/CONTENT_WORKFLOW.md) - Detailed content creation and publishing workflow
 - [Database Schema](docs/DATABASE_SCHEMA.md) - DynamoDB and GraphQL schema documentation
 - [GraphQL API Implementation](docs/GRAPHQL_API.md) - GraphQL API implementation and schema compatibility
+- [AppSync Security Guide](docs/APPSYNC_SECURITY.md) - Security considerations for AppSync and API keys
 - [Testing Guide](docs/TESTING.md) - Guide for testing production and development code
 - [Backend SPA Setup](docs/BACKEND_SPA_SETUP.md) - Backend admin SPA setup and configuration
 
