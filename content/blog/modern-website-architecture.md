@@ -1,36 +1,49 @@
 ---
 title: 'Modern Website Architecture: When to Split Your SPA for SEO'
 slug: modern-website-architecture-seo-optimization
-excerpt: 'Learn how to optimize your React application for search engines by strategically splitting your architecture into SSR and SPA components for maximum performance and discoverability'
-author: 'Compiled with assistance from AI'
-tags: ['Architecture', 'SEO', 'Next.js', 'React', 'AWS']
+excerpt: >-
+  Learn how to optimize your React application for search engines by
+  strategically splitting your architecture into SSR and SPA components for
+  maximum performance and discoverability
+author: Compiled with assistance from AI
+tags:
+  - Architecture
+  - SEO
+  - Next.js
+  - React
+  - AWS
 readingTime: 12
-featuredImage: '/images/blog/featured/sajad-nori-21mJd5NUGZU-unsplash.jpg'
-status: 'published'
-# SEO metadata
-description: 'Learn how mature architects approach complex website ecosystems by strategically splitting SPAs and implementing SSR for critical content to balance SEO and user experience'
+featuredImage: >-
+  https://d309xicbd1a46e.cloudfront.net/featured/sajad-nori-21mJd5NUGZU-unsplash.webp
+status: published
+description: >-
+  Learn how mature architects approach complex website ecosystems by
+  strategically splitting SPAs and implementing SSR for critical content to
+  balance SEO and user experience
 keywords:
-  [
-    'website architecture',
-    'SEO optimization',
-    'React SSR',
-    'Next.js',
-    'multi-site architecture',
-    'SPA SEO',
-    'JAMstack',
-    'headless CMS',
-    'domain-driven design'
-  ]
+  - website architecture
+  - SEO optimization
+  - React SSR
+  - Next.js
+  - multi-site architecture
+  - SPA SEO
+  - JAMstack
+  - headless CMS
+  - domain-driven design
 ogTitle: 'Modern Website Architecture: When to Split Your SPA for SEO'
-ogDescription: 'Discover how to balance rich interactivity with search engine optimization by intelligently splitting your web architecture'
-ogImage: '/images/blog/featured/sajad-nori-21mJd5NUGZU-unsplash.jpg'
-ogType: 'article'
-twitterCard: 'summary_large_image'
+ogDescription: >-
+  Discover how to balance rich interactivity with search engine optimization by
+  intelligently splitting your web architecture
+ogImage: >-
+  https://d309xicbd1a46e.cloudfront.net/featured/sajad-nori-21mJd5NUGZU-unsplash.webp
+ogType: article
+twitterCard: summary_large_image
 twitterCreator: '@jeffknowlesjr'
-articleSection: 'Web Development'
-articleAuthor: 'Compiled with assistance from AI'
+articleSection: Web Development
+articleAuthor: Compiled with assistance from AI
 datePublished: '2025-04-01'
-dateModified: '2025-04-04'
+dateModified: '2025-04-11'
+sourceImageAsset: blog-modern-website-architecture.jpg
 ---
 
 # Modern Website Architecture: When to Split Your SPA for SEO

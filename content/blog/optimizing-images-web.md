@@ -30,6 +30,7 @@ articleSection: 'Web Development'
 articleAuthor: 'Compiled with assistance from AI'
 datePublished: '2025-04-01'
 dateModified: '2025-04-01'
+sourceImageAsset: 'blog-optimizing-images-web.jpg'
 ---
 
 # Optimizing Images for the Modern Web

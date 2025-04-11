@@ -26,6 +26,7 @@ twitterCard: 'summary_large_image'
 twitterCreator: '@jeffhandle'
 articleSection: 'DevOps'
 articleAuthor: 'Compiled with assistance from AI'
+sourceImageAsset: 'blog-streamlining-build-processes.jpg'
 ---
 
 # Streamlining Build Processes with Prebuild Hooks and Static Generation

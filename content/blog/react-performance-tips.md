@@ -1,5 +1,5 @@
 ---
-title: 'React Performance Tips: Building Lightning-Fast Web Applications'
+title: 'React Performance Optimization Tips'
 slug: react-performance-tips
 excerpt: Learn essential techniques for optimizing React applications, from code splitting to component optimization
 author: 'Compiled with assistance from AI'
@@ -30,6 +30,7 @@ articleSection: 'React Development'
 articleAuthor: 'Compiled with assistance from AI'
 datePublished: '2025-03-20'
 dateModified: '2025-03-25'
+sourceImageAsset: 'blog-react-performance-tips.jpg'
 ---
 
 # React Performance Tips: Building Lightning-Fast Web Applications
@@ -144,134 +145,3 @@ const ResponsiveImage: React.FC<ImageProps> = ({ src, alt }) => {
   )
 }
 ```
-
-### 2. Lazy Loading
-
-Lazy loading of images was first introduced as a browser feature and later standardized as the `loading="lazy"` attribute. Here's how to implement it:
-
-```typescript
-const LazyImage: React.FC<ImageProps> = ({ src, alt }) => {
-  const [isLoaded, setIsLoaded] = useState(false)
-
-  return (
-    <div className={`image-wrapper ${isLoaded ? 'loaded' : ''}`}>
-      <img
-        src={src}
-        alt={alt}
-        loading='lazy'
-        onLoad={() => setIsLoaded(true)}
-      />
-    </div>
-  )
-}
-```
-
-## State Management Optimization
-
-### 1. Context Optimization
-
-The concept of context splitting was popularized by Kent C. Dodds in his article "How to use React Context effectively". Here's how to implement it:
-
-```typescript
-// Instead of one large context
-const AppContext = createContext({ theme: '', user: null, settings: {} })
-
-// Split into focused contexts
-const ThemeContext = createContext({ theme: '' })
-const UserContext = createContext({ user: null })
-const SettingsContext = createContext({ settings: {} })
-```
-
-### 2. State Colocation
-
-State colocation, a principle introduced by Dan Abramov in his "You Might Not Need Redux" article, suggests keeping state as close as possible to where it's used:
-
-```typescript
-// Instead of lifting state unnecessarily
-const ParentComponent = () => {
-  const [isOpen, setIsOpen] = useState(false)
-  return <ChildComponent isOpen={isOpen} setIsOpen={setIsOpen} />
-}
-
-// Keep state where it's needed
-const ChildComponent = () => {
-  const [isOpen, setIsOpen] = useState(false)
-  return <div>{/* Component content */}</div>
-}
-```
-
-## Build Optimization
-
-### 1. Bundle Analysis
-
-Bundle analysis tools were pioneered by the webpack team and later enhanced by various contributors:
-
-```bash
-# Add bundle analyzer
-npm install --save-dev webpack-bundle-analyzer
-
-# Analyze your bundle
-npm run build -- --stats
-npm run analyze
-```
-
-### 2. Tree Shaking
-
-Tree shaking, a concept introduced by the Rollup team and later adopted by webpack, helps eliminate unused code:
-
-```javascript
-// vite.config.ts
-export default defineConfig({
-  build: {
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom'],
-          ui: ['framer-motion']
-        }
-      }
-    }
-  }
-})
-```
-
-## Monitoring Performance
-
-Performance monitoring has evolved significantly with contributions from various teams:
-
-1. React DevTools Profiler (React team)
-2. Core Web Vitals (Google Chrome team)
-3. Performance monitoring implementation:
-
-```typescript
-export function reportWebVitals(metric: WebVitalsMetric) {
-  if (metric.name === 'FCP') {
-    console.log('First Contentful Paint:', metric.value)
-  }
-  // Send to analytics
-  analytics.track('Web Vitals', metric)
-}
-```
-
-## Conclusion
-
-Performance optimization is an ongoing process, not a one-time task. By implementing these techniques progressively and measuring their impact, you can ensure your React applications remain fast and responsive as they grow.
-
-Remember that premature optimization is the root of all evil - profile first, optimize second. Focus on optimizations that provide the most significant benefits for your specific use case.
-
----
-
-_Want to learn more about modern web development? Check out my previous posts about [building a modern portfolio website](/blog/building-modern-portfolio) and [AWS Amplify integration](/blog/aws-amplify-cloud-development)._
-
-### Acknowledgments
-
-This article incorporates techniques and concepts from various sources in the React ecosystem:
-
-- React Core Team: Code splitting, hooks, and core optimization features
-- webpack Team: Bundle analysis and optimization tools
-- Next.js Team: Image optimization and performance best practices
-- Kent C. Dodds: Context optimization and React patterns
-- Dan Abramov: State management patterns and Redux alternatives
-- Brian Vaughn: Virtual list implementation
-- Google Chrome Team: Core Web Vitals and performance metrics
-- WHATWG: Web standards for responsive images and lazy loading

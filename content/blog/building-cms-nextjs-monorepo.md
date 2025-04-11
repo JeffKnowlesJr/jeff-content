@@ -23,6 +23,7 @@ keywords:
   ]
 datePublished: '2025-04-08'
 dateModified: '2025-04-08'
+sourceImageAsset: 'blog-building-cms-nextjs-monorepo.jpg'
 ---
 
 # Building a Modern CMS with a Next.js Monorepo Architecture

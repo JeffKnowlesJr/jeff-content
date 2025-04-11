@@ -1,38 +1,52 @@
 ---
-title: 'Amplify Cloud Development: Building Scalable Applications with AWS'
+title: AWS Amplify for Full-Stack Cloud Development
 slug: amplify-amplify-development
-excerpt: 'How to leverage AWS Amplify to build full-stack applications with integrated authentication, storage, and serverless functions'
-author: 'Compiled with assistance from AI'
-tags: ['AWS', 'Amplify', 'Cloud', 'Serverless', 'Authentication']
+excerpt: >-
+  Exploring AWS Amplify for building and deploying scalable full-stack web
+  applications with ease.
+author: Compiled with assistance from AI
+tags:
+  - AWS
+  - Amplify
+  - Cloud Development
+  - Full-Stack
+  - Serverless
+category: Cloud
 readingTime: 10
-featuredImage: '/images/blog/featured/aws-amplify-cloud-development.jpg'
-status: 'published'
-# SEO metadata
-description: 'Discover how AWS Amplify streamlines cloud development by integrating AWS services into a cohesive framework. Learn the architecture behind a modern serverless application with practical implementation examples.'
+featuredImage: >-
+  https://d309xicbd1a46e.cloudfront.net/featured/getty-images-4zkrf2iPZ8k-unsplash.webp
+sourceImageAsset: blog-amplify-amplify-development.jpg
+ogImage: >-
+  https://d309xicbd1a46e.cloudfront.net/featured/getty-images-4zkrf2iPZ8k-unsplash.webp
+status: published
+description: >-
+  Discover how AWS Amplify streamlines cloud development by integrating AWS
+  services into a cohesive framework. Learn the architecture behind a modern
+  serverless application with practical implementation examples.
 keywords:
-  [
-    'AWS Amplify',
-    'serverless architecture',
-    'GraphQL API',
-    'AppSync integration',
-    'DynamoDB',
-    'cloud infrastructure',
-    'Lambda functions',
-    'Terraform AWS'
-  ]
+  - AWS Amplify
+  - serverless architecture
+  - GraphQL API
+  - AppSync integration
+  - DynamoDB
+  - cloud infrastructure
+  - Lambda functions
+  - Terraform AWS
 ogTitle: 'AWS Amplify: Building Modern Cloud Applications Without the Complexity'
-ogDescription: 'See how AWS Amplify transforms cloud development by simplifying AWS service integration. Real architectural insights from implementing a production portfolio website.'
-ogImage: 'https://d309xicbd1a46e.cloudfront.net/featured/getty-images-4zkrf2iPZ8k-unsplash.webp'
-ogType: 'article'
-twitterCard: 'summary_large_image'
+ogDescription: >-
+  See how AWS Amplify transforms cloud development by simplifying AWS service
+  integration. Real architectural insights from implementing a production
+  portfolio website.
+ogType: article
+twitterCard: summary_large_image
 twitterCreator: '@jeffknowlesjr'
-articleSection: 'Cloud Architecture'
-articleAuthor: 'Compiled with assistance from AI'
-datePublished: '2025-03-30'
-dateModified: '2025-03-30'
+articleSection: Cloud Architecture
+articleAuthor: Compiled with assistance from AI
+datePublished: '2023-11-15'
+dateModified: '2025-04-11'
 ---
 
-# AWS Amplify: Simplifying Modern Cloud Development
+# Leveraging AWS Amplify for Full-Stack Cloud Development
 
 When building modern web applications, developers often face the challenge of integrating multiple cloud services while maintaining a streamlined development experience. AWS Amplify elegantly solves this problem by providing a cohesive framework that simplifies cloud integration. In this post, I'll share how Amplify has transformed our development workflow and why it's particularly powerful when combined with other AWS services.
 

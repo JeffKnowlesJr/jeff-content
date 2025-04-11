@@ -1,32 +1,48 @@
 ---
 title: 'Obsidian for Developers: Building a Knowledge Management System'
 slug: obsidian-for-developers
-excerpt: A comprehensive guide on how developers can use Obsidian to create an effective knowledge management system for code snippets, documentation, and technical notes.
-author: 'Compiled with assistance from AI'
-tags: ['Obsidian', 'Knowledge Management', 'Developer Tools', 'Documentation']
+excerpt: >-
+  A comprehensive guide on how developers can use Obsidian to create an
+  effective knowledge management system for code snippets, documentation, and
+  technical notes.
+author: Compiled with assistance from AI
+tags:
+  - Obsidian
+  - Knowledge Management
+  - Developer Tools
+  - Documentation
 readingTime: 9
-featuredImage: '/images/blog/featured/responsive-design-principles.jpg'
-status: 'published'
+featuredImage: >-
+  https://d309xicbd1a46e.cloudfront.net/featured/lala-azizli-OLvQEjwCSVI-unsplash.webp
+status: published
 datePublished: '2025-03-30'
-dateModified: '2025-03-30'
-description: 'Discover how Obsidian.md can transform your developer workflow with powerful knowledge management, code snippets, and project documentation all in plain text Markdown.'
+dateModified: '2025-04-11'
+description: >-
+  Discover how Obsidian.md can transform your developer workflow with powerful
+  knowledge management, code snippets, and project documentation all in plain
+  text Markdown.
 keywords:
-  - 'Obsidian.md for developers'
-  - 'developer note-taking system'
-  - 'knowledge management'
-  - 'Markdown notes for coding'
-  - 'code snippet management'
-  - 'developer productivity'
-  - 'project documentation'
-  - 'note-taking for programmers'
-ogTitle: 'Why Obsidian.md Is My Ultimate Developer Productivity Tool'
-ogDescription: 'Learn how Obsidian.md can become your second brain for coding projects, documentation, and knowledge management with powerful linking and plain text Markdown.'
-ogImage: '/images/blog/featured/lala-azizli-OLvQEjwCSVI-unsplash.webp'
-ogType: 'article'
-twitterCard: 'summary_large_image'
+  - Obsidian.md for developers
+  - developer note-taking system
+  - knowledge management
+  - Markdown notes for coding
+  - code snippet management
+  - developer productivity
+  - project documentation
+  - note-taking for programmers
+ogTitle: Why Obsidian.md Is My Ultimate Developer Productivity Tool
+ogDescription: >-
+  Learn how Obsidian.md can become your second brain for coding projects,
+  documentation, and knowledge management with powerful linking and plain text
+  Markdown.
+ogImage: >-
+  https://d309xicbd1a46e.cloudfront.net/featured/lala-azizli-OLvQEjwCSVI-unsplash.webp
+ogType: article
+twitterCard: summary_large_image
 twitterCreator: '@jeffknowlesjr'
-articleSection: 'Development Tools'
-articleAuthor: 'Compiled with assistance from AI'
+articleSection: Development Tools
+articleAuthor: Compiled with assistance from AI
+sourceImageAsset: blog-obsidian-for-developers.jpg
 ---
 
 # Obsidian.md for Developers: Supercharging Your Knowledge Management

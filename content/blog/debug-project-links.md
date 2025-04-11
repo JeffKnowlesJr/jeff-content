@@ -1,9 +1,10 @@
 ---
-
 title: 'Debugging Project Links: A Technical Investigation'
 slug: debug-project-links
 excerpt: 'A detailed investigation into project link routing issues and their resolution'
 author: 'Compiled with assistance from AI'
+sourceImageAsset: 'blog-debug-project-links.jpg'
+---
 
 # Project Links Debug Investigation
 
@@ -132,87 +133,4 @@ Error: Route "/projects/[slug]" used `params.slug`. `params` should be awaited b
 
 This appears in:
 
-- `/projects/[slug]` page
-- `/blog/[slug]` page
-
-The core issue is that Next.js App Router requires proper handling of the `params` object in dynamic routes. This Next.js error occurs when trying to directly access properties from the params object without properly handling them in an async context.
-
-### Error Locations:
-
-1. **Project Page**: Both in metadata generation and page component
-
-   ```typescript
-   // Line 22 in projects/[slug]/page.tsx
-   const slug = params.slug
-   ```
-
-2. **Blog Page**: Similar issues
-   ```typescript
-   // Line 36 in blog/[slug]/page.tsx
-   const post = await getContentBySlug<BlogPost>('blog', params.slug)
-   ```
-
-### Solution:
-
-According to Next.js documentation, we need to avoid destructuring params and use them directly:
-
-```typescript
-// Correct approach
-export async function generateMetadata({
-  params
-}: PageProps): Promise<Metadata> {
-  // Direct access without destructuring
-  const project = await getContentBySlug<Project>('projects', params.slug)
-  // ...
-}
-
-export default async function ProjectDetailPage({ params }: PageProps) {
-  // Direct access without destructuring
-  const project = await getContentBySlug<Project>('projects', params.slug)
-  // ...
-}
-```
-
-This issue affects ALL dynamic routes, which is why neither Project Zero nor Project Omega pages can be loaded.
-
-## Debugging Notes:
-
-- When the error occurs, Next.js still responds with a 200 status code despite the page not rendering properly
-- The error logs show the content files are correctly located and parsed
-- The slug value is being passed correctly, but the params handling is incompatible with Next.js requirements
-- This is NOT related to the ProjectSidebar component or any UI issues
-
-## Technical Investigation Next Steps
-
-1. Add debugging to getContentBySlug function to verify:
-
-   - The correct slug is being passed
-   - The file is being found
-   - The content is being parsed correctly
-
-2. Test direct URL access to verify if the issue is with:
-
-   - The Link component/navigation
-   - Or the route handling itself
-
-3. Check for any route.js files or middleware that might be intercepting requests
-
-4. Analyze the project structure to confirm it follows Next.js App Router conventions
-
-## Attempted Solutions
-
-1. Replacing React Router links with Next.js links (not working)
-2. Debugging navigation flow
-
-## Next Tests
-
-1. Verify that `src/app/projects/[slug]/page.tsx` exists and is working
-2. Check if slugs in project files match expected format
-3. Test direct URL access to `/projects/project-omega-documentation`
-4. Verify loading in content-loader.ts with proper debugging
-
-## Suspected Issues
-
-1. Mismatch between routing systems (Next.js vs React Router)
-2. Slug formation/parsing issues
-3. Content loading path issues
+- `/projects/[slug]`

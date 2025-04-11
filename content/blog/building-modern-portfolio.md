@@ -1,35 +1,48 @@
 ---
-title: 'Building a Modern Developer Portfolio with Next.js'
+title: Building a Modern Portfolio Website with Next.js
 slug: building-modern-portfolio
-excerpt: 'How to build a performant, accessible, and visually appealing developer portfolio using Next.js, TypeScript, and TailwindCSS'
-author: 'Compiled with assistance from AI'
-tags: ['Next.js', 'TypeScript', 'TailwindCSS', 'Portfolio', 'Web Development']
+excerpt: >-
+  How to build a performant, accessible, and visually appealing developer
+  portfolio using Next.js, TypeScript, and TailwindCSS
+author: Compiled with assistance from AI
+tags:
+  - Next.js
+  - TypeScript
+  - TailwindCSS
+  - Portfolio
+  - Web Development
 readingTime: 11
-featuredImage: '/images/blog/featured/building-modern-portfolio.jpg'
-status: 'published'
-# SEO metadata
-description: 'Trace the evolution of a developer portfolio from static HTML to React with AWS microservices. Learn practical steps for progressive enhancement while maintaining performance and scalability.'
+featuredImage: >-
+  https://d309xicbd1a46e.cloudfront.net/featured/hal-gatewood-tZc3vjPCk-Q-unsplash.webp
+status: published
+description: >-
+  Trace the evolution of a developer portfolio from static HTML to React with
+  AWS microservices. Learn practical steps for progressive enhancement while
+  maintaining performance and scalability.
 keywords:
-  [
-    'modern portfolio website',
-    'React development',
-    'AWS microservices',
-    'Terraform infrastructure',
-    'component architecture',
-    'frontend evolution',
-    'serverless backend',
-    'GraphQL API'
-  ]
+  - modern portfolio website
+  - React development
+  - AWS microservices
+  - Terraform infrastructure
+  - component architecture
+  - frontend evolution
+  - serverless backend
+  - GraphQL API
 ogTitle: 'Building a Modern Portfolio: From Static HTML to AWS Microservices'
-ogDescription: 'Follow my journey transforming a basic portfolio into a scalable React application with AWS microservices. Practical insights on progressive enhancement for developers.'
-ogImage: 'https://d309xicbd1a46e.cloudfront.net/featured/hal-gatewood-tZc3vjPCk-Q-unsplash.webp'
-ogType: 'article'
-twitterCard: 'summary_large_image'
+ogDescription: >-
+  Follow my journey transforming a basic portfolio into a scalable React
+  application with AWS microservices. Practical insights on progressive
+  enhancement for developers.
+ogImage: >-
+  https://d309xicbd1a46e.cloudfront.net/featured/hal-gatewood-tZc3vjPCk-Q-unsplash.webp
+ogType: article
+twitterCard: summary_large_image
 twitterCreator: '@jeffknowlesjr'
-articleSection: 'Web Development'
-articleAuthor: 'Compiled with assistance from AI'
+articleSection: Web Development
+articleAuthor: Compiled with assistance from AI
 datePublished: '2025-03-30'
-dateModified: '2025-03-30'
+dateModified: '2025-04-11'
+sourceImageAsset: blog-building-modern-portfolio.jpg
 ---
 
 # Building a Modern Portfolio Website: From HTML to Microservices
