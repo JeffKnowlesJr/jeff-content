@@ -28,6 +28,9 @@ interface PageProps {
 
 async function getCategoryPosts(category: string): Promise<BlogPost[]> {
   try {
+    // Decode the category parameter to handle URL encoding
+    const decodedCategory = decodeURIComponent(category.toLowerCase())
+
     // Get all blog posts
     const allPosts = await getContentList<ContentBlogPost>('blog')
 
@@ -35,7 +38,18 @@ async function getCategoryPosts(category: string): Promise<BlogPost[]> {
     // Filter by category (case-insensitive) and map to expected format
     return allPosts
       .filter((post) =>
-        post.tags?.some((t) => t.toLowerCase() === category.toLowerCase())
+        post.tags?.some((t) => {
+          // Handle tags with slashes - CI/CD would be stored as either "CI/CD" or "ci/cd"
+          const normalizedTag = t.toLowerCase().replace(/\s+/g, '')
+          const normalizedCategory = decodedCategory.replace(/\s+/g, '')
+
+          return (
+            normalizedTag === normalizedCategory ||
+            normalizedTag.replace(/\//g, '') ===
+              normalizedCategory.replace(/\//g, '') ||
+            t.toLowerCase() === decodedCategory
+          )
+        })
       )
       .map((post) => ({
         slug: post.slug,

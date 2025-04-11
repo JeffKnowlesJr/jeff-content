@@ -148,8 +148,6 @@ export default async function BlogPostPage({ params }: { params: Params }) {
           Back to Blog
         </Link>
 
-        {process.env.NODE_ENV === 'production' && <ProductionNotice />}
-
         <article className='bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden'>
           <div className='p-4 sm:p-6 md:p-8'>
             <header className='mb-8'>
