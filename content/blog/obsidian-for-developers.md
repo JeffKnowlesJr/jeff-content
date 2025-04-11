@@ -2,7 +2,7 @@
 title: 'Obsidian for Developers: Building a Knowledge Management System'
 slug: obsidian-for-developers
 excerpt: A comprehensive guide on how developers can use Obsidian to create an effective knowledge management system for code snippets, documentation, and technical notes.
-author: 'Jeff & Claude'
+author: 'Jeff & Claude (Compiled with assistance from AI)'
 tags: ['Obsidian', 'Knowledge Management', 'Developer Tools', 'Documentation']
 readingTime: 9
 featuredImage: '/images/blog/featured/responsive-design-principles.jpg'

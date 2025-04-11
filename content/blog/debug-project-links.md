@@ -1,3 +1,10 @@
+---
+
+title: 'Debugging Project Links: A Technical Investigation'
+slug: debug-project-links
+excerpt: 'A detailed investigation into project link routing issues and their resolution'
+author: 'Jeff & Claude (Compiled with assistance from AI)'
+
 # Project Links Debug Investigation
 
 ## Issue

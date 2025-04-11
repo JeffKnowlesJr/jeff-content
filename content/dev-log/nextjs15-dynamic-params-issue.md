@@ -3,7 +3,7 @@ title: 'Dealing with Next.js 15 Dynamic Route Params & AI Coding Assistant Chall
 slug: 'nextjs15-dynamic-params-issue'
 excerpt: 'Troubleshooting Next.js 15 dynamic route params issues and lessons learned when working with AI coding assistants.'
 datePublished: '2024-05-02'
-author: 'Jeffrey Knowles Jr'
+author: 'Jeffrey Knowles Jr (Compiled with assistance from AI)'
 tags: ['Next.js', 'Development', 'Troubleshooting', 'AI']
 status: 'published'
 ---

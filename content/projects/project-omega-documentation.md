@@ -4,7 +4,7 @@ slug: 'project-omega-documentation'
 excerpt: 'Detailed documentation for Project Omega, including API reference, deployment guides, and integration tutorials.'
 datePublished: '2024-04-02'
 dateModified: '2024-04-04'
-author: 'Jeff Knowles Jr'
+author: 'Jeff Knowles Jr (Compiled with assistance from AI)'
 tags: ['Documentation', 'Technical Writing', 'API Reference']
 status: 'published'
 featured: true

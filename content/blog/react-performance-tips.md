@@ -2,7 +2,7 @@
 title: 'React Performance Tips: Building Lightning-Fast Web Applications'
 slug: react-performance-tips
 excerpt: Learn essential techniques for optimizing React applications, from code splitting to component optimization
-author: 'Jeff & Claude'
+author: 'Jeff & Claude (Compiled with assistance from AI)'
 tags: ['React', 'Performance', 'Web Development', 'Optimization']
 readingTime: 10
 featuredImage: 'https://d309xicbd1a46e.cloudfront.net/featured/lautaro-andreani-xkBaqlcqeb4-unsplash.webp'
@@ -55,8 +55,8 @@ function App() {
   return (
     <Suspense fallback={<LoadingSpinner />}>
       <Routes>
-        <Route path="/about" element={<About />} />
-        <Route path="/projects" element={<Projects />} />
+        <Route path='/about' element={<About />} />
+        <Route path='/projects' element={<Projects />} />
       </Routes>
     </Suspense>
   )
@@ -115,7 +115,7 @@ const ItemList: React.FC<{ items: Item[] }> = ({ items }) => {
       height={400}
       itemCount={items.length}
       itemSize={100}
-      width="100%"
+      width='100%'
     >
       {Row}
     </VirtualList>
@@ -137,9 +137,9 @@ const ResponsiveImage: React.FC<ImageProps> = ({ src, alt }) => {
     <picture>
       <source
         srcSet={`${src}?w=400 400w, ${src}?w=800 800w`}
-        sizes="(max-width: 400px) 400px, 800px"
+        sizes='(max-width: 400px) 400px, 800px'
       />
-      <img src={`${src}?w=400`} alt={alt} loading="lazy" />
+      <img src={`${src}?w=400`} alt={alt} loading='lazy' />
     </picture>
   )
 }
@@ -158,7 +158,7 @@ const LazyImage: React.FC<ImageProps> = ({ src, alt }) => {
       <img
         src={src}
         alt={alt}
-        loading="lazy"
+        loading='lazy'
         onLoad={() => setIsLoaded(true)}
       />
     </div>

@@ -4,7 +4,7 @@ slug: 'project-zero-documentation'
 excerpt: 'Comprehensive documentation for Project Zero, complete with user guides, API references, and technical instructions.'
 datePublished: '2024-04-01'
 dateModified: '2024-04-04'
-author: 'Jeff Knowles Jr'
+author: 'Jeff Knowles Jr (Compiled with assistance from AI)'
 tags: ['Documentation', 'Technical Writing', 'User Guides']
 status: 'published'
 featured: true

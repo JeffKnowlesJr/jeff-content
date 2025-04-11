@@ -2,7 +2,7 @@
 title: 'SEO Metadata Implementation: OpenGraph, Twitter Cards, and Canonical URLs'
 excerpt: 'A detailed breakdown of implementing comprehensive metadata for SEO optimization across the website, including social sharing tags and structured data integration.'
 datePublished: '2024-04-16'
-author: 'Jeff Knowles Jr'
+author: 'Jeff Knowles Jr (Compiled with assistance from AI)'
 tags:
   [
     'SEO',

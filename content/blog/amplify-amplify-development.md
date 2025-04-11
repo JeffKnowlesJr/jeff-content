@@ -1,8 +1,8 @@
 ---
 title: 'Amplify Cloud Development: Building Scalable Applications with AWS'
-slug: amplify-cloud-development
+slug: amplify-amplify-development
 excerpt: 'How to leverage AWS Amplify to build full-stack applications with integrated authentication, storage, and serverless functions'
-author: 'Jeff & Claude'
+author: 'Jeff & Claude (Compiled with assistance from AI)'
 tags: ['AWS', 'Amplify', 'Cloud', 'Serverless', 'Authentication']
 readingTime: 10
 featuredImage: '/images/blog/featured/aws-amplify-cloud-development.jpg'
@@ -173,3 +173,7 @@ The future of web development lies in these integrated cloud solutions, where de
 ---
 
 _Looking to learn more about our infrastructure? Check out our [previous post](/blog/building-modern-portfolio) about building a modern portfolio website._
+
+---
+
+_This article was compiled with assistance from AI to ensure comprehensive coverage and technical accuracy._

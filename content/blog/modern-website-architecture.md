@@ -2,7 +2,7 @@
 title: 'Modern Website Architecture: When to Split Your SPA for SEO'
 slug: modern-website-architecture-seo-optimization
 excerpt: 'Learn how to optimize your React application for search engines by strategically splitting your architecture into SSR and SPA components for maximum performance and discoverability'
-author: 'Jeff & Claude'
+author: 'Jeff & Claude (Compiled with assistance from AI)'
 tags: ['Architecture', 'SEO', 'Next.js', 'React', 'AWS']
 readingTime: 12
 featuredImage: '/images/blog/featured/sajad-nori-21mJd5NUGZU-unsplash.jpg'
