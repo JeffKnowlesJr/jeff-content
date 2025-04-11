@@ -17,6 +17,7 @@
     "help": "node scripts/help.js",
     "blog:json": "node scripts/blog-to-json.js",
     "test:appsync": "node scripts/test-appsync.js",
+    "test:appsync-config": "node scripts/test-appsync-config.js",
     "test:prod-api": "node --experimental-vm-modules scripts/test-production-api.js",
     "test:graphql-schema": "node scripts/test-graphql-schema.js",
     "test": "jest",
@@ -42,7 +43,6 @@
     "heic-convert": "^2.1.0",
     "next": "15.2.4",
     "next-themes": "^0.4.6",
-    "node-fetch": "^3.3.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-markdown": "^8.0.7",
@@ -72,6 +72,7 @@
     "eslint-config-next": "15.2.4",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
+    "node-fetch": "^3.3.2",
     "postcss": "^8.4.35",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
