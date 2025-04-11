@@ -1,32 +1,42 @@
 ---
-slug: 'streamlining-build-processes'
+slug: streamlining-build-processes
 title: 'Streamlining Build Processes: How We Integrated Blog Content with CI/CD'
-excerpt: 'How we created a seamless workflow between local development, CI/CD, and deployment using prebuild hooks and static pre-processing.'
-author: 'Compiled with assistance from AI'
-tags: ['AWS', 'Amplify', 'DevOps', 'React', 'CI/CD', 'Prebuild']
+excerpt: >-
+  How we created a seamless workflow between local development, CI/CD, and
+  deployment using prebuild hooks and static pre-processing.
+author: Compiled with assistance from AI
+tags:
+  - AWS
+  - Amplify
+  - DevOps
+  - React
+  - CI/CD
+  - Prebuild
 readingTime: 6
 featuredImage: 'https://d309xicbd1a46e.cloudfront.net/featured/lukas-MU8w72PzRow-unsplash.webp'
-status: 'PUBLISHED'
+status: PUBLISHED
 datePublished: '2025-04-15'
-dateModified: '2025-04-15'
-description: 'Learn how we streamlined build processes using prebuild hooks and static pre-processing for optimal CI/CD workflow'
+dateModified: '2025-04-11'
+description: >-
+  Learn how we streamlined build processes using prebuild hooks and static
+  pre-processing for optimal CI/CD workflow
 keywords:
-  [
-    'Prebuild Hooks',
-    'CI/CD',
-    'Static Generation',
-    'Build Optimization',
-    'Deployment Pipeline'
-  ]
-ogTitle: 'How We Streamlined Our Build Processes with Prebuild Hooks'
-ogDescription: 'A case study on integrating blog content with CI/CD using prebuild hooks and static processing'
+  - Prebuild Hooks
+  - CI/CD
+  - Static Generation
+  - Build Optimization
+  - Deployment Pipeline
+ogTitle: How We Streamlined Our Build Processes with Prebuild Hooks
+ogDescription: >-
+  A case study on integrating blog content with CI/CD using prebuild hooks and
+  static processing
 ogImage: 'https://d309xicbd1a46e.cloudfront.net/featured/lukas-MU8w72PzRow-unsplash.webp'
-ogType: 'article'
-twitterCard: 'summary_large_image'
+ogType: article
+twitterCard: summary_large_image
 twitterCreator: '@jeffhandle'
-articleSection: 'DevOps'
-articleAuthor: 'Compiled with assistance from AI'
-sourceImageAsset: 'blog-streamlining-build-processes.jpg'
+articleSection: DevOps
+articleAuthor: Compiled with assistance from AI
+sourceImageAsset: lukas-MU8w72PzRow-unsplash.jpg
 ---
 
 # Streamlining Build Processes with Prebuild Hooks and Static Generation

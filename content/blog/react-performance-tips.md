@@ -1,36 +1,47 @@
 ---
-title: 'React Performance Optimization Tips'
+title: React Performance Optimization Tips
 slug: react-performance-tips
-excerpt: Learn essential techniques for optimizing React applications, from code splitting to component optimization
-author: 'Compiled with assistance from AI'
-tags: ['React', 'Performance', 'Web Development', 'Optimization']
+excerpt: >-
+  Learn essential techniques for optimizing React applications, from code
+  splitting to component optimization
+author: Compiled with assistance from AI
+tags:
+  - React
+  - Performance
+  - Web Development
+  - Optimization
 readingTime: 10
-featuredImage: 'https://d309xicbd1a46e.cloudfront.net/featured/lautaro-andreani-xkBaqlcqeb4-unsplash.webp'
+featuredImage: >-
+  https://d309xicbd1a46e.cloudfront.net/featured/vadim-sherbakov-osSryggkso4-unsplash.webp
 status: published
-# SEO metadata
-description: 'Implement effective React performance optimizations with practical code examples. From code splitting to virtualization, learn techniques that measurably improve application speed and user experience.'
+description: >-
+  Implement effective React performance optimizations with practical code
+  examples. From code splitting to virtualization, learn techniques that
+  measurably improve application speed and user experience.
 keywords:
-  [
-    'React performance optimization',
-    'code splitting React',
-    'React memoization',
-    'useMemo useCallback',
-    'React component optimization',
-    'virtual lists React',
-    'bundle size optimization',
-    'React image optimization'
-  ]
+  - React performance optimization
+  - code splitting React
+  - React memoization
+  - useMemo useCallback
+  - React component optimization
+  - virtual lists React
+  - bundle size optimization
+  - React image optimization
 ogTitle: 'React Performance Optimization: Techniques That Actually Work'
-ogDescription: "Concrete React performance strategies with implementation examples. Learn the optimization techniques I've successfully applied across production React applications."
-ogImage: 'https://d309xicbd1a46e.cloudfront.net/featured/lautaro-andreani-xkBaqlcqeb4-unsplash.webp'
-ogType: 'article'
-twitterCard: 'summary_large_image'
+ogDescription: >-
+  Concrete React performance strategies with implementation examples. Learn the
+  optimization techniques I've successfully applied across production React
+  applications.
+ogImage: >-
+  https://d309xicbd1a46e.cloudfront.net/featured/vadim-sherbakov-osSryggkso4-unsplash.webp
+ogType: article
+twitterCard: summary_large_image
 twitterCreator: '@jeffknowlesjr'
-articleSection: 'React Development'
-articleAuthor: 'Compiled with assistance from AI'
+articleSection: React Development
+articleAuthor: Compiled with assistance from AI
 datePublished: '2025-03-20'
-dateModified: '2025-03-25'
-sourceImageAsset: 'blog-react-performance-tips.jpg'
+dateModified: '2025-04-11'
+sourceImageAsset: vadim-sherbakov-osSryggkso4-unsplash.jpg
 ---
 
 # React Performance Tips: Building Lightning-Fast Web Applications

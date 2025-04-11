@@ -1,24 +1,27 @@
 ---
-title: 'Directory-Based Domain Splitting in AWS'
+title: Directory-Based Domain Splitting in AWS
 slug: directorybased-domain-splitting-in-aws
-excerpt: 'Implement path-based routing with AWS CloudFront, API Gateway, S3, and Lambda to create a unified domain experience with specialized backend services.'
-author: 'Compiled with assistance from AI'
+excerpt: >-
+  Implement path-based routing with AWS CloudFront, API Gateway, S3, and Lambda
+  to create a unified domain experience with specialized backend services.
+author: Compiled with assistance from AI
 tags:
-  [
-    'AWS',
-    'Architecture',
-    'CloudFront',
-    'API Gateway',
-    'Infrastructure',
-    'S3',
-    'Lambda'
-  ]
-readingTime: '15 min read'
+  - AWS
+  - Architecture
+  - CloudFront
+  - API Gateway
+  - Infrastructure
+  - S3
+  - Lambda
+readingTime: 15
 datePublished: '2025-04-04'
-dateModified: '2025-04-05'
-status: 'published'
-featuredImage: '/images/blog/featured/smit-patel-xMNQketH4tU-unsplash-optimized.jpg'
-sourceImageAsset: 'blog-directorybased-domain-splitting-in-aws.jpg'
+dateModified: '2025-04-11'
+status: published
+featuredImage: >-
+  https://d309xicbd1a46e.cloudfront.net/featured/planet-volumes-FBBcdlwIDK0-unsplash.webp
+sourceImageAsset: planet-volumes-FBBcdlwIDK0-unsplash.jpg
+ogImage: >-
+  https://d309xicbd1a46e.cloudfront.net/featured/planet-volumes-FBBcdlwIDK0-unsplash.webp
 ---
 
 # Directory-Based Domain Splitting in AWS

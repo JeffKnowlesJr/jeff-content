@@ -10,8 +10,11 @@ import mime from 'mime-types'
 // Load environment variables
 dotenv.config({ path: '.env.local' })
 
+// Force reprocessing - set to true to reprocess all images regardless of existing CloudFront URLs
+const FORCE_REPROCESS = false
+
 // Configuration
-const ASSETS_DIR = path.join(process.cwd(), 'public', 'content', 'assets')
+const ASSETS_DIR = path.join(process.cwd(), 'content', 'blog', 'assets')
 const BLOG_CONTENT_DIR = path.join(process.cwd(), 'content', 'blog')
 const TEMP_PROCESSING_DIR = path.join(process.cwd(), 'temp_processed_images')
 
@@ -59,7 +62,7 @@ const getBaseName = (filePath) => {
 // Helper to find source asset matching base name
 const findSourceAsset = (baseName) => {
   if (!baseName) return null
-  const extensions = ['.jpg', '.jpeg', '.png', '.gif']
+  const extensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp']
   for (const ext of extensions) {
     const potentialFile = path.join(ASSETS_DIR, `${baseName}${ext}`)
     if (fs.existsSync(potentialFile)) {
@@ -161,7 +164,10 @@ async function processAndSyncImages() {
       }
 
       // Scenario 1: ogImage is already a CloudFront URL
-      if (currentOgImage.startsWith(`https://${CLOUDFRONT_DOMAIN}`)) {
+      if (
+        currentOgImage.startsWith(`https://${CLOUDFRONT_DOMAIN}`) &&
+        !FORCE_REPROCESS
+      ) {
         console.log(
           `  -> Found existing CloudFront URL in ogImage: ${currentOgImage}`
         )
@@ -175,35 +181,70 @@ async function processAndSyncImages() {
           // console.log(`     -> featuredImage already matches ogImage.`)
         }
       }
-      // Scenario 2: ogImage is likely a local path, need to process and upload
+      // Scenario 2: ogImage is likely a local path, or we're forcing reprocessing
       else {
-        console.log(
-          `  -> Found non-CloudFront ogImage: ${currentOgImage}. Attempting to process and upload.`
-        )
-        const ogBaseName = getBaseName(currentOgImage)
-        if (!ogBaseName) {
-          console.warn(
-            `     Could not determine base name from ogImage path. Skipping processing.`
+        // If forcing reprocessing of CloudFront URL
+        if (
+          FORCE_REPROCESS &&
+          currentOgImage.startsWith(`https://${CLOUDFRONT_DOMAIN}`)
+        ) {
+          console.log(
+            `  -> Force reprocessing enabled. Reprocessing existing CloudFront image.`
           )
-          warningCount++
-          continue
+        } else {
+          console.log(
+            `  -> Found non-CloudFront ogImage: ${currentOgImage}. Attempting to process and upload.`
+          )
         }
 
-        const sourceAssetPath = findSourceAsset(ogBaseName)
+        // First check if there's a sourceImageAsset field
+        let sourceAssetPath = null
+        if (frontmatter.sourceImageAsset) {
+          // Try to find the image directly using sourceImageAsset
+          const potentialSourceAsset = path.join(
+            ASSETS_DIR,
+            frontmatter.sourceImageAsset
+          )
+          if (fs.existsSync(potentialSourceAsset)) {
+            sourceAssetPath = potentialSourceAsset
+            console.log(
+              `  -> Using sourceImageAsset: ${frontmatter.sourceImageAsset}`
+            )
+          } else {
+            console.warn(
+              `  -> sourceImageAsset specified but file not found: ${frontmatter.sourceImageAsset}`
+            )
+          }
+        }
+
+        // If no sourceImageAsset or file not found, fall back to base name derivation
         if (!sourceAssetPath) {
-          console.error(
-            `     Error: Could not find source asset in ${ASSETS_DIR} matching base name '${ogBaseName}' derived from ogImage.`
-          )
-          warningCount++
-          continue
+          const ogBaseName = getBaseName(currentOgImage)
+          if (!ogBaseName) {
+            console.warn(
+              `     Could not determine base name from ogImage path. Skipping processing.`
+            )
+            warningCount++
+            continue
+          }
+
+          sourceAssetPath = findSourceAsset(ogBaseName)
+          if (!sourceAssetPath) {
+            console.error(
+              `     Error: Could not find source asset in ${ASSETS_DIR} matching base name '${ogBaseName}' derived from ogImage.`
+            )
+            warningCount++
+            continue
+          }
         }
 
         console.log(
-          `     Found matching source asset: ${path.basename(sourceAssetPath)}`
+          `     Found source asset: ${path.basename(sourceAssetPath)}`
         )
 
         // Prepare filenames and paths
-        const webpFilename = `${ogBaseName}.webp`
+        const baseFileName = path.parse(path.basename(sourceAssetPath)).name
+        const webpFilename = `${baseFileName}.webp`
         const tempWebpPath = path.join(TEMP_PROCESSING_DIR, webpFilename)
         const s3Key = `${S3_UPLOAD_PREFIX}${webpFilename}`
         const finalCloudfrontUrl = `https://${CLOUDFRONT_DOMAIN}/${s3Key}`
@@ -281,7 +322,7 @@ async function processAndSyncImages() {
 
   console.log(`\nImage Sync Finished.`)
   console.log(
-    `Markdown Files Processed: ${markdownFiles.length}, Already CloudFront: ${alreadyCloudFrontCount}, Images Processed+Uploaded: ${processedCount}, Markdown Updated: ${updatedMdCount}, Warnings/Errors: ${warningCount}`
+    `Markdown Files Processed: ${markdownFiles.length}, Already CloudFront: ${alreadyCloudFrontCount}, Images Processed: ${processedCount}, Images Uploaded: ${uploadedCount}, Markdown Updated: ${updatedMdCount}, Warnings/Errors: ${warningCount}`
   )
 }
 

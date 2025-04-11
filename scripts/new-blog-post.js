@@ -50,11 +50,13 @@ slug: "${slug}"
 excerpt: "A brief description of the blog post goes here."
 author: "Compiled with assistance from AI"
 tags: ["Development", "Web"]
-readingTime: "5 min read"
+readingTime: 5
 datePublished: "${dateFormatted}"
 dateModified: "${dateFormatted}"
 status: "draft"
-featuredImage: "/images/blog/featured/default-blog-image.jpg"
+featuredImage: ""
+ogImage: ""
+sourceImageAsset: ""
 ---
 
 ## Introduction
@@ -107,13 +109,21 @@ try {
 }
 
 // Remind about creating the images directory
-const imageDir = path.join(
-  process.cwd(),
-  'public',
-  'images',
-  'blog',
-  'featured'
-)
+const imageDir = path.join(process.cwd(), 'content', 'blog', 'assets')
 if (!fs.existsSync(imageDir)) {
   console.log(`Note: Don't forget to create the image directory: ${imageDir}`)
 }
+
+// Remind about image handling
+console.log('\nIMPORTANT: Image Setup Instructions:')
+console.log('1. Place your blog image in content/blog/assets/')
+console.log('2. Edit the new blog post frontmatter:')
+console.log(
+  `   - Set sourceImageAsset to the filename of your image (e.g., "your-image.jpg")`
+)
+console.log(
+  '3. Run "npm run process-images" to process and upload the image to CloudFront'
+)
+console.log(
+  '4. The script will automatically update featuredImage and ogImage URLs'
+)

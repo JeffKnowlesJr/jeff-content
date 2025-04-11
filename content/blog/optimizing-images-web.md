@@ -1,36 +1,48 @@
 ---
 title: 'Optimizing Images for Web Applications: A Complete Guide'
 slug: optimizing-images-web
-excerpt: 'Learn best practices and modern techniques for optimizing images in web applications to maximize performance and user experience.'
-author: 'Compiled with assistance from AI'
-tags: ['Web Development', 'Performance', 'Optimization', 'Images', 'WebP']
+excerpt: >-
+  Learn best practices and modern techniques for optimizing images in web
+  applications to maximize performance and user experience.
+author: Compiled with assistance from AI
+tags:
+  - Web Development
+  - Performance
+  - Optimization
+  - Images
+  - WebP
 readingTime: 8
-featuredImage: '/images/blog/featured/pizza-rotated.webp'
-status: 'published'
-# SEO metadata
-description: 'Learn effective image optimization strategies that dramatically improve website load times while maintaining visual quality. Practical techniques for developers seeking better performance.'
+featuredImage: >-
+  https://d309xicbd1a46e.cloudfront.net/featured/hal-gatewood-tZc3vjPCk-Q-unsplash.webp
+status: published
+description: >-
+  Learn effective image optimization strategies that dramatically improve
+  website load times while maintaining visual quality. Practical techniques for
+  developers seeking better performance.
 keywords:
-  [
-    'image optimization',
-    'web performance',
-    'WebP conversion',
-    'responsive images',
-    'lazy loading',
-    'next-gen formats',
-    'image compression',
-    'website speed'
-  ]
+  - image optimization
+  - web performance
+  - WebP conversion
+  - responsive images
+  - lazy loading
+  - next-gen formats
+  - image compression
+  - website speed
 ogTitle: 'Image Optimization: Essential Techniques for Faster Websites'
-ogDescription: 'Discover how to optimize images for dramatic performance improvements while maintaining visual quality. Implementation strategies for developers seeking faster load times.'
-ogImage: '/images/blog/featured/pizza-rotated.webp'
-ogType: 'article'
-twitterCard: 'summary_large_image'
+ogDescription: >-
+  Discover how to optimize images for dramatic performance improvements while
+  maintaining visual quality. Implementation strategies for developers seeking
+  faster load times.
+ogImage: >-
+  https://d309xicbd1a46e.cloudfront.net/featured/hal-gatewood-tZc3vjPCk-Q-unsplash.webp
+ogType: article
+twitterCard: summary_large_image
 twitterCreator: '@jeffknowlesjr'
-articleSection: 'Web Development'
-articleAuthor: 'Compiled with assistance from AI'
+articleSection: Web Development
+articleAuthor: Compiled with assistance from AI
 datePublished: '2025-04-01'
-dateModified: '2025-04-01'
-sourceImageAsset: 'blog-optimizing-images-web.jpg'
+dateModified: '2025-04-11'
+sourceImageAsset: hal-gatewood-tZc3vjPCk-Q-unsplash.jpg
 ---
 
 # Optimizing Images for the Modern Web

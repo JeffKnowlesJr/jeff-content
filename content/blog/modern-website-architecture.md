@@ -14,7 +14,7 @@ tags:
   - AWS
 readingTime: 12
 featuredImage: >-
-  https://d309xicbd1a46e.cloudfront.net/featured/sajad-nori-21mJd5NUGZU-unsplash.webp
+  https://d309xicbd1a46e.cloudfront.net/featured/mohammad-alizade-XgeZu2jBaVI-unsplash.webp
 status: published
 description: >-
   Learn how mature architects approach complex website ecosystems by
@@ -35,7 +35,7 @@ ogDescription: >-
   Discover how to balance rich interactivity with search engine optimization by
   intelligently splitting your web architecture
 ogImage: >-
-  https://d309xicbd1a46e.cloudfront.net/featured/sajad-nori-21mJd5NUGZU-unsplash.webp
+  https://d309xicbd1a46e.cloudfront.net/featured/mohammad-alizade-XgeZu2jBaVI-unsplash.webp
 ogType: article
 twitterCard: summary_large_image
 twitterCreator: '@jeffknowlesjr'
@@ -43,7 +43,7 @@ articleSection: Web Development
 articleAuthor: Compiled with assistance from AI
 datePublished: '2025-04-01'
 dateModified: '2025-04-11'
-sourceImageAsset: blog-modern-website-architecture.jpg
+sourceImageAsset: mohammad-alizade-XgeZu2jBaVI-unsplash.jpg
 ---
 
 # Modern Website Architecture: When to Split Your SPA for SEO

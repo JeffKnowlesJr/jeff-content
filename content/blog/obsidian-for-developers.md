@@ -13,7 +13,7 @@ tags:
   - Documentation
 readingTime: 9
 featuredImage: >-
-  https://d309xicbd1a46e.cloudfront.net/featured/lala-azizli-OLvQEjwCSVI-unsplash.webp
+  https://d309xicbd1a46e.cloudfront.net/featured/sajad-nori-21mJd5NUGZU-unsplash.webp
 status: published
 datePublished: '2025-03-30'
 dateModified: '2025-04-11'
@@ -36,13 +36,13 @@ ogDescription: >-
   documentation, and knowledge management with powerful linking and plain text
   Markdown.
 ogImage: >-
-  https://d309xicbd1a46e.cloudfront.net/featured/lala-azizli-OLvQEjwCSVI-unsplash.webp
+  https://d309xicbd1a46e.cloudfront.net/featured/sajad-nori-21mJd5NUGZU-unsplash.webp
 ogType: article
 twitterCard: summary_large_image
 twitterCreator: '@jeffknowlesjr'
 articleSection: Development Tools
 articleAuthor: Compiled with assistance from AI
-sourceImageAsset: blog-obsidian-for-developers.jpg
+sourceImageAsset: sajad-nori-21mJd5NUGZU-unsplash.jpg
 ---
 
 # Obsidian.md for Developers: Supercharging Your Knowledge Management
