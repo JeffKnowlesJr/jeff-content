@@ -7,6 +7,13 @@ const nextConfig = {
   images: {
     domains: ['d309xicbd1a46e.cloudfront.net']
   },
+  // Expose environment variables to the browser
+  env: {
+    NEXT_PUBLIC_APPSYNC_API_URL: process.env.NEXT_PUBLIC_APPSYNC_API_URL,
+    NEXT_PUBLIC_APPSYNC_API_KEY: process.env.NEXT_PUBLIC_APPSYNC_API_KEY,
+    APPSYNC_API_URL: process.env.APPSYNC_API_URL,
+    APPSYNC_API_KEY: process.env.APPSYNC_API_KEY
+  },
   // Add permanent redirects configuration
   async redirects() {
     return [

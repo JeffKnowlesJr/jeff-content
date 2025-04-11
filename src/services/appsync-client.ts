@@ -3,6 +3,8 @@
  * This centralizes all AppSync API interactions to avoid code duplication
  */
 
+import { APPSYNC_CONFIG } from '@/utils/appsync-config'
+
 type GraphQLResponse<T> = {
   data: T
   errors?: Array<{ message: string }>
@@ -13,12 +15,18 @@ type FetchOptions = {
 }
 
 // Client-side API configuration (prefixed with NEXT_PUBLIC_)
-const CLIENT_APPSYNC_API_URL = process.env.NEXT_PUBLIC_APPSYNC_API_URL
-const CLIENT_APPSYNC_API_KEY = process.env.NEXT_PUBLIC_APPSYNC_API_KEY
+const CLIENT_APPSYNC_API_URL =
+  process.env.NEXT_PUBLIC_APPSYNC_API_URL ||
+  APPSYNC_CONFIG.CLIENT_APPSYNC_API_URL
+const CLIENT_APPSYNC_API_KEY =
+  process.env.NEXT_PUBLIC_APPSYNC_API_KEY ||
+  APPSYNC_CONFIG.CLIENT_APPSYNC_API_KEY
 
 // Server-side API configuration (not exposed to client)
-const SERVER_APPSYNC_API_URL = process.env.APPSYNC_API_URL
-const SERVER_APPSYNC_API_KEY = process.env.APPSYNC_API_KEY
+const SERVER_APPSYNC_API_URL =
+  process.env.APPSYNC_API_URL || APPSYNC_CONFIG.SERVER_APPSYNC_API_URL
+const SERVER_APPSYNC_API_KEY =
+  process.env.APPSYNC_API_KEY || APPSYNC_CONFIG.SERVER_APPSYNC_API_KEY
 
 /**
  * Execute a GraphQL query or mutation against AppSync

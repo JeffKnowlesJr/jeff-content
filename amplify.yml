@@ -8,6 +8,11 @@ frontend:
       commands:
         - env | grep -e NEXT_PUBLIC_ -e APPSYNC_ -e AWS_ -e CONTACT_FORM_ >> .env.production || true
         - echo "NEXT_PUBLIC_ADMIN_ROUTES_DYNAMIC=true" >> .env.production
+        # Make sure AppSync env variables are definitely set
+        - echo "NEXT_PUBLIC_APPSYNC_API_URL=$NEXT_PUBLIC_APPSYNC_API_URL" >> .env.production
+        - echo "NEXT_PUBLIC_APPSYNC_API_KEY=$NEXT_PUBLIC_APPSYNC_API_KEY" >> .env.production
+        - echo "APPSYNC_API_URL=$APPSYNC_API_URL" >> .env.production
+        - echo "APPSYNC_API_KEY=$APPSYNC_API_KEY" >> .env.production
         - npm run build
   artifacts:
     baseDirectory: .next
