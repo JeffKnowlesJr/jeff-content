@@ -53,6 +53,7 @@ datePublished: 'YYYY-MM-DD'
 dateModified: 'YYYY-MM-DD'
 status: 'published'
 featuredImage: '/images/blog/featured/your-image.jpg'
+ogImage: my-source-image.jpg
 ---
 
 ## Introduction
@@ -111,6 +112,7 @@ projectStatus: "Completed"
 githubUrl: "https://github.com/yourusername/project-repo"
 liveUrl: "https://your-project.com"
 readingTime: "8 min read"
+ogImage: my-source-image.jpg
 ---
 
 ## Project Overview
@@ -183,51 +185,46 @@ This will:
 3. Write the content in Markdown
 4. Prepare any images needed
 
-### 2. Adding Images
+### 2. Adding and Syncing Images (S3/CloudFront Workflow)
 
-1. Place your source images in the assets directory:
+This workflow uses S3 for storage and CloudFront for delivery.
 
-   - **Source directory**: `/public/content/assets/`
-   - For blog images: Use filenames containing "blog" (e.g., `blog-your-topic.jpg`)
-   - For project images: Use filenames containing "project" (e.g., `project-name.jpg`)
+1.  **Place Source Image:** Add your original image file (e.g., `my-source-image.jpg`) to the assets directory: `/public/content/assets/`.
+2.  **Link in Markdown:** Open the corresponding markdown file (`content/blog/your-post.md`). Add or update the `ogImage` field in the frontmatter to contain the _exact filename_ of the source image you just added:
+    ```yaml
+    ogImage: my-source-image.jpg
+    ```
+3.  **Run Sync Script:** Execute the image processing and sync script from the project root:
 
-2. Process the images using the automated script:
+    ```bash
+    npm run process-images
+    ```
 
-   ```bash
-   npm run process-images
-   ```
+    This script performs several actions:
 
-   This will:
+    - Reads the `ogImage` field from the markdown file.
+    - Finds the source image (`my-source-image.jpg`) in `/public/content/assets/`.
+    - Processes the image (optimizes, converts to WebP).
+    - Uploads the processed WebP to the S3 bucket (`s3://jeff-dev-blog-images/featured/my-source-image.webp`).
+    - Determines the final CloudFront URL (`https://d309xicbd1a46e.cloudfront.net/featured/my-source-image.webp`).
+    - **Automatically updates** the `featuredImage` and `ogImage` fields in your markdown file (`content/blog/your-post.md`) to this CloudFront URL.
+    - Updates the `dateModified` field.
 
-   - Process blog images to: `/public/images/blog/featured/`
-   - Process project images to: `/public/images/projects/`
-   - Convert images to WebP format
-   - Optimize images for web (1200px width for blog images)
-   - Create any required directories automatically
-
-3. Reference the processed images in your content's frontmatter:
-   - Blog posts: `featuredImage: "/images/blog/featured/your-image.webp"`
-   - Projects: `featuredImage: "/images/projects/your-image.webp"`
-
-> Note: The image processing script filters images based on filenames. Blog images must contain "blog" in the filename, and project images must contain "project".
+4.  **Verify:** Check the output of the script for success or errors. Verify the frontmatter in your markdown file has been updated with the correct CloudFront URL.
 
 ### 3. Upload Content to DynamoDB
 
-1. Run the content import scripts:
+Once images are synced and frontmatter is updated:
 
-   ```bash
-   # For blog posts
-   npm run import:all-blogs
+1.  Run the content import script for blogs:
 
-   # For projects
-   npm run import:all-projects
-   ```
+    ```bash
+    npm run blog:import
+    ```
 
-2. These scripts will:
-   - Process all markdown files in the content directory
-   - Convert them to the appropriate format
-   - Upload them to DynamoDB via the GraphQL API
-   - Update the status in DynamoDB based on the frontmatter
+    _(Note: A similar script might exist for projects, e.g., `npm run import:all-projects`)_
+
+2.  This script reads the markdown files (including the CloudFront URLs) and uploads the content to DynamoDB via the GraphQL API.
 
 ### 4. Publish Content
 

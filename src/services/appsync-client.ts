@@ -11,9 +11,37 @@ if (process.env.NODE_ENV !== 'production') {
   dotenv.config({ path: '.env.local' })
 }
 
+// Define types for GraphQL errors
+type GraphQLErrorDetail = {
+  message: string
+  locations?: Array<{ line: number; column: number; sourceName?: string }>
+  path?: Array<string | number>
+  extensions?: Record<string, unknown>
+  errorType?: string // Important for AppSync errors
+  errorInfo?: unknown
+  data?: unknown
+}
+
+type GraphQLAggregateError = {
+  message: string
+  errors: GraphQLErrorDetail[]
+}
+
+// Type guard to check if an error object conforms to GraphQLAggregateError
+function isGraphQLAggregateError(
+  error: unknown
+): error is GraphQLAggregateError {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'errors' in error &&
+    Array.isArray((error as GraphQLAggregateError).errors)
+  )
+}
+
 type GraphQLResponse<T> = {
   data: T
-  errors?: Array<{ message: string }>
+  errors?: GraphQLErrorDetail[] // Use the detailed type here
 }
 
 type FetchOptions = {
@@ -94,7 +122,10 @@ export async function executeGraphQL<TData = Record<string, unknown>>(
 
       if (result.errors && result.errors.length > 0) {
         console.error('AppSync GraphQL Errors:', result.errors)
-        throw new Error(result.errors[0].message)
+        throw {
+          message: 'AppSync GraphQL operation failed',
+          errors: result.errors
+        }
       }
 
       return result.data
@@ -129,16 +160,25 @@ export async function executeGraphQL<TData = Record<string, unknown>>(
 
       if (result.errors && result.errors.length > 0) {
         console.error('GraphQL Proxy Errors:', result.errors)
-        throw new Error(result.errors[0].message)
+        throw {
+          message: 'GraphQL Proxy operation failed',
+          errors: result.errors
+        }
       }
 
       return result.data
     }
   } catch (error) {
-    console.error('Error executing GraphQL operation:', {
-      error,
-      message: error instanceof Error ? error.message : 'Unknown error'
-    })
-    throw error
+    // Use the type guard to handle the thrown error object
+    if (isGraphQLAggregateError(error)) {
+      console.error('GraphQL operation failed with errors:', error.errors)
+      throw error // Re-throw the object with the errors array
+    } else {
+      console.error('Error executing GraphQL operation (non-GraphQL error):', {
+        error,
+        message: error instanceof Error ? error.message : 'Unknown error'
+      })
+      throw error instanceof Error ? error : new Error(String(error))
+    }
   }
 }

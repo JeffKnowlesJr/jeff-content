@@ -1,9 +1,13 @@
 ---
 title: 'Debugging Project Links: A Technical Investigation'
 slug: debug-project-links
+datePublished: 2025-08-02
 excerpt: 'A detailed investigation into project link routing issues and their resolution'
 author: 'Compiled with assistance from AI'
 sourceImageAsset: 'blog-debug-project-links.jpg'
+tags: ['debugging', 'links', 'projects']
+status: published
+readingTime: 5
 ---
 
 # Project Links Debug Investigation

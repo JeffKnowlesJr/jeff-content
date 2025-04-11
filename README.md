@@ -128,46 +128,43 @@ For detailed implementation, see:
 └── types/               # TypeScript definitions
 ```
 
-## Image Management
+## Image Management (S3/CloudFront Workflow)
 
-This project uses a structured approach to manage blog and project images:
+This project standardizes on using AWS S3 and CloudFront for hosting and serving optimized blog and project images.
 
-### Image Processing Workflow
+### Image Synchronization Workflow
 
-1. **Source Images**
+1.  **Source Images:** Place original images (e.g., `my-image.jpg`) in `/public/content/assets/`.
+2.  **Link in Markdown:** In the corresponding markdown file (`content/blog/post-slug.md`), add/update the `ogImage:` frontmatter field to reference the _source_ image filename (e.g., `ogImage: my-image.jpg`). _Note: The script uses `ogImage` as the primary link._
+3.  **Run Sync Script:** Execute `npm run process-images`.
+    - This script reads the `ogImage` field from each markdown file.
+    - Finds the matching source image in assets.
+    - Processes the image (optimize, convert to WebP).
+    - Uploads the processed WebP image to the S3 bucket (`jeff-dev-blog-images/featured/`).
+    - Updates the `featuredImage` and `ogImage` fields in the markdown file with the final absolute CloudFront URL (`https://d309xicbd1a46e.cloudfront.net/featured/...`).
+4.  **Import Content:** Run `npm run blog:import` to sync the markdown content (with updated CloudFront image URLs) to DynamoDB.
+5.  **Commit & Deploy:** Commit the updated markdown files and deploy.
 
-   - Place original images in `/public/content/assets/`
-   - Use naming convention with "blog-" prefix for blog images
-   - Use naming convention with "project-" prefix for project images
+### Image Configuration
 
-2. **Process Images**
-
-   ```bash
-   npm run process-images
-   ```
-
-   This optimizes images and converts them to WebP format.
-
-3. **Reference in Content**
-   - Blog posts: `featuredImage: "/images/blog/featured/your-image.webp"`
-   - Projects: `featuredImage: "/images/projects/your-image.webp"`
+- **S3 Bucket:** `jeff-dev-blog-images`
+- **CloudFront Domain:** `d309xicbd1a46e.cloudfront.net`
+- **S3 Path Prefix:** `featured/`
+- Configuration is handled via environment variables (`S3_BUCKET_NAME`, `CLOUDFRONT_DOMAIN`, `AWS_REGION`).
 
 ### Image Error Handling
 
-The `BlogImage` component (`components/common/BlogImage.tsx`) is used to handle image loading errors gracefully:
-
-- Automatically falls back to a placeholder when images are missing
-- Shows debugging information in development mode
-- Maintains the same API as Next.js Image component
+The `BlogImage` component (`components/common/BlogImage.tsx`) handles potential loading errors gracefully by showing a fallback if an image URL (from the database) fails to load.
 
 ### Common Image Issues
 
-If you encounter 404 errors for blog images:
+If images aren't displaying correctly:
 
-1. Check image references in blog posts
-2. Verify images exist in the correct directories
-3. Run the image processing script
-4. See `docs/IMAGE_LOADING_FIXES.md` for detailed troubleshooting
+1.  Verify the `ogImage` field in the markdown frontmatter correctly references the source asset filename.
+2.  Ensure the source image exists in `/public/content/assets/`.
+3.  Run `npm run process-images` and check its output for errors (e.g., missing source file, S3 upload issues).
+4.  Run `npm run blog:import` to ensure the database has the correct CloudFront URL.
+5.  Check network requests in the browser dev tools to see if the correct CloudFront URL is being requested and if there are any errors (e.g., 403 Forbidden from S3/CloudFront permissions).
 
 ## Development
 

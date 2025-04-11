@@ -12,17 +12,11 @@ The content management system uses two distinct components:
 ```
 ├── content/                    # Content staging area (NOT used by application code)
 │   ├── blog/                   # Blog posts for upload to DynamoDB
-│   │   ├── modern-website-architecture.md
-│   │   ├── aws-amplify-cloud-development.md
-│   │   └── ...
+│   │   └── *.md                # Markdown files with frontmatter
 │   ├── projects/               # Project case studies for upload to DynamoDB
-│   │   ├── project-zero-documentation.md
-│   │   ├── project-omega-specifications.md
-│   │   └── ...
-│   └── assets/                 # Content-related assets for processing
-│       ├── blog/               # Blog post specific assets
-│       └── projects/           # Project specific assets
-├── public/
+│   │   └── *.md
+│   └── assets/                 # Raw image assets for processing & upload to S3
+├── public/                     # Static files served directly (NO processed images here now)
 │   ├── images/                 # Optimized images
 │   │   ├── blog/               # Blog images
 │   │   │   ├── featured/       # Featured images for blog posts
@@ -33,7 +27,7 @@ The content management system uses two distinct components:
 │   │   └── ...
 ```
 
-**Important**: The `content/` directory is NOT referenced by any application code. It serves strictly as a staging area for content to be uploaded to DynamoDB by build scripts. The application exclusively retrieves content from DynamoDB.
+**Important**: The `content/` directory is NOT referenced by application code. `/content/assets/` holds source images. Processed images are uploaded to S3 and served via CloudFront (`https://d309xicbd1a46e.cloudfront.net/featured/...`). The application reads content (including CloudFront image URLs) exclusively from DynamoDB.
 
 ## Content Types and Frontmatter
 
@@ -48,15 +42,17 @@ author: 'Compiled with assistance from AI'
 tags: ['Architecture', 'Next.js', 'React', 'SEO']
 category: 'Development'
 readingTime: 8
-featuredImage: '/images/blog/featured/sajad-nori-21mJd5NUGZU-unsplash.jpg'
-ogImage: '/images/blog/featured/sajad-nori-21mJd5NUGZU-unsplash.jpg'
+ogImage: 'sajad-nori-21mJd5NUGZU-unsplash.jpg' # Source image filename in assets/
+featuredImage: 'https://d309xicbd1a46e.cloudfront.net/featured/sajad-nori-21mJd5NUGZU-unsplash.webp' # Final CloudFront URL (added by script)
 status: 'published'
 datePublished: '2023-09-15'
-dateModified: '2024-04-04'
+dateModified: '2024-04-11' # Updated by script
 ---
 
 Content goes here...
 ```
+
+_Note: `ogImage` references the source asset filename. `featuredImage` is automatically updated by the `process-images` script to the final CloudFront URL._
 
 ### Projects
 
@@ -68,8 +64,8 @@ excerpt: 'Comprehensive documentation for Project Zero, detailing architecture a
 client: 'Internal'
 tags: ['documentation', 'architecture']
 category: 'Documentation'
-featuredImage: '/images/projects/project-zero/cover.jpg'
-ogImage: '/images/projects/project-zero/cover.jpg'
+ogImage: 'project-zero-cover.jpg' # Source image filename in assets/
+featuredImage: 'https://d309xicbd1a46e.cloudfront.net/featured/project-zero-cover.webp' # Final CloudFront URL (if projects use same workflow)
 status: 'published'
 dateCompleted: '2023-08-20'
 featured: true
@@ -80,54 +76,25 @@ Content goes here...
 
 ## Content Management Workflows
 
-### Adding New Content
+### Adding New Content (Blog Posts Example)
 
-#### Blog Posts
-
-1. **Create the Markdown File**
-
-   Create a new file in `content/blog/` with the appropriate frontmatter:
-
-   ```bash
-   touch content/blog/my-new-post.md
-   ```
-
-2. **Prepare Images**
-
-   Place original images in `src/assets/` and process them:
-
-   ```bash
-   # From project root
-   node scripts/resize-blog-image.js src/assets/my-image.jpg
-   ```
-
-3. **Update Frontmatter**
-
-   Ensure all required fields are filled:
-
-   - title
-   - slug (URL-friendly version of title)
-   - excerpt (short description)
-   - featuredImage (path to processed image)
-   - status ("draft", "published", or "archived")
-
-4. **Upload to DynamoDB**
-
-   Run the content processing script to upload to DynamoDB:
-
-   ```bash
-   npm run import:all-blogs
-   ```
-
-5. **Publish**
-
-   Commit the changes to trigger a build and content upload:
-
-   ```bash
-   git add content/blog/my-new-post.md public/images/blog
-   git commit -m "Add new blog post: My Post Title"
-   git push
-   ```
+1.  **Add Source Image:** Place the original image file (e.g., `new-blog-image.jpg`) in `/public/content/assets/`.
+2.  **Create Markdown File:** Create a new file in `content/blog/` (e.g., `my-new-post.md`).
+3.  **Add Frontmatter & Content:** Fill in the required frontmatter fields.
+    - **Crucially, set the `ogImage` field** to the _exact filename_ of the source image you added in Step 1 (e.g., `ogImage: new-blog-image.jpg`).
+    - You can leave `featuredImage` blank or set it initially; the script will overwrite it.
+    - Write the main content of the post.
+4.  **Run Image Sync Script:** From the project root, run:
+    ```bash
+    npm run process-images
+    ```
+    - This processes the image referenced in `ogImage`, uploads it to S3, gets the CloudFront URL, and automatically updates the `featuredImage` and `ogImage` fields in `my-new-post.md`.
+5.  **Run Content Import Script:** Run:
+    ```bash
+    npm run blog:import
+    ```
+    - This uploads the content (including the CloudFront image URLs) from `my-new-post.md` to DynamoDB.
+6.  **Commit & Deploy:** Commit the updated markdown file (`my-new-post.md`) and deploy the application.
 
 #### Projects
 

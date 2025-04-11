@@ -4,8 +4,17 @@ import matter from 'gray-matter'
 import dotenv from 'dotenv'
 import { executeGraphQL } from '../src/services/appsync-client.ts'
 
-// --- Define the GraphQL Mutation String ---
-// Using UpdateBlogPost mutation
+// --- Define the GraphQL Mutation Strings ---
+const createBlogPostMutation = /* GraphQL */ `
+  mutation CreateBlogPost($input: CreateBlogPostInput!) {
+    createBlogPost(input: $input) {
+      slug
+      title
+      createdAt
+    }
+  }
+`
+
 const updateBlogPostMutation = /* GraphQL */ `
   mutation UpdateBlogPost($input: UpdateBlogPostInput!) {
     updateBlogPost(input: $input) {
@@ -15,36 +24,42 @@ const updateBlogPostMutation = /* GraphQL */ `
     }
   }
 `
-// --- End of GraphQL Mutation String ---
+// --- End of GraphQL Mutation Strings ---
 
 // Load .env.local
 dotenv.config({ path: '.env.local' })
 
-// Helper function to format date string to ISO 8601 UTC
-const formatToAWSDateTime = (dateString) => {
-  if (!dateString || typeof dateString !== 'string') {
-    return null // Or throw an error if it's truly required
+// Helper function to format date string or object to ISO 8601 UTC
+const formatToAWSDateTime = (dateInput) => {
+  let date
+  // Check if input is a string, Date object, or something else
+  if (dateInput instanceof Date) {
+    date = dateInput // Already a Date object
+  } else if (typeof dateInput === 'string') {
+    try {
+      // Attempt to parse the string
+      date = new Date(dateInput)
+    } catch (e) {
+      console.error(`Error parsing date string ${dateInput}:`, e.message)
+      return null
+    }
+  } else {
+    // If input is null, undefined, or other non-date type
+    return null
   }
+
+  // Check if the date is valid after parsing or if it was already a valid Date object
+  if (isNaN(date.getTime())) {
+    console.error(`Invalid date value: ${dateInput}`)
+    return null
+  }
+
   try {
-    // Attempt to parse the date. Handles YYYY-MM-DD.
-    const date = new Date(dateString)
-    // Check if the date is valid
-    if (isNaN(date.getTime())) {
-      throw new Error(`Invalid date string: ${dateString}`)
-    }
-    // Format to ISO 8601, ensuring it represents UTC midnight if no time was given
-    // Adjust based on whether the input already contains time/timezone info
-    if (dateString.includes('T')) {
-      return date.toISOString() // Assume it's already specific enough
-    } else {
-      // If only date, create UTC date and format
-      const utcDate = new Date(
-        Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
-      )
-      return utcDate.toISOString() // Format as YYYY-MM-DDTHH:mm:ss.sssZ
-    }
+    // Format to ISO 8601 UTC
+    // Note: toISOString() always returns UTC time
+    return date.toISOString() // Format as YYYY-MM-DDTHH:mm:ss.sssZ
   } catch (e) {
-    console.error(`Error formatting date ${dateString}:`, e.message)
+    console.error(`Error formatting date ${dateInput} to ISOString:`, e.message)
     return null // Or handle error as needed
   }
 }
@@ -68,6 +83,8 @@ async function importBlogPosts() {
 
   let successCount = 0
   let errorCount = 0
+  let createdCount = 0
+  let updatedCount = 0
 
   for (const filename of filenames) {
     const filePath = path.join(BLOG_CONTENT_DIR, filename)
@@ -75,34 +92,46 @@ async function importBlogPosts() {
 
     try {
       const fileContent = fs.readFileSync(filePath, 'utf8')
-      const { data: frontmatter, content } = matter(fileContent)
+      // Handle potential empty files or files without frontmatter
+      let data = {}
+      let content = ''
+      try {
+        const parsed = matter(fileContent)
+        data = parsed.data
+        content = parsed.content
+      } catch (e) {
+        // If YAML parsing fails (e.g., no ---), use defaults but log warning
+        console.warn(
+          `  -> Warning: Could not parse frontmatter for ${filename}. Proceeding with defaults/empty values. Error: ${e.message}`
+        )
+        // Assign slug based on filename if possible, otherwise skip?
+        data.slug = path.basename(filename, '.md')
+        data.title = data.slug // Default title
+        content = fileContent // Use entire file as content if no frontmatter
+      }
+
+      const frontmatter = data // Use 'frontmatter' for consistency below
 
       // Format the date correctly before creating the input object
       const formattedPublishedAt = formatToAWSDateTime(
         frontmatter.datePublished
       )
 
-      // --- Prepare input for UpdateBlogPostInput ---
-      // IMPORTANT: Field names MUST match UpdateBlogPostInput in schema.graphql
+      // --- Prepare input for Create/Update BlogPostInput ---
+      // Fields are identical for CreateBlogPostInput and UpdateBlogPostInput
       const input = {
-        // 'id' is usually required for update, but schema uses slug?
-        // If update requires ID, we might need a preliminary query step.
-        // Assuming slug is the key field for update based on schema pattern.
         slug: frontmatter.slug,
         title: frontmatter.title,
         content: content,
         excerpt: frontmatter.excerpt,
         author: frontmatter.author,
         tags: Array.isArray(frontmatter.tags) ? frontmatter.tags : [],
-        // category: frontmatter.category, // Not in UpdateBlogPostInput
         readingTime: frontmatter.readingTime
           ? parseInt(frontmatter.readingTime)
           : null,
         featuredImage: frontmatter.featuredImage,
-        // ogImage: frontmatter.ogImage, // Not in UpdateBlogPostInput
         status: frontmatter.status,
-        publishedAt: formattedPublishedAt // Use the formatted date
-        // dateModified: frontmatter.dateModified, // Not in UpdateBlogPostInput (updatedAt is likely auto)
+        publishedAt: formattedPublishedAt
       }
 
       // Remove null/undefined fields
@@ -112,7 +141,7 @@ async function importBlogPosts() {
         }
       })
 
-      // Check required fields for UpdateBlogPostInput (based on schema ! marks)
+      // Check required fields (same for Create and Update)
       if (!input.slug) throw new Error('Missing required field: slug')
       if (!input.title) throw new Error('Missing required field: title')
       if (!input.content) throw new Error('Missing required field: content')
@@ -121,36 +150,103 @@ async function importBlogPosts() {
       if (!input.publishedAt)
         throw new Error(
           'Missing or invalid required field: publishedAt (from datePublished)'
-        ) // Check formatted value
+        )
       if (input.readingTime === null)
-        throw new Error('Missing required field: readingTime') // Check for null after parseInt
+        // readingTime is Int!, so null is not allowed after parseInt
+        throw new Error('Missing required field: readingTime')
       if (!input.status) throw new Error('Missing required field: status')
       if (!input.tags) throw new Error('Missing required field: tags') // Should be set to [] if missing
 
-      console.log(`  -> Sending UPDATE data for slug: ${input.slug}`)
+      // --- Attempt to CREATE first ---
+      try {
+        console.log(`  -> Attempting CREATE for slug: ${input.slug}`)
+        await executeGraphQL(
+          createBlogPostMutation,
+          { input },
+          { isServer: true }
+        )
+        console.log(`  -> Successfully CREATED post: ${input.title}`)
+        createdCount++
+        successCount++
+      } catch (createError) {
+        // Check if the error is because the item already exists
+        // The executeGraphQL function now throws an object with an 'errors' property for GraphQL errors.
+        const isConditionalCheckError =
+          createError &&
+          typeof createError === 'object' &&
+          'errors' in createError &&
+          Array.isArray(createError.errors) &&
+          createError.errors.some(
+            (err) =>
+              err &&
+              err.errorType === 'DynamoDB:ConditionalCheckFailedException'
+          )
 
-      // Execute the updateBlogPost mutation
-      /* const mutationResult = */ await executeGraphQL(
-        updateBlogPostMutation, // Use the correct mutation string
-        { input }, // Pass the input object
-        { isServer: true }
-      )
-
-      console.log(`  -> Successfully UPDATED post: ${input.title}`)
-      successCount++
-    } catch (error) {
-      console.error(`  -> Error processing ${filename}:`)
-      if (error.errors) {
-        console.error(`    GraphQL Errors: ${JSON.stringify(error.errors)}`)
-      } else {
-        console.error(`    ${error.message}`)
+        if (isConditionalCheckError) {
+          console.log(
+            `  -> CREATE failed (already exists), attempting UPDATE for slug: ${input.slug}`
+          )
+          // --- Attempt to UPDATE ---
+          try {
+            await executeGraphQL(
+              updateBlogPostMutation,
+              { input },
+              { isServer: true }
+            )
+            console.log(`  -> Successfully UPDATED post: ${input.title}`)
+            updatedCount++
+            successCount++
+          } catch (updateError) {
+            // Handle update error separately
+            console.error(`  -> UPDATE failed for ${filename}:`)
+            if (
+              updateError &&
+              typeof updateError === 'object' &&
+              'errors' in updateError &&
+              Array.isArray(updateError.errors)
+            ) {
+              console.error(
+                `    GraphQL Errors: ${JSON.stringify(updateError.errors)}`
+              )
+            } else {
+              // Check if it's an Error instance before accessing .message
+              const message =
+                updateError instanceof Error
+                  ? updateError.message
+                  : String(updateError)
+              console.error(`    ${message}`)
+            }
+            errorCount++
+          }
+        } else {
+          // If createError was not a conditional check failure, log the actual error
+          console.error(`  -> CREATE failed for ${filename}:`)
+          if (
+            createError &&
+            typeof createError === 'object' &&
+            'errors' in createError &&
+            Array.isArray(createError.errors)
+          ) {
+            console.error(
+              `    GraphQL Errors: ${JSON.stringify(createError.errors)}`
+            )
+          } else {
+            // Log the whole error if structure is unknown or not a GraphQL error
+            console.error(`    Raw Error: ${JSON.stringify(createError)}`)
+          }
+          errorCount++
+        }
       }
+    } catch (error) {
+      // Catch errors from file reading, frontmatter parsing, or input validation
+      console.error(`  -> Error processing ${filename} before API call:`)
+      console.error(`    ${error.message}`)
       errorCount++
     }
   }
 
   console.log(
-    `\nImport finished. ${successCount} updated, ${errorCount} failed.`
+    `\nImport finished. ${successCount} successful (${createdCount} created, ${updatedCount} updated), ${errorCount} failed.`
   )
 }
 
