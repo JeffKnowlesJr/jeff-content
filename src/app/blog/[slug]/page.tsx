@@ -33,7 +33,7 @@ function ProductionNotice() {
         </div>
         <div className='ml-3'>
           <p className='text-sm text-yellow-700'>
-            Using production data from DynamoDB via AppSync GraphQL API.
+            This page is using production mode.
           </p>
         </div>
       </div>
@@ -215,11 +215,16 @@ export default async function BlogPostPage({ params }: { params: Params }) {
                     />
                   </svg>
                   <time dateTime={post.datePublished}>
-                    {new Date(post.datePublished).toLocaleDateString('en-US', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric'
-                    })}
+                    {post.datePublished
+                      ? new Date(post.datePublished).toLocaleDateString(
+                          'en-US',
+                          {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                          }
+                        )
+                      : 'No date available'}
                   </time>
                 </div>
                 <div className='flex items-center'>
