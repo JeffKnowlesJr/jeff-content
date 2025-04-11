@@ -2,7 +2,7 @@
 title: 'Building a Modern Developer Portfolio with Next.js'
 slug: building-modern-portfolio
 excerpt: 'How to build a performant, accessible, and visually appealing developer portfolio using Next.js, TypeScript, and TailwindCSS'
-author: 'Jeff & Claude (Compiled with assistance from AI)'
+author: 'Compiled with assistance from AI'
 tags: ['Next.js', 'TypeScript', 'TailwindCSS', 'Portfolio', 'Web Development']
 readingTime: 11
 featuredImage: '/images/blog/featured/building-modern-portfolio.jpg'
@@ -27,7 +27,7 @@ ogType: 'article'
 twitterCard: 'summary_large_image'
 twitterCreator: '@jeffknowlesjr'
 articleSection: 'Web Development'
-articleAuthor: 'Jeff & Claude'
+articleAuthor: 'Compiled with assistance from AI'
 datePublished: '2025-03-30'
 dateModified: '2025-03-30'
 ---

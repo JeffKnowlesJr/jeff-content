@@ -22,7 +22,7 @@ async function searchBlogPosts(query: string): Promise<BlogPost[]> {
       excerpt:
         'Learn how to get started with Next.js, a React framework for building web applications.',
       publishDate: '2024-03-15',
-      author: 'Jeff and Claude',
+      author: 'Compiled with assistance from AI',
       readingTime: 5,
       featuredImage: '/images/blog/featured/getting-started-with-nextjs.jpg',
       tags: ['Next.js', 'React', 'TypeScript', 'Web Development']
@@ -33,7 +33,7 @@ async function searchBlogPosts(query: string): Promise<BlogPost[]> {
       excerpt:
         'A comprehensive guide to building a modern portfolio website using Next.js, TypeScript, and Tailwind CSS.',
       publishDate: '2024-03-10',
-      author: 'Jeff and Claude',
+      author: 'Compiled with assistance from AI',
       readingTime: 8,
       featuredImage: '/images/blog/featured/building-modern-portfolio.jpg',
       tags: ['Portfolio', 'Web Design', 'Tailwind CSS']
@@ -42,29 +42,53 @@ async function searchBlogPosts(query: string): Promise<BlogPost[]> {
       slug: 'optimizing-react-performance',
       title: 'Optimizing React Performance',
       excerpt:
-        'Learn how to optimize your React applications for better performance.',
-      publishDate: '2024-03-05',
-      author: 'Jeff and Claude',
-      readingTime: 10,
+        'Learn how to improve the performance of your React applications.',
+      publishDate: '2024-03-01',
+      author: 'Compiled with assistance from AI',
+      readingTime: 8,
       featuredImage: '/images/blog/featured/optimizing-react-performance.jpg',
       tags: ['React', 'Performance', 'JavaScript', 'Web Development']
     },
     {
-      slug: 'typescript-best-practices',
-      title: 'TypeScript Best Practices',
-      excerpt: 'Discover the best practices for writing TypeScript code.',
+      slug: 'understanding-nextjs-middleware',
+      title: 'Understanding Next.js Middleware',
+      excerpt:
+        'A deep dive into Next.js middleware and how to use it effectively.',
       publishDate: '2024-02-28',
-      author: 'Jeff and Claude',
+      author: 'Compiled with assistance from AI',
       readingTime: 12,
-      featuredImage: '/images/blog/featured/typescript-best-practices.jpg',
-      tags: ['TypeScript', 'JavaScript', 'Programming', 'Web Development']
+      featuredImage:
+        '/images/blog/featured/understanding-nextjs-middleware.jpg',
+      tags: ['Next.js', 'Middleware', 'React', 'Web Development']
+    },
+    {
+      slug: 'mastering-typescript-generics',
+      title: 'Mastering TypeScript Generics',
+      excerpt:
+        'Learn how to use TypeScript generics to create reusable, type-safe components and functions.',
+      publishDate: '2024-02-25',
+      author: 'Compiled with assistance from AI',
+      readingTime: 10,
+      featuredImage: '/images/blog/featured/mastering-typescript-generics.jpg',
+      tags: ['TypeScript', 'Generics', 'JavaScript', 'Web Development']
+    },
+    {
+      slug: 'tailwind-css-best-practices',
+      title: 'Tailwind CSS Best Practices',
+      excerpt:
+        'Discover the best practices for using Tailwind CSS in your projects.',
+      publishDate: '2024-02-20',
+      author: 'Compiled with assistance from AI',
+      readingTime: 7,
+      featuredImage: '/images/blog/featured/tailwind-css-best-practices.jpg',
+      tags: ['CSS', 'Tailwind CSS', 'Web Design', 'Web Development']
     },
     {
       slug: 'aws-serverless-architecture',
       title: 'AWS Serverless Architecture',
       excerpt: 'Learn how to build serverless applications using AWS services.',
       publishDate: '2024-02-20',
-      author: 'Jeff and Claude',
+      author: 'Compiled with assistance from AI',
       readingTime: 15,
       featuredImage: '/images/blog/featured/aws-serverless-architecture.jpg',
       tags: ['AWS', 'Serverless', 'Cloud', 'Architecture']
@@ -74,7 +98,7 @@ async function searchBlogPosts(query: string): Promise<BlogPost[]> {
       title: 'Responsive Design Principles',
       excerpt: 'Master the principles of responsive web design.',
       publishDate: '2024-02-15',
-      author: 'Jeff and Claude',
+      author: 'Compiled with assistance from AI',
       readingTime: 8,
       featuredImage: '/images/blog/featured/responsive-design-principles.jpg',
       tags: ['CSS', 'Responsive Design', 'Web Design', 'UI/UX']
@@ -85,7 +109,7 @@ async function searchBlogPosts(query: string): Promise<BlogPost[]> {
       excerpt:
         'A comprehensive guide to building modern web applications with a focus on architecture, performance, and user experience.',
       publishDate: '2024-03-25',
-      author: 'Jeff and Claude',
+      author: 'Compiled with assistance from AI',
       readingTime: 10,
       featuredImage: '/images/blog/featured/optimizing-react-performance.jpg',
       tags: ['Web Development', 'React', 'Next.js', 'Performance']

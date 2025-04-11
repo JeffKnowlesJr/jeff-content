@@ -48,7 +48,7 @@ const frontMatter = `---
 title: "${title}"
 slug: "${slug}"
 excerpt: "A brief description of the blog post goes here."
-author: "Jeff Knowles Jr"
+author: "Compiled with assistance from AI"
 tags: ["Development", "Web"]
 readingTime: "5 min read"
 datePublished: "${dateFormatted}"

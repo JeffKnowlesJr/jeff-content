@@ -2,7 +2,7 @@
 title: 'Amplify Cloud Development: Building Scalable Applications with AWS'
 slug: amplify-amplify-development
 excerpt: 'How to leverage AWS Amplify to build full-stack applications with integrated authentication, storage, and serverless functions'
-author: 'Jeff & Claude (Compiled with assistance from AI)'
+author: 'Compiled with assistance from AI'
 tags: ['AWS', 'Amplify', 'Cloud', 'Serverless', 'Authentication']
 readingTime: 10
 featuredImage: '/images/blog/featured/aws-amplify-cloud-development.jpg'
@@ -27,7 +27,7 @@ ogType: 'article'
 twitterCard: 'summary_large_image'
 twitterCreator: '@jeffknowlesjr'
 articleSection: 'Cloud Architecture'
-articleAuthor: 'Jeff & Claude'
+articleAuthor: 'Compiled with assistance from AI'
 datePublished: '2025-03-30'
 dateModified: '2025-03-30'
 ---

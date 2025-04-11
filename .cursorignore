@@ -1,5 +1,6 @@
 # Directories
 node_modules/
+docs/archive/
 
 # These are typically large and not useful for code editing
 package-lock.json 

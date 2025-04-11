@@ -45,19 +45,42 @@ export interface Project extends BaseContent {
   featured?: boolean
 }
 
-// Function to read content directory
+// Function to read content directory - used in development only
 export async function getContentList<T>(type: ContentType): Promise<T[]> {
+  // In production, this function should be replaced with a GraphQL query to DynamoDB
+  // Check process environment to ensure we're not in production
+  if (process.env.NODE_ENV === 'production') {
+    console.warn(
+      'Warning: Using content-loader in production. Content should come from DynamoDB via GraphQL.'
+    )
+    // Return empty array in production - no fallbacks
+    return []
+  }
+
   const contentDir = path.join(process.cwd(), 'content', type)
+  console.log(`Development mode: Loading content from: ${contentDir}`)
 
   try {
     // Check if directory exists
     if (!fs.existsSync(contentDir)) {
       console.warn(`Content directory not found: ${contentDir}`)
+      // No fallbacks - return empty array
       return []
     }
 
     const files = fs.readdirSync(contentDir)
+    console.log(`Found ${files.length} files in ${type} directory`)
+
     const markdownFiles = files.filter((file) => file.endsWith('.md'))
+    console.log(
+      `Found ${markdownFiles.length} markdown files in ${type} directory`
+    )
+
+    if (markdownFiles.length === 0) {
+      console.warn(`No markdown files found in ${contentDir}`)
+      // No fallbacks - return empty array
+      return []
+    }
 
     const contentList = markdownFiles.map((fileName) => {
       const filePath = path.join(contentDir, fileName)
@@ -88,30 +111,47 @@ export async function getContentList<T>(type: ContentType): Promise<T[]> {
     })
 
     // Filter out drafts or unpublished content
-    return contentList.filter((item) => {
+    const publishedContent = contentList.filter((item) => {
       const contentItem = item as { status?: string }
-      return contentItem.status === 'published'
+      const status = (contentItem.status || '').toLowerCase()
+      return status === 'published' || status === 'PUBLISHED'
     })
+
+    console.log(`Found ${publishedContent.length} published ${type} items`)
+
+    // Return exactly what we found, no additional content
+    return publishedContent
   } catch (error) {
     console.error(`Error reading content: ${error}`)
+    // Return empty array on error - no fallbacks
     return []
   }
 }
 
-// Function to get a specific content item by slug
+// Function to get a specific content item by slug - used in development only
 export async function getContentBySlug<T>(
   type: ContentType,
   slug: string
 ): Promise<T | null> {
+  // In production, this function should be replaced with a GraphQL query to DynamoDB
+  // Check process environment to ensure we're not in production
+  if (process.env.NODE_ENV === 'production') {
+    console.warn(
+      'Warning: Using content-loader in production. Content should come from DynamoDB via GraphQL.'
+    )
+    // Return null in production - no fallbacks
+    return null
+  }
+
   const contentDir = path.join(process.cwd(), 'content', type)
   const filePath = path.join(contentDir, `${slug}.md`)
 
-  console.log('Content loader - Looking for file:', filePath)
-  console.log('Content loader - Does file exist?', fs.existsSync(filePath))
+  console.log('Development mode: Looking for file:', filePath)
 
   try {
     if (!fs.existsSync(filePath)) {
-      console.log('Content loader - File not found:', filePath)
+      console.log('File not found:', filePath)
+      // Return null if file doesn't exist - no fallbacks
       return null
     }
 
@@ -119,7 +159,7 @@ export async function getContentBySlug<T>(
     const { data, content } = matter(fileContents)
 
     console.log(
-      'Content loader - File found and parsed, frontmatter:',
+      'File found and parsed, frontmatter:',
       Object.keys(data).join(', ')
     )
 
@@ -138,6 +178,7 @@ export async function getContentBySlug<T>(
       }
     }
 
+    // Return exactly what we read from the file - no extra data
     return {
       ...data,
       content,
@@ -146,15 +187,24 @@ export async function getContentBySlug<T>(
   } catch (error) {
     console.error(`Error reading content: ${error}`)
     console.log(
-      'Content loader - Error details:',
+      'Error details:',
       error instanceof Error ? error.message : String(error)
     )
+    // Return null on error - no fallbacks
     return null
   }
 }
 
-// Import content from legacy app
+// Import content from legacy app - development use only
 export async function importLegacyContent(type: ContentType): Promise<void> {
+  // Only allow this function to work in development mode
+  if (process.env.NODE_ENV === 'production') {
+    console.warn(
+      'Warning: importLegacyContent should not be used in production'
+    )
+    return
+  }
+
   const legacyDir = path.join(process.cwd(), 'legacy.app', type)
   const targetDir = path.join(process.cwd(), 'content', type)
 

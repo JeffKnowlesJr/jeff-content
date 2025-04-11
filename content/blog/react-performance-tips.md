@@ -2,7 +2,7 @@
 title: 'React Performance Tips: Building Lightning-Fast Web Applications'
 slug: react-performance-tips
 excerpt: Learn essential techniques for optimizing React applications, from code splitting to component optimization
-author: 'Jeff & Claude (Compiled with assistance from AI)'
+author: 'Compiled with assistance from AI'
 tags: ['React', 'Performance', 'Web Development', 'Optimization']
 readingTime: 10
 featuredImage: 'https://d309xicbd1a46e.cloudfront.net/featured/lautaro-andreani-xkBaqlcqeb4-unsplash.webp'
@@ -27,7 +27,7 @@ ogType: 'article'
 twitterCard: 'summary_large_image'
 twitterCreator: '@jeffknowlesjr'
 articleSection: 'React Development'
-articleAuthor: 'Jeff & Claude'
+articleAuthor: 'Compiled with assistance from AI'
 datePublished: '2025-03-20'
 dateModified: '2025-03-25'
 ---

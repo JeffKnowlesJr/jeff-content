@@ -2,7 +2,7 @@
 title: 'Optimizing Images for Web Applications: A Complete Guide'
 slug: optimizing-images-web
 excerpt: 'Learn best practices and modern techniques for optimizing images in web applications to maximize performance and user experience.'
-author: 'Jeff & Claude (Compiled with assistance from AI)'
+author: 'Compiled with assistance from AI'
 tags: ['Web Development', 'Performance', 'Optimization', 'Images', 'WebP']
 readingTime: 8
 featuredImage: '/images/blog/featured/pizza-rotated.webp'
@@ -27,7 +27,7 @@ ogType: 'article'
 twitterCard: 'summary_large_image'
 twitterCreator: '@jeffknowlesjr'
 articleSection: 'Web Development'
-articleAuthor: 'Jeff & Claude'
+articleAuthor: 'Compiled with assistance from AI'
 datePublished: '2025-04-01'
 dateModified: '2025-04-01'
 ---

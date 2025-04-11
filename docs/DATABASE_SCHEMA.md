@@ -1,6 +1,10 @@
 # Database & API Schema
 
-This document outlines the database and API schema used by both the main Next.js website and the backend admin SPA.
+This document outlines the database and API schema used by both the main Next.js website and the backend admin SPA. DynamoDB serves as the **exclusive source of truth** for all content in the application.
+
+## Single Source of Truth
+
+The application exclusively uses DynamoDB for retrieving content via GraphQL. The markdown files in the content directory are only used as a staging area for content that gets uploaded to DynamoDB during the build process - they are **never** accessed directly by application code.
 
 ## GraphQL Schema Overview
 
@@ -139,6 +143,7 @@ type ContentStatusChange {
 ┌─────────────────────────────────────────────────┐
 │                                                 │
 │              Amazon DynamoDB                    │
+│              (Single Source of Truth)           │
 │                                                 │
 └─────────────────────────────────────────────────┘
 ```
@@ -196,18 +201,31 @@ type ContentStatusChange {
   - `Publishers`: Can change content status and schedule publication
   - `Administrators`: Full access to all operations including user management
 
-## Data Synchronization
+## Content Management Flow
 
-The system maintains synchronization between the database and the file-based content:
+The system provides a unidirectional content flow from markdown files to DynamoDB:
 
-1. **Database to Files**:
+1. **Markdown Files as Staging Area**:
 
-   - The `exportContentToMarkdown` mutation generates Markdown files from database content
-   - Used after content creation/updates in the Admin SPA
+   - Content authors create and edit markdown files in the `content/` directory
+   - These files are never accessed directly by the application
 
-2. **Files to Database**:
-   - The `importContentFromMarkdown` mutation parses Markdown files into database records
-   - Used during initial setup and when files are modified directly in the repository
+2. **Build-time Processing**:
+
+   - During build or via scheduled jobs, markdown files are processed
+   - Content is uploaded to DynamoDB via GraphQL mutations
+   - This ensures DynamoDB remains the single source of truth
+
+3. **Application Content Delivery**:
+   - The application exclusively queries DynamoDB via GraphQL
+   - No fallbacks or references to the filesystem are used
+
+### Export Functionality (for Backup/Version Control)
+
+While markdown files serve as the staging area, the system also provides export functionality:
+
+- The `exportContentToMarkdown` mutation extracts content from DynamoDB
+- This is primarily used for backup and version control purposes
 
 ## Deployment Considerations
 

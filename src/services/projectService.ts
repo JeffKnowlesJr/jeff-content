@@ -11,7 +11,7 @@ export const projectService = {
         slug: 'project-zero-documentation',
         status: 'PUBLISHED',
         projectType: 'Full-Stack Web Application',
-        author: 'Jeff Knowles Jr'
+        author: 'Compiled with assistance from AI'
       },
       {
         id: '2',
@@ -19,7 +19,7 @@ export const projectService = {
         slug: 'project-omega-documentation',
         status: 'PUBLISHED',
         projectType: 'Full-Stack Web Application',
-        author: 'Jeff Knowles Jr'
+        author: 'Compiled with assistance from AI'
       }
     ]
   },

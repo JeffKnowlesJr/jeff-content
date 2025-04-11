@@ -4,17 +4,22 @@ This document outlines the content organization and management workflows for bot
 
 ## Content Structure
 
+The content management system uses two distinct components:
+
+1. **Content Staging Area**: Local markdown files used solely for content authoring and upload
+2. **Production Database**: DynamoDB tables that serve as the exclusive source of truth for the application
+
 ```
-├── content/                    # Main content directory
-│   ├── blog/                   # Blog posts
+├── content/                    # Content staging area (NOT used by application code)
+│   ├── blog/                   # Blog posts for upload to DynamoDB
 │   │   ├── modern-website-architecture.md
 │   │   ├── aws-amplify-cloud-development.md
 │   │   └── ...
-│   ├── projects/               # Project case studies
+│   ├── projects/               # Project case studies for upload to DynamoDB
 │   │   ├── project-zero-documentation.md
 │   │   ├── project-omega-specifications.md
 │   │   └── ...
-│   └── assets/                 # Content-related assets
+│   └── assets/                 # Content-related assets for processing
 │       ├── blog/               # Blog post specific assets
 │       └── projects/           # Project specific assets
 ├── public/
@@ -28,6 +33,8 @@ This document outlines the content organization and management workflows for bot
 │   │   └── ...
 ```
 
+**Important**: The `content/` directory is NOT referenced by any application code. It serves strictly as a staging area for content to be uploaded to DynamoDB by build scripts. The application exclusively retrieves content from DynamoDB.
+
 ## Content Types and Frontmatter
 
 ### Blog Posts
@@ -37,7 +44,7 @@ This document outlines the content organization and management workflows for bot
 title: 'Modern Website Architecture'
 slug: 'modern-website-architecture'
 excerpt: 'Optimizing React applications for search engines by splitting architecture into SSR and SPA components.'
-author: 'Jeff Knowles'
+author: 'Compiled with assistance from AI'
 tags: ['Architecture', 'Next.js', 'React', 'SEO']
 category: 'Development'
 readingTime: 8
@@ -104,17 +111,17 @@ Content goes here...
    - featuredImage (path to processed image)
    - status ("draft", "published", or "archived")
 
-4. **Test Locally**
+4. **Upload to DynamoDB**
 
-   Run the development server to preview:
+   Run the content processing script to upload to DynamoDB:
 
    ```bash
-   npm run dev
+   npm run import:all-blogs
    ```
 
 5. **Publish**
 
-   Change status to "published" and push changes:
+   Commit the changes to trigger a build and content upload:
 
    ```bash
    git add content/blog/my-new-post.md public/images/blog
@@ -160,9 +167,17 @@ Content goes here...
    - status
    - featured (set to true for homepage feature)
 
-5. **Publish**
+5. **Upload to DynamoDB**
 
-   Commit and push changes:
+   Run the project import script:
+
+   ```bash
+   npm run import:all-projects
+   ```
+
+6. **Publish**
+
+   Commit the changes to trigger a build:
 
    ```bash
    git add content/projects/my-new-project.md public/images/projects/my-new-project
@@ -172,7 +187,7 @@ Content goes here...
 
 ## Backend SPA Content Management
 
-The backend SPA provides a user-friendly interface for managing content without directly editing Markdown files.
+The backend SPA provides a user-friendly interface for managing content in DynamoDB without directly editing Markdown files.
 
 ### Content API Endpoints
 
@@ -206,11 +221,10 @@ mutation DeleteProject($id: ID!) { ... }
 
 ### Content Synchronization
 
-The backend SPA uses these endpoints to:
+The system maintains two-way synchronization:
 
-1. **Read content** from the Markdown files (via AppSync API)
-2. **Create/update content** through the admin interface
-3. **Write changes** back to the Markdown files in the repository
+1. **Markdown to DynamoDB**: Build scripts process markdown files and upload to DynamoDB
+2. **DynamoDB to Markdown**: Admin interfaces can export from DynamoDB back to markdown for version control
 
 ### Draft and Preview
 
@@ -247,21 +261,10 @@ For urgent content changes:
    - Make the necessary changes
    - Save and publish immediately
 
-2. **Direct Repository Update**:
-   - Make changes to the appropriate Markdown file
-   - Commit and push to trigger deployment
-   - Monitor deployment for success
-
-## Integrating New Content Types
-
-To add a new content type:
-
-1. **Define Schema**: Create GraphQL schema in AppSync
-2. **Create Directory**: Add appropriate directories in `content/` and `public/`
-3. **Update Content Loader**: Modify `src/utils/content-loader.ts` to handle the new type
-4. **Add UI Components**: Create components for displaying the new content type
-5. **Update Admin SPA**: Add management interface in the backend SPA
+2. **Direct DynamoDB Update**:
+   - Use the AppSync GraphQL API to update content directly
+   - No need to update markdown files for emergency changes
 
 ## Conclusion
 
-This content management guide provides a structured approach to maintaining content across both the main Next.js website and the backend SPA. By following these workflows, you can ensure consistent, high-quality content while leveraging the strengths of both the file-based content system and the dynamic admin interface.
+This content management guide provides a structured approach to maintaining content across both the main Next.js website and the backend SPA. The `content/` directory serves solely as a staging area for content to be uploaded to DynamoDB, which is the exclusive source of truth for the application.

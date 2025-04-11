@@ -2,7 +2,7 @@
 title: Building a Modern CMS with a Next.js Monorepo Architecture
 slug: building-cms-nextjs-monorepo
 excerpt: Learn how to create a flexible and scalable content management system using Next.js, React, and AWS in a monorepo architecture.
-author: 'Jeff & Claude (Compiled with assistance from AI)'
+author: 'Compiled with assistance from AI'
 tags: [architecture, monorepo, cms, next.js, react, aws]
 readingTime: 8
 featuredImage: '/images/blog/featured/blog-getty-images-JCALReUGqVA-unsplash.webp'

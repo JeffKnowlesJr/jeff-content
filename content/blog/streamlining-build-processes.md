@@ -2,7 +2,7 @@
 slug: 'streamlining-build-processes'
 title: 'Streamlining Build Processes: How We Integrated Blog Content with CI/CD'
 excerpt: 'How we created a seamless workflow between local development, CI/CD, and deployment using prebuild hooks and static pre-processing.'
-author: 'Jeff & Claude (Compiled with assistance from AI)'
+author: 'Compiled with assistance from AI'
 tags: ['AWS', 'Amplify', 'DevOps', 'React', 'CI/CD', 'Prebuild']
 readingTime: 6
 featuredImage: 'https://d309xicbd1a46e.cloudfront.net/featured/lukas-MU8w72PzRow-unsplash.webp'
@@ -25,7 +25,7 @@ ogType: 'article'
 twitterCard: 'summary_large_image'
 twitterCreator: '@jeffhandle'
 articleSection: 'DevOps'
-articleAuthor: 'Jeff & Claude'
+articleAuthor: 'Compiled with assistance from AI'
 ---
 
 # Streamlining Build Processes with Prebuild Hooks and Static Generation

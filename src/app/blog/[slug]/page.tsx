@@ -5,12 +5,40 @@ import { notFound } from 'next/navigation'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { BlogPost, getContentBySlug } from '@/utils/content-loader'
-import { generateBlogPostSchema } from '@/utils/schema'
 import { generateBlogPostMetadata } from '@/utils/metadata'
 import BlogLayout from '@/components/blog/BlogLayout'
 
 type Params = {
   slug: string
+}
+
+// Production warning component
+function ProductionWarning() {
+  return (
+    <div className='bg-blue-50 border-l-4 border-blue-400 p-4 mb-8'>
+      <div className='flex'>
+        <div className='flex-shrink-0'>
+          <svg
+            className='h-5 w-5 text-blue-400'
+            viewBox='0 0 20 20'
+            fill='currentColor'
+          >
+            <path
+              fillRule='evenodd'
+              d='M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z'
+              clipRule='evenodd'
+            />
+          </svg>
+        </div>
+        <div className='ml-3'>
+          <p className='text-sm text-blue-700'>
+            Production Mode: Content should be fetched from DynamoDB via
+            GraphQL.
+          </p>
+        </div>
+      </div>
+    </div>
+  )
 }
 
 // Generate metadata for the blog post
@@ -19,6 +47,18 @@ export async function generateMetadata({
 }: {
   params: Params
 }): Promise<Metadata> {
+  // In production, metadata should be generated from DynamoDB data
+  if (process.env.NODE_ENV === 'production') {
+    console.warn(
+      '⚠️ Production environment detected. Blog post metadata should be generated from DynamoDB content.'
+    )
+    return {
+      title: 'Blog Content',
+      description:
+        'In production, content must be sourced from DynamoDB via GraphQL.'
+    }
+  }
+
   // First await the params object itself before accessing its properties
   const resolvedParams = await params
 
@@ -34,8 +74,70 @@ export async function generateMetadata({
   return generateBlogPostMetadata(post)
 }
 
+// Define markdown component types
+type ComponentProps = {
+  children?: React.ReactNode
+  [key: string]: unknown
+}
+
 // Blog post page component
 export default async function BlogPostPage({ params }: { params: Params }) {
+  const isProduction = process.env.NODE_ENV === 'production'
+
+  // In production, we should get data from DynamoDB via GraphQL
+  if (isProduction) {
+    return (
+      <BlogLayout showHeader={false}>
+        <div className='w-full'>
+          <Link
+            href='/blog'
+            className='inline-flex items-center text-primary dark:text-primary-light hover:underline mb-8'
+          >
+            <svg
+              className='mr-2 w-4 h-4'
+              fill='none'
+              stroke='currentColor'
+              viewBox='0 0 24 24'
+              xmlns='http://www.w3.org/2000/svg'
+            >
+              <path
+                strokeLinecap='round'
+                strokeLinejoin='round'
+                strokeWidth={2}
+                d='M15 19l-7-7 7-7'
+              />
+            </svg>
+            Back to Blog
+          </Link>
+
+          <ProductionWarning />
+
+          <div className='bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8'>
+            <h1 className='text-2xl font-bold mb-4'>
+              Content Unavailable in Production
+            </h1>
+            <p className='mb-4'>
+              In production environments, blog content must be retrieved from
+              DynamoDB via GraphQL queries.
+            </p>
+            <p className='mb-4'>
+              The content loader component is only designed to work in
+              development mode, where it reads markdown files from the content
+              directory.
+            </p>
+            <p>
+              Please implement the GraphQL data fetching layer to retrieve
+              content from DynamoDB in production.
+            </p>
+          </div>
+        </div>
+      </BlogLayout>
+    )
+  }
+
+  // Development mode - continue with existing implementation
+  console.log('Development mode: Loading blog post from content directory')
+
   // First await the params object itself before accessing its properties
   const resolvedParams = await params
 
@@ -188,9 +290,9 @@ export default async function BlogPostPage({ params }: { params: Params }) {
                 remarkPlugins={[remarkGfm]}
                 components={{
                   code: codeBlock,
-                  a: ({ node, href, children, ...props }: any) => (
+                  a: ({ href, children, ...props }: ComponentProps) => (
                     <a
-                      href={href}
+                      href={href as string}
                       className='text-primary dark:text-primary-light hover:underline'
                       target='_blank'
                       rel='noopener noreferrer'
@@ -199,22 +301,26 @@ export default async function BlogPostPage({ params }: { params: Params }) {
                       {children}
                     </a>
                   ),
-                  h2: ({ node, children, ...props }: any) => (
+                  h2: ({ children, ...props }: ComponentProps) => (
                     <h2 className='text-2xl font-bold mt-8 mb-4' {...props}>
                       {children}
                     </h2>
                   ),
-                  h3: ({ node, children, ...props }: any) => (
+                  h3: ({ children, ...props }: ComponentProps) => (
                     <h3 className='text-xl font-bold mt-6 mb-3' {...props}>
                       {children}
                     </h3>
                   ),
-                  ul: ({ node, children, ...props }: any) => (
+                  ul: ({ children, ...props }: ComponentProps) => (
                     <ul className='list-disc pl-6 my-4' {...props}>
                       {children}
                     </ul>
                   ),
-                  ol: ({ node, ordered, children, ...props }: any) => (
+                  ol: ({
+                    ordered,
+                    children,
+                    ...props
+                  }: ComponentProps & { ordered?: boolean }) => (
                     <ol
                       className='list-decimal pl-6 my-4'
                       {...(ordered === false ? {} : props)}
@@ -222,7 +328,7 @@ export default async function BlogPostPage({ params }: { params: Params }) {
                       {children}
                     </ol>
                   ),
-                  blockquote: ({ node, children, ...props }: any) => (
+                  blockquote: ({ children, ...props }: ComponentProps) => (
                     <blockquote
                       className='border-l-4 border-primary pl-4 italic my-4'
                       {...props}
@@ -249,10 +355,16 @@ export default async function BlogPostPage({ params }: { params: Params }) {
               )}`}
               target='_blank'
               rel='noopener noreferrer'
-              className='text-blue-400 hover:text-blue-600'
+              className='text-blue-500 hover:text-blue-600'
+              aria-label='Share on Twitter'
             >
-              <svg className='w-6 h-6' fill='currentColor' viewBox='0 0 24 24'>
-                <path d='M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723 10.01 10.01 0 01-3.127 1.184 4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63a9.935 9.935 0 002.46-2.548l-.047-.02z' />
+              <svg
+                className='w-6 h-6'
+                fill='currentColor'
+                viewBox='0 0 24 24'
+                aria-hidden='true'
+              >
+                <path d='M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84' />
               </svg>
             </a>
             <a
@@ -261,10 +373,16 @@ export default async function BlogPostPage({ params }: { params: Params }) {
               )}`}
               target='_blank'
               rel='noopener noreferrer'
-              className='text-blue-700 hover:text-blue-900'
+              className='text-blue-700 hover:text-blue-800'
+              aria-label='Share on LinkedIn'
             >
-              <svg className='w-6 h-6' fill='currentColor' viewBox='0 0 24 24'>
-                <path d='M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z' />
+              <svg
+                className='w-6 h-6'
+                fill='currentColor'
+                viewBox='0 0 24 24'
+                aria-hidden='true'
+              >
+                <path d='M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.454C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z' />
               </svg>
             </a>
           </div>

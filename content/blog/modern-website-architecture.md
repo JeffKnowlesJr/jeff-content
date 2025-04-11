@@ -2,7 +2,7 @@
 title: 'Modern Website Architecture: When to Split Your SPA for SEO'
 slug: modern-website-architecture-seo-optimization
 excerpt: 'Learn how to optimize your React application for search engines by strategically splitting your architecture into SSR and SPA components for maximum performance and discoverability'
-author: 'Jeff & Claude (Compiled with assistance from AI)'
+author: 'Compiled with assistance from AI'
 tags: ['Architecture', 'SEO', 'Next.js', 'React', 'AWS']
 readingTime: 12
 featuredImage: '/images/blog/featured/sajad-nori-21mJd5NUGZU-unsplash.jpg'
@@ -28,7 +28,7 @@ ogType: 'article'
 twitterCard: 'summary_large_image'
 twitterCreator: '@jeffknowlesjr'
 articleSection: 'Web Development'
-articleAuthor: 'Jeff & Claude'
+articleAuthor: 'Compiled with assistance from AI'
 datePublished: '2025-04-01'
 dateModified: '2025-04-04'
 ---
@@ -158,138 +158,3 @@ export async function fetchBlogPosts() {
   return apiClient.request(query)
 }
 ```
-
-### 4. Domain and Routing Strategy
-
-You have several options for how to expose your split architecture to users:
-
-#### Option 1: Subdomain Approach
-
-- `www.yourcompany.com` → SSR Marketing/Blog Site
-- `app.yourcompany.com` → SPA Application Portal
-
-#### Option 2: Path-based Approach
-
-- `yourcompany.com/*` → SSR Marketing/Blog Site
-- `yourcompany.com/app/*` → SPA Application Portal
-
-#### Option 3: Reverse Proxy Integration
-
-Use a service like Cloudflare or AWS CloudFront to route requests appropriately:
-
-```
-User Request → CloudFront → Route based on path/domain → Appropriate application
-```
-
-## Case Study: Our Website Architecture
-
-For our portfolio site, we chose a strategic split based on content type and user needs:
-
-### SSR Site (Next.js):
-
-- **Marketing pages** (`/`, `/overview`, `/contact`)
-- **Blog system** (`/blog`, `/blog/:slug`)
-- **Projects showcase** (`/projects`, `/projects/:slug`)
-- **Resources page** (`/resources`)
-
-### SPA (React + Vite):
-
-- **Admin dashboard** (content management)
-- **Interactive tools** (development tools for clients)
-- **Portfolio experience** (`/port-inc`)
-- **Development logs** (`/devlog`)
-
-We connected these applications through:
-
-1. Shared AWS AppSync GraphQL API
-2. Common component library published as a private npm package
-3. DynamoDB for content storage
-4. Amazon Cognito for authentication
-
-## Architecture Planning for Complex Ecosystems
-
-When planning a multi-site architecture, mature architects employ several techniques:
-
-### 1. C4 Model Documentation
-
-The C4 model provides four levels of architectural detail:
-
-- **Context**: System interactions with users and external systems
-- **Container**: High-level technical components
-- **Component**: Internal structure of containers
-- **Code**: Implementation details
-
-### 2. Domain-Driven Design Approach
-
-- **Bounded Contexts**: Define clear domain boundaries
-- **Ubiquitous Language**: Consistent terminology across teams
-- **Context Mapping**: Define relationships between domains
-
-### 3. Architectural Decision Records
-
-Document key decisions with:
-
-- Context description
-- Decision details
-- Consequences (positive and negative)
-
-## Deployment Considerations
-
-For AWS environments, consider this deployment approach:
-
-```
-[CloudFront Distribution]
-      /     \
-     /       \
-[S3/Amplify]  [S3/Amplify]
-(SSR Site)    (SPA Portal)
-     \         /
-      \       /
-  [AppSync GraphQL API]
-          |
-     [DynamoDB Tables]
-```
-
-Key AWS services to consider:
-
-- **Amplify**: For simplified deployment of both applications
-- **S3 + CloudFront**: For static hosting with edge caching
-- **AppSync**: For GraphQL API with real-time capabilities
-- **DynamoDB**: For flexible data storage
-- **Cognito**: For user authentication and authorization
-
-## SEO Results and Performance Metrics
-
-After implementing a split architecture, typical improvements include:
-
-- **50-70% improvement** in Largest Contentful Paint (LCP)
-- **95+ scores** in Lighthouse SEO metrics
-- **Significantly improved** search engine ranking
-- **Faster indexing** of new content
-- **Maintained interactivity** for complex features
-
-## When to Consider This Approach
-
-This multi-site architecture is ideal when:
-
-1. Your website serves both marketing/content and application functions
-2. SEO is critical for business goals
-3. You have complex interactive features
-4. You want to optimize different parts of your site for different purposes
-5. Your team can manage multiple repositories or a monorepo structure
-
-## Conclusion
-
-The all-or-nothing approach to web development—choosing either an SPA or an SSR site—is becoming outdated. Modern web architecture embraces a hybrid approach, using the right tool for each job. By strategically splitting your application, you can achieve both exceptional SEO performance and rich interactive experiences.
-
-Remember that architecture decisions should always support business goals. If SEO is critical to your success, investing in a smart architectural split can deliver significant returns while maintaining the developer experience and user interface quality you've come to expect from modern web applications.
-
-## Additional Resources
-
-For those looking to implement this approach, consider exploring:
-
-- [Next.js Documentation](https://nextjs.org/docs)
-- [AWS Amplify Hosting](https://aws.amazon.com/amplify/hosting/)
-- [C4 Model for Visualization](https://c4model.com/)
-- [Domain-Driven Design concepts](https://martinfowler.com/bliki/DomainDrivenDesign.html)
-- [Micro-Frontend Architecture](https://micro-frontends.org/)

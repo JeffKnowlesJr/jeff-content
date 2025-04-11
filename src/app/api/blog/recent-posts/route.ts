@@ -2,8 +2,24 @@ import { NextResponse } from 'next/server'
 import { getContentList, BlogPost } from '@/utils/content-loader'
 
 export async function GET() {
+  // In production, this should use GraphQL to fetch from DynamoDB
+  if (process.env.NODE_ENV === 'production') {
+    console.warn(
+      '⚠️ Production environment detected. API should fetch blog data from DynamoDB via GraphQL.'
+    )
+
+    // Return empty data with a notice
+    return NextResponse.json({
+      notice:
+        'In production, content must be sourced from DynamoDB via GraphQL.',
+      recentPosts: [],
+      categories: {}
+    })
+  }
+
   try {
-    // Get all blog posts
+    // Development only: Load posts from the content directory
+    console.log('Development mode: Loading posts from content directory')
     const posts = await getContentList<BlogPost>('blog')
 
     // Sort by date, newest first

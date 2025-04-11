@@ -4,13 +4,22 @@ This document provides guidance on how to create, manage, and publish content fo
 
 ## Content Structure
 
+### Content Management System
+
+The content system uses a two-part approach:
+
+1. **Authoring and Staging (content/ directory)**: The `content/` directory serves strictly as a staging area for authoring and preparing content
+2. **Production Content (DynamoDB)**: The actual content displayed on the website comes exclusively from DynamoDB via GraphQL queries
+
+**Important:** The application code never reads directly from markdown files. The content directory is only accessed by build scripts that upload content to DynamoDB.
+
 ### Directory Structure
 
 ```
-content/
-├── blog/           # Blog posts
+content/            # Content staging area - NOT referenced by application code
+├── blog/           # Blog posts for upload to DynamoDB
 │   └── *.md        # Individual blog post files
-└── projects/       # Project documentation
+└── projects/       # Project documentation for upload to DynamoDB
     └── *.md        # Individual project files
 ```
 
@@ -30,14 +39,14 @@ public/
 
 ### Blog Post Format
 
-Blog posts use Markdown files with front matter. Here's the required format:
+Blog posts use Markdown files with front matter to be uploaded to DynamoDB. Here's the required format:
 
 ````markdown
 ---
 title: 'Your Blog Post Title'
 slug: 'url-friendly-slug'
 excerpt: 'A short description of the post (160-200 characters)'
-author: 'Your Name'
+author: 'Compiled with assistance from AI'
 tags: ['Tag1', 'Tag2', 'Tag3']
 readingTime: '10 min read'
 datePublished: 'YYYY-MM-DD'
@@ -81,14 +90,14 @@ console.log(hello)
 
 ### Project Format
 
-Project documentation uses Markdown files with front matter. Here's the required format:
+Project documentation uses similar Markdown files with front matter for upload to DynamoDB:
 
 ```markdown
 ---
 title: "Your Project Title"
 slug: "project-slug"
 excerpt: "A short description of the project (160-200 characters)"
-author: "Your Name"
+author: "Compiled with assistance from AI"
 tags: ["Tag1", "Tag2", "Tag3"]
 techStack: ["React", "TypeScript", "Next.js", "Tailwind CSS"]
 datePublished: "YYYY-MM-DD"
@@ -202,23 +211,36 @@ This will:
 
 > Note: The image processing script filters images based on filenames. Blog images must contain "blog" in the filename, and project images must contain "project".
 
-### 3. Preview Content
+### 3. Upload Content to DynamoDB
 
-1. Run the development server:
+1. Run the content import scripts:
 
    ```bash
-   npm run dev
+   # For blog posts
+   npm run import:all-blogs
+
+   # For projects
+   npm run import:all-projects
    ```
 
-2. View your content at:
-   - Blog post: `http://localhost:3000/blog/your-slug`
-   - Project: `http://localhost:3000/projects/your-slug`
+2. These scripts will:
+   - Process all markdown files in the content directory
+   - Convert them to the appropriate format
+   - Upload them to DynamoDB via the GraphQL API
+   - Update the status in DynamoDB based on the frontmatter
 
 ### 4. Publish Content
 
-To publish content, set the `status` field in the front matter to `"published"`.
+To publish content:
 
-To unpublish content, change the status to `"draft"`.
+1. Set the `status` field in the front matter to `"published"`
+2. Run the import script again to update the status in DynamoDB
+3. Commit and push the changes to trigger a build
+
+To unpublish content:
+
+1. Change the status to `"draft"`
+2. Run the import script to update DynamoDB
 
 ## Content Organization
 
@@ -267,25 +289,15 @@ Use the `projectType` field to categorize projects. Common types include:
 - The processing script will convert to WebP format automatically
 - Reference the WebP version in your content (e.g., `/images/blog/featured/blog-nextjs-architecture.webp`)
 
-## Content Migration
-
-To import content from the legacy application:
-
-```bash
-npm run import-legacy-content
-```
-
-This uses the `importLegacyContent` utility from `src/utils/content-loader.ts` to import content from the legacy app directory.
-
 ## Troubleshooting
 
 ### Common Issues
 
 1. **Content not showing up:**
 
-   - Check that the `status` is set to `"published"`
-   - Verify the file is in the correct directory
-   - Ensure all required front matter fields are present
+   - Check that the content was correctly uploaded to DynamoDB
+   - Verify the `status` is set to `"published"` in DynamoDB
+   - Confirm the import script ran successfully
 
 2. **Images not displaying:**
 
@@ -293,7 +305,7 @@ This uses the `importLegacyContent` utility from `src/utils/content-loader.ts` t
    - Check that the image exists in the specified location
    - Run the image processing script
 
-3. **Formatting issues:**
+3. **Import failures:**
    - Ensure your Markdown is valid
    - Check that code blocks are properly formatted
    - Verify front matter is enclosed in triple dashes `---`
@@ -312,8 +324,7 @@ This uses the `importLegacyContent` utility from `src/utils/content-loader.ts` t
    - Break up text with headings and bullet points
    - Include code examples when relevant
 
-3. **SEO Optimization**
-   - Use descriptive, keyword-rich titles
-   - Write compelling excerpts
-   - Include relevant tags
-   - Optimize image alt text
+3. **DynamoDB Maintenance**
+   - Regularly audit the DynamoDB tables for outdated content
+   - Use the Admin SPA for easy content management
+   - Remember that DynamoDB is the single source of truth
