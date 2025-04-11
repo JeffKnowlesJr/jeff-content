@@ -15,7 +15,10 @@ type FetchOptions = {
 }
 
 // Client-side API configuration uses a secure proxy route
-const CLIENT_PROXY_URL = '/api/graphql' // Secure server-side proxy route
+const CLIENT_PROXY_URL =
+  typeof window !== 'undefined'
+    ? `${window.location.origin}/api/graphql` // Absolute URL in browser
+    : '/api/graphql' // Fallback for SSR
 
 // Server-side API configuration (not exposed to client)
 const SERVER_APPSYNC_API_URL =
