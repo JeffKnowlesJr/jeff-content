@@ -1,12 +1,18 @@
 import fetch from 'node-fetch'
 
-// Configuration to test
+// Configuration to test - check both regular and NEXT_PUBLIC_ prefixed variables
 const config = {
   APPSYNC_API_URL:
     process.env.APPSYNC_API_URL || process.env.NEXT_PUBLIC_APPSYNC_API_URL,
   APPSYNC_API_KEY:
     process.env.APPSYNC_API_KEY || process.env.NEXT_PUBLIC_APPSYNC_API_KEY
 }
+
+// Log actual values being used (redacting API key)
+console.log('Using configuration:', {
+  APPSYNC_API_URL: config.APPSYNC_API_URL,
+  APPSYNC_API_KEY: config.APPSYNC_API_KEY ? '***[REDACTED]***' : undefined
+})
 
 // Test queries
 const TEST_QUERIES = {
@@ -119,7 +125,13 @@ async function testAppSyncConfig() {
   // 3. Test Proxy Route
   log.info('\n3. Testing API Proxy Route:')
   try {
-    const response = await fetch('http://localhost:3000/api/graphql', {
+    // Get the base URL from environment or use localhost
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
+    const proxyUrl = `${baseUrl}/api/graphql`
+
+    log.info(`Testing proxy route at: ${proxyUrl}`)
+
+    const response = await fetch(proxyUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
