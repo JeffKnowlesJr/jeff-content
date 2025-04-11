@@ -7,33 +7,33 @@ import remarkGfm from 'remark-gfm'
 import { BlogPost, getContentBySlug } from '@/utils/content-loader'
 import { generateBlogPostMetadata } from '@/utils/metadata'
 import BlogLayout from '@/components/blog/BlogLayout'
+import { fetchBlogPostBySlug } from '@/services/blogApi'
 
 type Params = {
   slug: string
 }
 
-// Production warning component
-function ProductionWarning() {
+// Production warning component for incomplete integration
+function ProductionNotice() {
   return (
-    <div className='bg-blue-50 border-l-4 border-blue-400 p-4 mb-8'>
+    <div className='bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-8'>
       <div className='flex'>
         <div className='flex-shrink-0'>
           <svg
-            className='h-5 w-5 text-blue-400'
+            className='h-5 w-5 text-yellow-400'
             viewBox='0 0 20 20'
             fill='currentColor'
           >
             <path
               fillRule='evenodd'
-              d='M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z'
+              d='M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z'
               clipRule='evenodd'
             />
           </svg>
         </div>
         <div className='ml-3'>
-          <p className='text-sm text-blue-700'>
-            Production Mode: Content should be fetched from DynamoDB via
-            GraphQL.
+          <p className='text-sm text-yellow-700'>
+            Using production data from DynamoDB via AppSync GraphQL API.
           </p>
         </div>
       </div>
@@ -47,21 +47,32 @@ export async function generateMetadata({
 }: {
   params: Params
 }): Promise<Metadata> {
-  // In production, metadata should be generated from DynamoDB data
-  if (process.env.NODE_ENV === 'production') {
-    console.warn(
-      '⚠️ Production environment detected. Blog post metadata should be generated from DynamoDB content.'
-    )
-    return {
-      title: 'Blog Content',
-      description:
-        'In production, content must be sourced from DynamoDB via GraphQL.'
-    }
-  }
-
   // First await the params object itself before accessing its properties
   const resolvedParams = await params
 
+  // In production, metadata should be generated from DynamoDB data
+  if (process.env.NODE_ENV === 'production') {
+    try {
+      const post = await fetchBlogPostBySlug(resolvedParams.slug)
+
+      if (!post) {
+        return {
+          title: 'Blog Post Not Found',
+          description: 'The requested blog post could not be found.'
+        }
+      }
+
+      return generateBlogPostMetadata(post)
+    } catch (error) {
+      console.error('Error fetching blog post metadata from DynamoDB:', error)
+      return {
+        title: 'Error Loading Blog Post',
+        description: 'There was an error loading the blog post content.'
+      }
+    }
+  }
+
+  // Development mode - use local content
   const post = await getContentBySlug<BlogPost>('blog', resolvedParams.slug)
 
   if (!post) {
@@ -82,71 +93,35 @@ type ComponentProps = {
 
 // Blog post page component
 export default async function BlogPostPage({ params }: { params: Params }) {
-  const isProduction = process.env.NODE_ENV === 'production'
-
-  // In production, we should get data from DynamoDB via GraphQL
-  if (isProduction) {
-    return (
-      <BlogLayout showHeader={false}>
-        <div className='w-full'>
-          <Link
-            href='/blog'
-            className='inline-flex items-center text-primary dark:text-primary-light hover:underline mb-8'
-          >
-            <svg
-              className='mr-2 w-4 h-4'
-              fill='none'
-              stroke='currentColor'
-              viewBox='0 0 24 24'
-              xmlns='http://www.w3.org/2000/svg'
-            >
-              <path
-                strokeLinecap='round'
-                strokeLinejoin='round'
-                strokeWidth={2}
-                d='M15 19l-7-7 7-7'
-              />
-            </svg>
-            Back to Blog
-          </Link>
-
-          <ProductionWarning />
-
-          <div className='bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8'>
-            <h1 className='text-2xl font-bold mb-4'>
-              Content Unavailable in Production
-            </h1>
-            <p className='mb-4'>
-              In production environments, blog content must be retrieved from
-              DynamoDB via GraphQL queries.
-            </p>
-            <p className='mb-4'>
-              The content loader component is only designed to work in
-              development mode, where it reads markdown files from the content
-              directory.
-            </p>
-            <p>
-              Please implement the GraphQL data fetching layer to retrieve
-              content from DynamoDB in production.
-            </p>
-          </div>
-        </div>
-      </BlogLayout>
-    )
-  }
-
-  // Development mode - continue with existing implementation
-  console.log('Development mode: Loading blog post from content directory')
-
   // First await the params object itself before accessing its properties
   const resolvedParams = await params
 
-  // Get blog post from the slug
-  const post = await getContentBySlug<BlogPost>('blog', resolvedParams.slug)
+  let post: BlogPost | null = null
 
-  // If not found, show 404
-  if (!post) {
-    notFound()
+  // In production, we fetch data from DynamoDB via GraphQL
+  if (process.env.NODE_ENV === 'production') {
+    try {
+      console.log(
+        'Production mode: Fetching blog post from DynamoDB via GraphQL'
+      )
+      post = await fetchBlogPostBySlug(resolvedParams.slug)
+
+      if (!post) {
+        notFound()
+      }
+    } catch (error) {
+      console.error('Error fetching blog post from DynamoDB:', error)
+      throw new Error('Failed to load blog post content')
+    }
+  } else {
+    // Development mode - continue with existing implementation
+    console.log('Development mode: Loading blog post from content directory')
+    post = await getContentBySlug<BlogPost>('blog', resolvedParams.slug)
+
+    // If not found, show 404
+    if (!post) {
+      notFound()
+    }
   }
 
   // Code block rendering for markdown
@@ -199,6 +174,8 @@ export default async function BlogPostPage({ params }: { params: Params }) {
           </svg>
           Back to Blog
         </Link>
+
+        {process.env.NODE_ENV === 'production' && <ProductionNotice />}
 
         <article className='bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden'>
           <div className='p-4 sm:p-6 md:p-8'>

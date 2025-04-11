@@ -13,19 +13,23 @@ interface BaseContent {
   excerpt: string
   content: string
   status: string
-  datePublished: string
-  dateModified: string
+  publishedAt: string
+  updatedAt: string
 }
 
 // Blog post interface
 export interface BlogPost extends BaseContent {
-  id: string
+  id?: string
   author: string
   tags: string[]
   readingTime: number | string
   featuredImage: string
-  image?: string
+  createdAt?: string
+  // Legacy fields - for compatibility with existing markdown files
+  datePublished?: string
+  dateModified?: string
   publishDate?: string
+  image?: string
 }
 
 // Project interface
@@ -88,13 +92,24 @@ export async function getContentList<T>(type: ContentType): Promise<T[]> {
       const { data, content } = matter(fileContents)
       const slug = fileName.replace('.md', '')
 
-      // For blog posts, ensure consistency between datePublished and publishDate
+      // For blog posts, ensure field consistency with GraphQL schema
       if (type === 'blog') {
-        // Use datePublished as the primary field, fall back to publishDate
-        if (!data.datePublished && data.publishDate) {
-          data.datePublished = data.publishDate
-        } else if (!data.publishDate && data.datePublished) {
-          data.publishDate = data.datePublished
+        // Handle date fields
+        if (!data.publishedAt && data.datePublished) {
+          data.publishedAt = data.datePublished
+        } else if (!data.datePublished && data.publishedAt) {
+          data.datePublished = data.publishedAt
+        }
+
+        if (!data.updatedAt && data.dateModified) {
+          data.updatedAt = data.dateModified
+        } else if (!data.dateModified && data.updatedAt) {
+          data.dateModified = data.updatedAt
+        }
+
+        // Legacy compatibility
+        if (!data.publishedAt && data.publishDate) {
+          data.publishedAt = data.publishDate
         }
 
         // Generate ID from slug if not provided
@@ -163,13 +178,24 @@ export async function getContentBySlug<T>(
       Object.keys(data).join(', ')
     )
 
-    // For blog posts, ensure consistency between datePublished and publishDate
+    // For blog posts, ensure field consistency with GraphQL schema
     if (type === 'blog') {
-      // Use datePublished as the primary field, fall back to publishDate
-      if (!data.datePublished && data.publishDate) {
-        data.datePublished = data.publishDate
-      } else if (!data.publishDate && data.datePublished) {
-        data.publishDate = data.datePublished
+      // Handle date fields
+      if (!data.publishedAt && data.datePublished) {
+        data.publishedAt = data.datePublished
+      } else if (!data.datePublished && data.publishedAt) {
+        data.datePublished = data.publishedAt
+      }
+
+      if (!data.updatedAt && data.dateModified) {
+        data.updatedAt = data.dateModified
+      } else if (!data.dateModified && data.updatedAt) {
+        data.dateModified = data.updatedAt
+      }
+
+      // Legacy compatibility
+      if (!data.publishedAt && data.publishDate) {
+        data.publishedAt = data.publishDate
       }
 
       // Generate ID from slug if not provided
