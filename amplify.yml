@@ -3,7 +3,7 @@ frontend:
   phases:
     preBuild:
       commands:
-        - npm install
+        - npm install --legacy-peer-deps
     build:
       commands:
         - env | grep -e NEXT_PUBLIC_ -e APPSYNC_ -e AWS_ -e CONTACT_FORM_ >> .env.production || true
