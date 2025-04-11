@@ -8,10 +8,8 @@ import { NextRequest, NextResponse } from 'next/server'
  */
 
 // Server-side environment variables (not exposed to client)
-const APPSYNC_API_URL =
-  process.env.APPSYNC_API_URL || process.env.NEXT_PUBLIC_APPSYNC_API_URL
-const APPSYNC_API_KEY =
-  process.env.APPSYNC_API_KEY || process.env.NEXT_PUBLIC_APPSYNC_API_KEY
+const APPSYNC_API_URL = process.env.APPSYNC_API_URL
+const APPSYNC_API_KEY = process.env.APPSYNC_API_KEY
 
 // List of allowed query operations (for security)
 const ALLOWED_OPERATIONS = [
@@ -51,7 +49,9 @@ export async function POST(request: NextRequest) {
 
     // Ensure we have API credentials
     if (!APPSYNC_API_URL || !APPSYNC_API_KEY) {
-      console.error('AppSync configuration is missing')
+      console.error(
+        'AppSync configuration missing (APPSYNC_API_URL or APPSYNC_API_KEY) for proxy route'
+      )
       return NextResponse.json(
         { errors: [{ message: 'AppSync configuration is missing' }] },
         { status: 500 }

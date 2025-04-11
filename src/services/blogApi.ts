@@ -14,16 +14,25 @@ type ListBlogPostsResponse = {
 
 /**
  * Fetch a blog post by its slug from AppSync/DynamoDB
+ * @param slug The slug of the post to fetch
+ * @param isServer Hint whether the call is happening server-side
  */
 export async function fetchBlogPostBySlug(
-  slug: string
+  slug: string,
+  isServer: boolean = true // Default to true as these are usually called server-side
 ): Promise<BlogPost | null> {
   try {
-    console.log(`Fetching blog post with slug: ${slug}`)
+    console.log(
+      `Fetching blog post with slug: ${slug}${
+        isServer ? ' (server)' : ' (client)'
+      }`
+    )
 
-    const data = await executeGraphQL<GetBlogPostResponse>(getBlogPostBySlug, {
-      slug
-    })
+    const data = await executeGraphQL<GetBlogPostResponse>(
+      getBlogPostBySlug,
+      { slug },
+      { isServer } // Pass the option
+    )
 
     const post = data.getBlogPost
 
@@ -45,12 +54,21 @@ export async function fetchBlogPostBySlug(
 
 /**
  * Fetch all published blog posts from AppSync/DynamoDB
+ * @param isServer Hint whether the call is happening server-side
  */
-export async function fetchAllBlogPosts(): Promise<BlogPost[]> {
+export async function fetchAllBlogPosts(
+  isServer: boolean = true // Default to true
+): Promise<BlogPost[]> {
   try {
-    console.log('Fetching all blog posts')
+    console.log(
+      `Fetching all blog posts${isServer ? ' (server)' : ' (client)'}`
+    )
 
-    const data = await executeGraphQL<ListBlogPostsResponse>(listBlogPosts)
+    const data = await executeGraphQL<ListBlogPostsResponse>(
+      listBlogPosts,
+      undefined, // No variables for listBlogPosts
+      { isServer } // Pass the option
+    )
     const posts = data.listBlogPosts.items
 
     if (!posts || posts.length === 0) {

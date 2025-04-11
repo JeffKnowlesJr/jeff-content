@@ -1,17 +1,24 @@
 import fetch from 'node-fetch'
+import dotenv from 'dotenv'
 
-// Configuration to test - check both regular and NEXT_PUBLIC_ prefixed variables
+// Load environment variables from .env.local
+dotenv.config({ path: '.env.local' })
+
+// Configuration to test - check ONLY non-prefixed variables
 const config = {
-  APPSYNC_API_URL:
-    process.env.APPSYNC_API_URL || process.env.NEXT_PUBLIC_APPSYNC_API_URL,
-  APPSYNC_API_KEY:
-    process.env.APPSYNC_API_KEY || process.env.NEXT_PUBLIC_APPSYNC_API_KEY
+  APPSYNC_API_URL: process.env.APPSYNC_API_URL,
+  APPSYNC_API_KEY: process.env.APPSYNC_API_KEY,
+  // Add other variables if needed for future tests
+  REGION: process.env.REGION,
+  CONTACT_FORM_TABLE: process.env.CONTACT_FORM_TABLE
 }
 
 // Log actual values being used (redacting API key)
 console.log('Using configuration:', {
   APPSYNC_API_URL: config.APPSYNC_API_URL,
-  APPSYNC_API_KEY: config.APPSYNC_API_KEY ? '***[REDACTED]***' : undefined
+  APPSYNC_API_KEY: config.APPSYNC_API_KEY ? '***[REDACTED]***' : undefined,
+  REGION: config.REGION,
+  CONTACT_FORM_TABLE: config.CONTACT_FORM_TABLE
 })
 
 // Test queries
@@ -75,8 +82,26 @@ async function testAppSyncConfig() {
     log.success('APPSYNC_API_KEY is set')
   }
 
-  if (hasErrors) {
-    log.error('\nEnvironment variables missing. Please set them and try again.')
+  // Add checks for other variables if needed
+  if (!config.REGION) {
+    log.warning(
+      'REGION environment variable is not set (optional for this test)'
+    )
+  } else {
+    log.success('REGION is set')
+  }
+  if (!config.CONTACT_FORM_TABLE) {
+    log.warning(
+      'CONTACT_FORM_TABLE environment variable is not set (optional for this test)'
+    )
+  } else {
+    log.success('CONTACT_FORM_TABLE is set')
+  }
+
+  if (!config.APPSYNC_API_URL || !config.APPSYNC_API_KEY) {
+    log.error(
+      '\nRequired environment variables missing. Please set them in .env.local and try again.'
+    )
     process.exit(1)
   }
 

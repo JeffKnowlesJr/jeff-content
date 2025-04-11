@@ -3,7 +3,13 @@
  * This centralizes all AppSync API interactions to avoid code duplication
  */
 
-import { APPSYNC_CONFIG } from '@/utils/appsync-config'
+// REMOVED: import { APPSYNC_CONFIG } from '@/utils/appsync-config'
+import dotenv from 'dotenv'
+
+// Load environment variables from .env.local (if running locally)
+if (process.env.NODE_ENV !== 'production') {
+  dotenv.config({ path: '.env.local' })
+}
 
 type GraphQLResponse<T> = {
   data: T
@@ -15,18 +21,26 @@ type FetchOptions = {
 }
 
 // Client-side API configuration uses a secure proxy route
-const CLIENT_PROXY_URL =
-  typeof window !== 'undefined'
-    ? `${window.location.origin}/api/graphql` // Absolute URL in browser
-    : '/api/graphql' // Fallback for SSR
+const getClientProxyUrl = () => {
+  if (typeof window !== 'undefined') {
+    // Browser context: use window.location
+    return `${window.location.origin}/api/graphql`
+  } else if (process.env.NEXT_PUBLIC_BASE_URL) {
+    // Server/Build context with BASE_URL: use it
+    return `${process.env.NEXT_PUBLIC_BASE_URL}/api/graphql`
+  } else {
+    // Fallback for local development SSR/Build or if BASE_URL is not set
+    // This might still cause issues in Amplify build if called inappropriately
+    console.warn(
+      'Warning: Constructing relative proxy URL. Ensure NEXT_PUBLIC_BASE_URL is set in production environments or that client-side logic is not called server-side.'
+    )
+    return '/api/graphql'
+  }
+}
 
-// Server-side API configuration (not exposed to client)
-const SERVER_APPSYNC_API_URL =
-  process.env.APPSYNC_API_URL ||
-  process.env.NEXT_PUBLIC_APPSYNC_API_URL ||
-  APPSYNC_CONFIG.SERVER_APPSYNC_API_URL
-const SERVER_APPSYNC_API_KEY =
-  process.env.APPSYNC_API_KEY || process.env.NEXT_PUBLIC_APPSYNC_API_KEY
+// Server-side API configuration (strictly non-public variables)
+const SERVER_APPSYNC_API_URL = process.env.APPSYNC_API_URL
+const SERVER_APPSYNC_API_KEY = process.env.APPSYNC_API_KEY
 
 /**
  * Execute a GraphQL query or mutation against AppSync
@@ -46,9 +60,11 @@ export async function executeGraphQL<TData = Record<string, unknown>>(
 
     // Choose the appropriate endpoint based on context
     if (isServer) {
-      // For server-side requests, use AppSync directly (API key not exposed to client)
+      // For server-side requests, use AppSync directly
       if (!SERVER_APPSYNC_API_URL || !SERVER_APPSYNC_API_KEY) {
-        console.error('Server-side AppSync configuration missing')
+        console.error(
+          'Server-side AppSync configuration missing (APPSYNC_API_URL or APPSYNC_API_KEY)'
+        )
         throw new Error('Server-side AppSync configuration is missing')
       }
 
@@ -84,10 +100,14 @@ export async function executeGraphQL<TData = Record<string, unknown>>(
       return result.data
     } else {
       // For client-side requests, use the secure proxy route
-      const response = await fetch(CLIENT_PROXY_URL, {
+      const currentProxyUrl = getClientProxyUrl()
+      console.log(`Client-side request using proxy URL: ${currentProxyUrl}`)
+
+      const response = await fetch(currentProxyUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
+          // No API key sent from client
         },
         body: JSON.stringify({
           query,
