@@ -116,11 +116,6 @@ export default async function BlogPage() {
                   />
                 </svg>
               </div>
-              <div className='ml-3'>
-                <p className='text-sm text-yellow-700'>
-                  Using production data from DynamoDB via AppSync GraphQL API.
-                </p>
-              </div>
             </div>
           </div>
         )}

@@ -59,7 +59,7 @@ const getClientProxyUrl = () => {
   } else {
     // Fallback for local development SSR/Build or if BASE_URL is not set
     // This might still cause issues in Amplify build if called inappropriately
-    console.warn(
+    console.log(
       'Warning: Constructing relative proxy URL. Ensure NEXT_PUBLIC_BASE_URL is set in production environments or that client-side logic is not called server-side.'
     )
     return '/api/graphql'
