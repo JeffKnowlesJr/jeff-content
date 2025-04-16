@@ -8,8 +8,8 @@ author: 'Jeff Knowles Jr (Compiled with assistance from AI)'
 tags: ['Documentation', 'Technical Writing', 'User Guides']
 status: 'published'
 featured: true
-featuredImage: '/images/projects/project-project-zero-cover.webp'
-thumbnailImage: '/images/projects/project-project-zero-cover.webp'
+featuredImage: '/images/projects/project-zero/cover.jpg'
+thumbnailImage: '/images/projects/project-zero/cover.jpg'
 techStack:
   ['Documentation', 'Technical Writing', 'User Guides', 'API Reference']
 description: 'In-depth technical documentation covering the architecture, implementation, and maintenance of a modern full-stack portfolio website using React, AWS, and Terraform.'
@@ -22,7 +22,7 @@ keywords:
   - 'technical documentation'
 ogTitle: 'Project Zero: Complete Technical Documentation'
 ogDescription: 'Comprehensive guide to building and maintaining a modern full-stack portfolio website with React, AWS, and Terraform'
-ogImage: '/images/projects/project-zero/featured/architecture-overview.webp'
+ogImage: '/images/projects/project-zero/cover.jpg'
 ogType: 'article'
 twitterCard: 'summary_large_image'
 twitterCreator: '@YourTwitterHandle'

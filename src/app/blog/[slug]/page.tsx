@@ -8,7 +8,6 @@ import { BlogPost, getContentBySlug } from '@/utils/content-loader'
 import { generateBlogPostMetadata } from '@/utils/metadata'
 import BlogLayout from '@/components/blog/BlogLayout'
 import BlogImage from '@/components/common/BlogImage'
-import { fetchBlogPostBySlug } from '@/services/blogApi'
 
 type Params = {
   slug: string
@@ -23,29 +22,7 @@ export async function generateMetadata({
   // First await the params object itself before accessing its properties
   const resolvedParams = await params
 
-  // In production, metadata should be generated from DynamoDB data
-  if (process.env.NODE_ENV === 'production') {
-    try {
-      const post = await fetchBlogPostBySlug(resolvedParams.slug)
-
-      if (!post) {
-        return {
-          title: 'Blog Post Not Found',
-          description: 'The requested blog post could not be found.'
-        }
-      }
-
-      return generateBlogPostMetadata(post)
-    } catch (error) {
-      console.error('Error fetching blog post metadata from DynamoDB:', error)
-      return {
-        title: 'Error Loading Blog Post',
-        description: 'There was an error loading the blog post content.'
-      }
-    }
-  }
-
-  // Development mode - use local content
+  // Use the local content for all environments
   const post = await getContentBySlug<BlogPost>('blog', resolvedParams.slug)
 
   if (!post) {
@@ -69,32 +46,12 @@ export default async function BlogPostPage({ params }: { params: Params }) {
   // First await the params object itself before accessing its properties
   const resolvedParams = await params
 
-  let post: BlogPost | null = null
+  // Get post from local content for all environments
+  const post = await getContentBySlug<BlogPost>('blog', resolvedParams.slug)
 
-  // In production, we fetch data from DynamoDB via GraphQL
-  if (process.env.NODE_ENV === 'production') {
-    try {
-      console.log(
-        'Production mode: Fetching blog post from DynamoDB via GraphQL'
-      )
-      post = await fetchBlogPostBySlug(resolvedParams.slug)
-
-      if (!post) {
-        notFound()
-      }
-    } catch (error) {
-      console.error('Error fetching blog post from DynamoDB:', error)
-      throw new Error('Failed to load blog post content')
-    }
-  } else {
-    // Development mode - continue with existing implementation
-    console.log('Development mode: Loading blog post from content directory')
-    post = await getContentBySlug<BlogPost>('blog', resolvedParams.slug)
-
-    // If not found, show 404
-    if (!post) {
-      notFound()
-    }
+  // If not found, show 404
+  if (!post) {
+    notFound()
   }
 
   // Code block rendering for markdown

@@ -8,9 +8,9 @@ author: 'Jeff Knowles Jr (Compiled with assistance from AI)'
 tags: ['Documentation', 'Technical Writing', 'API Reference']
 status: 'published'
 featured: true
-featuredImage: '/images/projects/project-project-omega-cover.webp'
-thumbnailImage: '/images/projects/project-project-omega-cover.webp'
-contentImage: '/images/projects/project-project-omega-cover.webp'
+featuredImage: '/images/projects/project-omega/cover.jpg'
+thumbnailImage: '/images/projects/project-omega/cover.jpg'
+contentImage: '/images/projects/project-omega/cover.jpg'
 projectType: 'Full-Stack Web Application'
 projectStatus: 'Completed'
 githubUrl: 'https://github.com/yourusername/project-omega'

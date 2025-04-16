@@ -49,20 +49,10 @@ export interface Project extends BaseContent {
   featured?: boolean
 }
 
-// Function to read content directory - used in development only
+// Function to read content directory - used in both development and production
 export async function getContentList<T>(type: ContentType): Promise<T[]> {
-  // In production, this function should be replaced with a GraphQL query to DynamoDB
-  // Check process environment to ensure we're not in production
-  if (process.env.NODE_ENV === 'production') {
-    console.warn(
-      'Warning: Using content-loader in production. Content should come from DynamoDB via GraphQL.'
-    )
-    // Return empty array in production - no fallbacks
-    return []
-  }
-
   const contentDir = path.join(process.cwd(), 'content', type)
-  console.log(`Development mode: Loading content from: ${contentDir}`)
+  console.log(`Loading content from: ${contentDir}`)
 
   try {
     // Check if directory exists
@@ -143,25 +133,15 @@ export async function getContentList<T>(type: ContentType): Promise<T[]> {
   }
 }
 
-// Function to get a specific content item by slug - used in development only
+// Function to get a specific content item by slug - used in both development and production
 export async function getContentBySlug<T>(
   type: ContentType,
   slug: string
 ): Promise<T | null> {
-  // In production, this function should be replaced with a GraphQL query to DynamoDB
-  // Check process environment to ensure we're not in production
-  if (process.env.NODE_ENV === 'production') {
-    console.warn(
-      'Warning: Using content-loader in production. Content should come from DynamoDB via GraphQL.'
-    )
-    // Return null in production - no fallbacks
-    return null
-  }
-
   const contentDir = path.join(process.cwd(), 'content', type)
   const filePath = path.join(contentDir, `${slug}.md`)
 
-  console.log('Development mode: Looking for file:', filePath)
+  console.log('Looking for file:', filePath)
 
   try {
     if (!fs.existsSync(filePath)) {
