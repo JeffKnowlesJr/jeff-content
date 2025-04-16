@@ -3,7 +3,6 @@ import { BlogPost, getContentList } from '@/utils/content-loader'
 import BlogCard from '@/components/blog/BlogCard'
 import BlogLayout from '@/components/blog/BlogLayout'
 import { generateBlogIndexMetadata } from '@/utils/metadata'
-import { fetchAllBlogPosts } from '@/services/blogApi'
 
 // Generate metadata
 export const metadata: Metadata = generateBlogIndexMetadata()
@@ -13,41 +12,9 @@ async function getBlogPosts(): Promise<{
   posts: BlogPost[]
   error: string | null
 }> {
-  // In production, this should use GraphQL to fetch from DynamoDB
-  if (process.env.NODE_ENV === 'production') {
-    try {
-      console.log(
-        'Production mode: Fetching blog posts from DynamoDB via GraphQL'
-      )
-      const posts = await fetchAllBlogPosts()
-
-      if (posts.length === 0) {
-        return {
-          posts: [],
-          error:
-            'No blog posts found in DynamoDB. Make sure your AppSync API is properly configured and data is uploaded.'
-        }
-      }
-
-      return {
-        posts,
-        error: null
-      }
-    } catch (error) {
-      console.error('Error fetching blog posts from DynamoDB:', error)
-      return {
-        posts: [],
-        error:
-          error instanceof Error
-            ? `Error loading blog posts from DynamoDB: ${error.message}`
-            : 'Unknown error loading blog posts from DynamoDB'
-      }
-    }
-  }
-
   try {
-    // Development only: Load posts from the content directory
-    console.log('Development mode: Loading posts from content directory')
+    // Load posts from the content directory in all environments
+    console.log('Loading posts from content directory')
     const posts = await getContentList<BlogPost>('blog')
 
     // If we have content, return it
@@ -55,11 +22,12 @@ async function getBlogPosts(): Promise<{
       // Sort posts by publication date (most recent first)
       return {
         posts: posts.sort((a, b) => {
+          // Use multiple possible date fields for compatibility
           const dateA = new Date(
-            a.datePublished || a.publishDate || ''
+            a.publishedAt || a.datePublished || a.publishDate || ''
           ).getTime()
           const dateB = new Date(
-            b.datePublished || b.publishDate || ''
+            b.publishedAt || b.datePublished || b.publishDate || ''
           ).getTime()
           return dateB - dateA
         }),
@@ -71,7 +39,7 @@ async function getBlogPosts(): Promise<{
     return {
       posts: [],
       error:
-        'No blog posts found in content directory. In development, add markdown files to the content/blog directory.'
+        'No blog posts found in content directory. Add markdown files to the content/blog directory.'
     }
   } catch (error) {
     console.error('Error loading blog posts from content:', error)
@@ -87,7 +55,6 @@ async function getBlogPosts(): Promise<{
 
 export default async function BlogPage() {
   const { posts, error } = await getBlogPosts()
-  const isProduction = process.env.NODE_ENV === 'production'
 
   return (
     <BlogLayout>
@@ -142,9 +109,7 @@ export default async function BlogPage() {
               No blog posts available
             </h3>
             <p className='mt-1 text-gray-500 dark:text-gray-400'>
-              {isProduction
-                ? 'Blog posts should be loaded from DynamoDB via GraphQL in production.'
-                : 'Add markdown files to content/blog directory in development.'}
+              Add markdown files to content/blog directory.
             </p>
           </div>
         ) : (
@@ -161,7 +126,12 @@ export default async function BlogPage() {
                   '/images/blog/default-post.jpg'
                 }
                 author={post.author}
-                publishDate={post.datePublished || post.publishDate || ''}
+                publishDate={
+                  post.publishedAt ||
+                  post.datePublished ||
+                  post.publishDate ||
+                  ''
+                }
                 readingTime={post.readingTime}
                 tags={post.tags}
                 slug={post.slug}

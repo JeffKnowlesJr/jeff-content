@@ -12,8 +12,7 @@ tags:
   - Portfolio
   - Web Development
 readingTime: 11
-featuredImage: >-
-  https://d309xicbd1a46e.cloudfront.net/featured/hector-j-rivas-QNc9tTNHRyI-unsplash.webp
+featuredImage: '/images/blog/featured/building-modern-portfolio.jpg'
 status: published
 description: >-
   Trace the evolution of a developer portfolio from static HTML to React with
@@ -33,8 +32,7 @@ ogDescription: >-
   Follow my journey transforming a basic portfolio into a scalable React
   application with AWS microservices. Practical insights on progressive
   enhancement for developers.
-ogImage: >-
-  https://d309xicbd1a46e.cloudfront.net/featured/hector-j-rivas-QNc9tTNHRyI-unsplash.webp
+ogImage: '/images/blog/featured/building-modern-portfolio.jpg'
 ogType: article
 twitterCard: summary_large_image
 twitterCreator: '@jeffknowlesjr'

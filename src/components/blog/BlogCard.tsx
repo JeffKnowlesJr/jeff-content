@@ -40,29 +40,46 @@ export default function BlogCard({
     typeof readingTime === 'number' ? `${readingTime} min read` : readingTime
 
   // Format date for different screen sizes
-  const formatDate = (date: string) => {
-    const d = new Date(date)
-    // Full date for larger screens
-    const fullDate = d.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    })
+  const formatDate = (dateStr: string) => {
+    // Default values if date is invalid
+    const defaultDates = {
+      fullDate: 'No date available',
+      shortDate: 'No date'
+    }
 
-    // Shortened date for mobile
-    const shortDate = d.toLocaleDateString('en-US', {
-      year: '2-digit',
-      month: 'short',
-      day: 'numeric'
-    })
+    if (!dateStr) return defaultDates
 
-    return { fullDate, shortDate }
+    try {
+      const d = new Date(dateStr)
+
+      // Check if date is valid
+      if (isNaN(d.getTime())) return defaultDates
+
+      // Full date for larger screens
+      const fullDate = d.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      })
+
+      // Shortened date for mobile
+      const shortDate = d.toLocaleDateString('en-US', {
+        year: '2-digit',
+        month: 'short',
+        day: 'numeric'
+      })
+
+      return { fullDate, shortDate }
+    } catch (error) {
+      console.error('Error formatting date:', error)
+      return defaultDates
+    }
   }
 
   const { fullDate, shortDate } = formatDate(publishDate)
 
   // Fallback image if none provided or if the URL is invalid
-  const defaultImage = '/images/blog/featured/getting-started-with-nextjs.jpg'
+  const defaultImage = '/images/blog/default-post.jpg'
   const imageUrl = image || defaultImage
 
   return (
