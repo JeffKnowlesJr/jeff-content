@@ -12,10 +12,11 @@ tags:
   - Developer Tools
   - Documentation
 readingTime: 9
-featuredImage: '/images/blog/featured/obsidian-screenshot.webp'
+featuredImage: >-
+  https://d309xicbd1a46e.cloudfront.net/featured/lala-azizli-OLvQEjwCSVI-unsplash.webp
 status: published
 datePublished: '2025-03-30'
-dateModified: '2025-04-11'
+dateModified: '2025-04-27'
 description: >-
   Discover how Obsidian.md can transform your developer workflow with powerful
   knowledge management, code snippets, and project documentation all in plain
@@ -34,13 +35,14 @@ ogDescription: >-
   Learn how Obsidian.md can become your second brain for coding projects,
   documentation, and knowledge management with powerful linking and plain text
   Markdown.
-ogImage: '/images/blog/featured/obsidian-screenshot.webp'
+ogImage: >-
+  https://d309xicbd1a46e.cloudfront.net/featured/lala-azizli-OLvQEjwCSVI-unsplash.webp
 ogType: article
 twitterCard: summary_large_image
 twitterCreator: '@jeffknowlesjr'
 articleSection: Development Tools
 articleAuthor: Compiled with assistance from AI
-sourceImageAsset: sajad-nori-21mJd5NUGZU-unsplash.jpg
+sourceImageAsset: lala-azizli-OLvQEjwCSVI-unsplash.jpg
 ---
 
 # Obsidian.md for Developers: Supercharging Your Knowledge Management

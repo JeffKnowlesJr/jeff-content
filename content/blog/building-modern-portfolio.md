@@ -12,7 +12,8 @@ tags:
   - Portfolio
   - Web Development
 readingTime: 11
-featuredImage: '/images/blog/featured/building-modern-portfolio.jpg'
+featuredImage: >-
+  https://d309xicbd1a46e.cloudfront.net/featured/hal-gatewood-tZc3vjPCk-Q-unsplash.webp
 status: published
 description: >-
   Trace the evolution of a developer portfolio from static HTML to React with
@@ -32,15 +33,16 @@ ogDescription: >-
   Follow my journey transforming a basic portfolio into a scalable React
   application with AWS microservices. Practical insights on progressive
   enhancement for developers.
-ogImage: '/images/blog/featured/building-modern-portfolio.jpg'
+ogImage: >-
+  https://d309xicbd1a46e.cloudfront.net/featured/hal-gatewood-tZc3vjPCk-Q-unsplash.webp
 ogType: article
 twitterCard: summary_large_image
 twitterCreator: '@jeffknowlesjr'
 articleSection: Web Development
 articleAuthor: Compiled with assistance from AI
 datePublished: '2025-03-30'
-dateModified: '2025-04-11'
-sourceImageAsset: hector-j-rivas-QNc9tTNHRyI-unsplash.jpg
+dateModified: '2025-04-27'
+sourceImageAsset: hal-gatewood-tZc3vjPCk-Q-unsplash.jpg
 ---
 
 # Building a Modern Portfolio Website: From HTML to Microservices

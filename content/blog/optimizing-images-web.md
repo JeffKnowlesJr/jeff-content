@@ -42,7 +42,7 @@ articleSection: Web Development
 articleAuthor: Compiled with assistance from AI
 datePublished: '2025-04-01'
 dateModified: '2025-04-11'
-sourceImageAsset: hal-gatewood-tZc3vjPCk-Q-unsplash.jpg
+sourceImageAsset: hector-j-rivas-QNc9tTNHRyI-unsplash.jpg
 ---
 
 # Optimizing Images for the Modern Web

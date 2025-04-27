@@ -41,7 +41,7 @@ articleSection: React Development
 articleAuthor: Compiled with assistance from AI
 datePublished: '2025-03-20'
 dateModified: '2025-04-11'
-sourceImageAsset: vadim-sherbakov-osSryggkso4-unsplash.jpg
+sourceImageAsset: lautaro-andreani-xkBaqlcqeb4-unsplash.jpg
 ---
 
 # React Performance Tips: Building Lightning-Fast Web Applications

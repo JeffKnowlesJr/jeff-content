@@ -43,7 +43,7 @@ articleSection: Web Development
 articleAuthor: Compiled with assistance from AI
 datePublished: '2025-04-01'
 dateModified: '2025-04-11'
-sourceImageAsset: mohammad-alizade-XgeZu2jBaVI-unsplash.jpg
+sourceImageAsset: marin-huang-yz9da_YVV80-unsplash.jpg
 ---
 
 # Modern Website Architecture: When to Split Your SPA for SEO

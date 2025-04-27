@@ -19,7 +19,7 @@ dateModified: '2025-04-11'
 status: published
 featuredImage: >-
   https://d309xicbd1a46e.cloudfront.net/featured/planet-volumes-FBBcdlwIDK0-unsplash.webp
-sourceImageAsset: planet-volumes-FBBcdlwIDK0-unsplash.jpg
+sourceImageAsset: sajad-nori-21mJd5NUGZU-unsplash.jpg
 ogImage: >-
   https://d309xicbd1a46e.cloudfront.net/featured/planet-volumes-FBBcdlwIDK0-unsplash.webp
 ---

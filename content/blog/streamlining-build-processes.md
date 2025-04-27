@@ -13,10 +13,10 @@ tags:
   - CI/CD
   - Prebuild
 readingTime: 6
-featuredImage: '/images/blog/featured/blog-architecture-split.webp'
+featuredImage: 'https://d309xicbd1a46e.cloudfront.net/featured/lukas-MU8w72PzRow-unsplash.webp'
 status: PUBLISHED
 datePublished: '2025-04-15'
-dateModified: '2025-04-11'
+dateModified: '2025-04-27'
 description: >-
   Learn how we streamlined build processes using prebuild hooks and static
   pre-processing for optimal CI/CD workflow
@@ -30,7 +30,7 @@ ogTitle: How We Streamlined Our Build Processes with Prebuild Hooks
 ogDescription: >-
   A case study on integrating blog content with CI/CD using prebuild hooks and
   static processing
-ogImage: '/images/blog/featured/blog-architecture-split.webp'
+ogImage: 'https://d309xicbd1a46e.cloudfront.net/featured/lukas-MU8w72PzRow-unsplash.webp'
 ogType: article
 twitterCard: summary_large_image
 twitterCreator: '@jeffhandle'
