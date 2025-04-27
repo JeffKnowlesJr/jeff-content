@@ -1,11 +1,11 @@
 ---
 title: 'Project Omega Documentation'
 slug: 'project-omega-documentation'
-excerpt: 'Detailed documentation for Project Omega, including API reference, deployment guides, and integration tutorials.'
-datePublished: '2024-04-02'
+excerpt: 'Comprehensive documentation for Project Omega, complete with user guides, API references, and technical instructions.'
+datePublished: '2024-04-01'
 dateModified: '2024-04-04'
 author: 'Jeff Knowles Jr (Compiled with assistance from AI)'
-tags: ['Documentation', 'Technical Writing', 'API Reference']
+tags: ['Documentation', 'Technical Writing', 'User Guides']
 status: 'published'
 featured: true
 featuredImage: '/images/projects/project-omega/cover.jpg'
@@ -13,7 +13,7 @@ thumbnailImage: '/images/projects/project-omega/cover.jpg'
 contentImage: '/images/projects/project-omega/cover.jpg'
 projectType: 'Full-Stack Web Application'
 projectStatus: 'Completed'
-githubUrl: 'https://github.com/yourusername/project-omega'
+githubUrl: 'https://github.com/JeffKnowlesJr/jeff-content'
 liveUrl: 'https://www.jeffknowlesjr.com'
 techStack:
   ['Documentation', 'Technical Writing', 'API Reference', 'Integration Guides']

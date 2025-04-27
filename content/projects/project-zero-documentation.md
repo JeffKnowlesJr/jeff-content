@@ -10,6 +10,10 @@ status: 'published'
 featured: true
 featuredImage: '/images/projects/project-zero/cover.jpg'
 thumbnailImage: '/images/projects/project-zero/cover.jpg'
+projectType: 'Full-Stack Web Application'
+projectStatus: 'Completed'
+githubUrl: 'https://github.com/JeffKnowlesJr/jeff'
+liveUrl: 'https://www.jkjrdev.com'
 techStack:
   ['Documentation', 'Technical Writing', 'User Guides', 'API Reference']
 description: 'In-depth technical documentation covering the architecture, implementation, and maintenance of a modern full-stack portfolio website using React, AWS, and Terraform.'
