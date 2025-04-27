@@ -13,7 +13,7 @@ tags:
   - CI/CD
   - Prebuild
 readingTime: 6
-featuredImage: '/images/blog/featured/devops-pipeline.webp'
+featuredImage: '/images/blog/featured/blog-architecture-split.webp'
 status: PUBLISHED
 datePublished: '2025-04-15'
 dateModified: '2025-04-11'
@@ -30,7 +30,7 @@ ogTitle: How We Streamlined Our Build Processes with Prebuild Hooks
 ogDescription: >-
   A case study on integrating blog content with CI/CD using prebuild hooks and
   static processing
-ogImage: '/images/blog/featured/devops-pipeline.webp'
+ogImage: '/images/blog/featured/blog-architecture-split.webp'
 ogType: article
 twitterCard: summary_large_image
 twitterCreator: '@jeffhandle'

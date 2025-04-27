@@ -12,8 +12,7 @@ tags:
   - Developer Tools
   - Documentation
 readingTime: 9
-featuredImage: >-
-  https://d309xicbd1a46e.cloudfront.net/featured/sajad-nori-21mJd5NUGZU-unsplash.webp
+featuredImage: '/images/blog/featured/obsidian-screenshot.webp'
 status: published
 datePublished: '2025-03-30'
 dateModified: '2025-04-11'
@@ -35,8 +34,7 @@ ogDescription: >-
   Learn how Obsidian.md can become your second brain for coding projects,
   documentation, and knowledge management with powerful linking and plain text
   Markdown.
-ogImage: >-
-  https://d309xicbd1a46e.cloudfront.net/featured/sajad-nori-21mJd5NUGZU-unsplash.webp
+ogImage: '/images/blog/featured/obsidian-screenshot.webp'
 ogType: article
 twitterCard: summary_large_image
 twitterCreator: '@jeffknowlesjr'

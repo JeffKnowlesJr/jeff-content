@@ -14,7 +14,7 @@ contentImage: '/images/projects/project-omega/cover.jpg'
 projectType: 'Full-Stack Web Application'
 projectStatus: 'Completed'
 githubUrl: 'https://github.com/yourusername/project-omega'
-liveUrl: 'https://www.projectomega.dev'
+liveUrl: 'https://www.jeffknowlesjr.com'
 techStack:
   ['Documentation', 'Technical Writing', 'API Reference', 'Integration Guides']
 ---
@@ -115,10 +115,10 @@ Project Omega implements a multi-site architecture with shared infrastructure:
 
 We implemented a subdomain-based routing strategy:
 
-- `www.projectomega.dev` → Marketing/Blog (Next.js)
-- `app.projectomega.dev` → Application Portal (SPA)
-- `api.projectomega.dev` → GraphQL API (AppSync)
-- `assets.projectomega.dev` → Static Assets (S3/CloudFront)
+- `www.jeffknowlesjr.com` → Marketing/Blog (Next.js)
+- `app.jeffknowlesjr.com` → Application Portal (SPA)
+- `api.jeffknowlesjr.com` → GraphQL API (AppSync)
+- `assets.jeffknowlesjr.com` → Static Assets (S3/CloudFront)
 
 ## Implementation Details
 
@@ -367,9 +367,9 @@ export const MainNav = ({ items }) => {
           (isSPA && !item.spaOnly) || (!isSPA && item.spaOnly)
 
         const href = isExternalApp
-          ? `${item.spaOnly ? 'https://app.' : 'https://www.'}projectomega.dev${
-              item.href
-            }`
+          ? `${
+              item.spaOnly ? 'https://app.' : 'https://www.'
+            }jeffknowlesjr.com${item.href}`
           : item.href
 
         return (
@@ -418,7 +418,7 @@ module "spa_hosting" {
   source = "./modules/s3-cloudfront"
 
   bucket_name = "project-omega-portal"
-  domain_name = "app.projectomega.dev"
+  domain_name = "app.jeffknowlesjr.com"
 
   spa_config = {
     index_document = "index.html"
@@ -457,18 +457,18 @@ module "cognito" {
   source = "./modules/cognito"
 
   user_pool_name = "project-omega-users"
-  domain = "auth.projectomega.dev"
+  domain = "auth.jeffknowlesjr.com"
 
   auto_verified_attributes = ["email"]
 
   clients = [{
     name = "marketing-site"
-    callback_urls = ["https://www.projectomega.dev/auth/callback"]
-    logout_urls = ["https://www.projectomega.dev"]
+    callback_urls = ["https://www.jeffknowlesjr.com/auth/callback"]
+    logout_urls = ["https://www.jeffknowlesjr.com"]
   }, {
     name = "portal-app"
-    callback_urls = ["https://app.projectomega.dev/auth/callback"]
-    logout_urls = ["https://app.projectomega.dev"]
+    callback_urls = ["https://app.jeffknowlesjr.com/auth/callback"]
+    logout_urls = ["https://app.jeffknowlesjr.com"]
   }]
 }
 
