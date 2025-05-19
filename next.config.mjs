@@ -166,13 +166,18 @@ const nextConfig = {
         source: '/projects/project-omega',
         destination: '/projects/project-omega-documentation',
         permanent: true
+      },
+      // Add explicit redirect for contact with trailing slash
+      {
+        source: '/contact/',
+        destination: '/contact',
+        permanent: false
       }
     ]
   },
   // Essential settings for proper SSR/dynamic routes with admin pages
   output: 'standalone',
-  // Skip prerendering for admin routes and any dynamic routes
-  skipTrailingSlashRedirect: true,
+  // Handle trailing slashes properly
   trailingSlash: false
 }
 

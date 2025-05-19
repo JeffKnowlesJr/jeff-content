@@ -38,7 +38,7 @@ export async function POST(request: Request) {
       process.env.CONTACT_FORM_TABLE || 'jeff-dev-contact-forms'
 
     // Force production mode for testing
-    const IS_LOCAL_DEV = false // Override local dev check
+    const IS_LOCAL_DEV = process.env.NODE_ENV === 'development'
 
     // Enhanced logging of environment
     console.log('Environment Configuration:', {
@@ -50,7 +50,7 @@ export async function POST(request: Request) {
     })
 
     // Check for required environment variables
-    if (!APPSYNC_API_URL) {
+    if (!APPSYNC_API_URL && !IS_LOCAL_DEV) {
       console.error('AppSync API URL is missing')
       return NextResponse.json(
         {
@@ -61,7 +61,17 @@ export async function POST(request: Request) {
       )
     }
 
-    const body = await request.json()
+    let body
+    try {
+      body = await request.json()
+    } catch (parseError) {
+      console.error('Error parsing request body:', parseError)
+      return NextResponse.json(
+        { error: 'Invalid request format. Please send valid JSON.' },
+        { status: 400 }
+      )
+    }
+
     const { name, email, message, subject } = body
 
     // Log the incoming request
@@ -114,7 +124,7 @@ export async function POST(request: Request) {
     const timestamp = new Date().toISOString()
 
     // Use local implementation if in development or no AppSync URL
-    if (IS_LOCAL_DEV) {
+    if (IS_LOCAL_DEV || !APPSYNC_API_URL) {
       console.log('Using local development mock implementation')
 
       // Store submission in local array
@@ -181,7 +191,7 @@ export async function POST(request: Request) {
     })
 
     // Determine authentication method
-    const useApiKey = true // Force API Key authentication
+    const useApiKey = Boolean(APPSYNC_API_KEY) // Use API Key if available
     console.log(`Using ${useApiKey ? 'API Key' : 'IAM'} authentication`)
 
     let response
@@ -199,17 +209,30 @@ export async function POST(request: Request) {
         )
       }
 
-      response = await fetch(APPSYNC_API_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': APPSYNC_API_KEY
-        },
-        body: JSON.stringify({
-          query: mutation,
-          variables
+      try {
+        response = await fetch(APPSYNC_API_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': APPSYNC_API_KEY
+          },
+          body: JSON.stringify({
+            query: mutation,
+            variables
+          })
         })
-      })
+      } catch (fetchError) {
+        console.error('Fetch error with API Key auth:', fetchError)
+        return NextResponse.json(
+          {
+            error:
+              'Failed to connect to the form submission service. Please try again later.',
+            details:
+              fetchError instanceof Error ? fetchError.message : 'Unknown error'
+          },
+          { status: 500 }
+        )
+      }
     } else {
       // Use IAM authentication
       console.log('Using IAM authentication')
@@ -281,7 +304,22 @@ export async function POST(request: Request) {
 
         console.log('Sending request to AppSync...')
         // Send the signed request to AppSync
-        response = await fetch(APPSYNC_API_URL, fetchOptions)
+        try {
+          response = await fetch(APPSYNC_API_URL, fetchOptions)
+        } catch (fetchError) {
+          console.error('Fetch error with IAM auth:', fetchError)
+          return NextResponse.json(
+            {
+              error:
+                'Failed to connect to the form submission service. Please try again later.',
+              details:
+                fetchError instanceof Error
+                  ? fetchError.message
+                  : 'Unknown error'
+            },
+            { status: 500 }
+          )
+        }
       } catch (signingError) {
         console.error('AWS signing error:', signingError)
         // More detailed error message
@@ -306,7 +344,14 @@ export async function POST(request: Request) {
       throw new Error(`Failed to submit form: ${errorText}`)
     }
 
-    const result = await response.json()
+    let result
+    try {
+      result = await response.json()
+    } catch (parseError) {
+      console.error('Error parsing AppSync response:', parseError)
+      throw new Error('Invalid response from form submission service')
+    }
+
     console.log('Full AppSync response:', result)
 
     if (result.errors) {
