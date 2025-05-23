@@ -118,7 +118,8 @@ For detailed implementation, see:
 │   ├── VISUAL_SYSTEM.md
 │   ├── CODEBASE.md
 │   ├── APPSYNC_IAM_AUTHENTICATION.md
-│   └── CONTACT_FORM_IAM_SOLUTION.md
+│   ├── CONTACT_FORM_IAM_SOLUTION.md
+│   └── PROJECT_CHRONOS_DOCUMENTATION.md
 ├── public/               # Static assets
 │   └── images/
 ├── scripts/             # Build and utility scripts
@@ -206,8 +207,7 @@ If images aren't displaying correctly:
 - [Animation Troubleshooting](docs/ANIMATION_TROUBLESHOOTING.md) - Animation component documentation
 - [Tailwind Troubleshooting](docs/TAILWIND_TROUBLESHOOTING.md) - Tailwind CSS configuration and troubleshooting
 - [Website Retooling](docs/WEBSITE_RETOOLING.md) - Website retooling plan and progress
-- [AppSync IAM Authentication](docs/APPSYNC_IAM_AUTHENTICATION.md) - IAM authentication implementation for AppSync
-- [Contact Form IAM Solution](docs/CONTACT_FORM_IAM_SOLUTION.md) - Contact form authentication solution
+- [AppSync IAM Authentication](docs/APPSYNC_IAM_AUTHENTICATION.md) - IAM authentication implementation for AppSync- [Contact Form IAM Solution](docs/CONTACT_FORM_IAM_SOLUTION.md) - Contact form authentication solution
 
 ### Content Management and Database
 

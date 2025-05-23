@@ -1,37 +1,52 @@
 ---
-title: 'Project Zero Documentation'
-slug: 'project-zero-documentation'
-excerpt: 'Comprehensive documentation for Project Zero, complete with user guides, API references, and technical instructions.'
+title: Project Zero Documentation
+slug: project-zero-documentation
+excerpt: >-
+  Comprehensive documentation for Project Zero, complete with user guides, API
+  references, and technical instructions.
 datePublished: '2024-04-01'
-dateModified: '2024-04-04'
-author: 'Jeff Knowles Jr (Compiled with assistance from AI)'
-tags: ['Documentation', 'Technical Writing', 'User Guides']
-status: 'published'
+dateModified: '2025-05-23'
+author: Jeff Knowles Jr (Compiled with assistance from AI)
+tags:
+  - Documentation
+  - Technical Writing
+  - User Guides
+status: published
 featured: true
-featuredImage: '/images/projects/project-zero/cover.jpg'
-thumbnailImage: '/images/projects/project-zero/cover.jpg'
-projectType: 'Full-Stack Web Application'
-projectStatus: 'Completed'
+featuredImage: >-
+  https://d309xicbd1a46e.cloudfront.net/projects/allison-saeng-Iy_wveeeqe8-unsplash.webp
+thumbnailImage: >-
+  https://d309xicbd1a46e.cloudfront.net/projects/allison-saeng-Iy_wveeeqe8-unsplash.webp
+projectType: Full-Stack Web Application
+projectStatus: Completed
 githubUrl: 'https://github.com/JeffKnowlesJr/jeff'
 liveUrl: 'https://www.jkjrdev.com'
 techStack:
-  ['Documentation', 'Technical Writing', 'User Guides', 'API Reference']
-description: 'In-depth technical documentation covering the architecture, implementation, and maintenance of a modern full-stack portfolio website using React, AWS, and Terraform.'
+  - Documentation
+  - Technical Writing
+  - User Guides
+  - API Reference
+description: >-
+  In-depth technical documentation covering the architecture, implementation,
+  and maintenance of a modern full-stack portfolio website using React, AWS, and
+  Terraform.
 keywords:
-  - 'portfolio documentation'
-  - 'react architecture'
-  - 'aws appsync'
-  - 'terraform infrastructure'
-  - 'full-stack development'
-  - 'technical documentation'
+  - portfolio documentation
+  - react architecture
+  - aws appsync
+  - terraform infrastructure
+  - full-stack development
+  - technical documentation
 ogTitle: 'Project Zero: Complete Technical Documentation'
-ogDescription: 'Comprehensive guide to building and maintaining a modern full-stack portfolio website with React, AWS, and Terraform'
-ogImage: '/images/projects/project-zero/cover.jpg'
-ogType: 'article'
-twitterCard: 'summary_large_image'
+ogDescription: >-
+  Comprehensive guide to building and maintaining a modern full-stack portfolio
+  website with React, AWS, and Terraform
+ogImage: /images/projects/project-zero/cover.jpg
+ogType: article
+twitterCard: summary_large_image
 twitterCreator: '@YourTwitterHandle'
-articleSection: 'Technical Documentation'
-articleAuthor: 'Jeff'
+articleSection: Technical Documentation
+articleAuthor: Jeff
 ---
 
 ## 1-Project-Overview
@@ -84,7 +99,268 @@ The application follows a component-based architecture with clear separation of 
 - **Data Storage:** DynamoDB tables for blog posts and contact forms
 - **Infrastructure:** Terraform-managed AWS resources
 
----
+## Solution Architecture
+
+### System Overview
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    Project Zero Architecture                        │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  ┌─────────────────────────────────────────────────────────────┐   │
+│  │                     Frontend Layer                           │   │
+│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────────┐    │   │
+│  │  │   Next.js   │  │    React    │  │   TypeScript    │    │   │
+│  │  │  SSR/SSG    │  │ Components  │  │   Type Safety   │    │   │
+│  │  └─────────────┘  └─────────────┘  └─────────────────┘    │   │
+│  └─────────────────────────────────────────────────────────────┘   │
+│                                │                                    │
+│                                ▼                                    │
+│  ┌─────────────────────────────────────────────────────────────┐   │
+│  │                      API Layer                               │   │
+│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────────┐    │   │
+│  │  │   GraphQL   │  │   AppSync   │  │  IAM Auth       │    │   │
+│  │  │   Schema    │  │   Resolvers │  │  (Role-based)   │    │   │
+│  │  └─────────────┘  └─────────────┘  └─────────────────┘    │   │
+│  └─────────────────────────────────────────────────────────────┘   │
+│                                │                                    │
+│                                ▼                                    │
+│  ┌─────────────────────────────────────────────────────────────┐   │
+│  │                    Data Layer                                │   │
+│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────────┐    │   │
+│  │  │  DynamoDB   │  │     S3      │  │  CloudFront     │    │   │
+│  │  │  (Content)  │  │  (Assets)   │  │    (CDN)        │    │   │
+│  │  └─────────────┘  └─────────────┘  └─────────────────┘    │   │
+│  └─────────────────────────────────────────────────────────────┘   │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+### Content Management Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                  Dual-Source Content Architecture                   │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  Development Time:                                                  │
+│  ┌─────────────────┐                    ┌─────────────────┐       │
+│  │  Markdown Files │                    │  Local Preview  │       │
+│  │   (Git Repo)    │───────────────────►│   (Next.js)     │       │
+│  │                 │                    │                 │       │
+│  └────────┬────────┘                    └─────────────────┘       │
+│           │                                                         │
+│           │ npm run blog:import                                    │
+│           ▼                                                         │
+│  ┌─────────────────┐                    ┌─────────────────┐       │
+│  │  Import Script  │                    │    DynamoDB     │       │
+│  │  (TypeScript)   │───────────────────►│   (Production)  │       │
+│  │                 │                    │                 │       │
+│  └─────────────────┘                    └────────┬────────┘       │
+│                                                  │                 │
+│  Production Time:                                │                 │
+│  ┌─────────────────┐                            │                 │
+│  │   Next.js App   │◄───────────────────────────┘                 │
+│  │  (AWS Amplify)  │                                              │
+│  │                 │                                              │
+│  └─────────────────┘                                              │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+### Image Processing Pipeline
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    Image Processing Workflow                        │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  1. Source Images                                                   │
+│  ┌─────────────────┐                                              │
+│  │  Raw Images     │  (JPEG, PNG, HEIC)                           │
+│  │  /src/assets/   │                                              │
+│  └────────┬────────┘                                              │
+│           │                                                         │
+│           ▼                                                         │
+│  2. Processing Script                                               │
+│  ┌─────────────────┐     ┌──────────────┐     ┌────────────────┐ │
+│  │     Sharp       │────►│   Resize     │────►│   Optimize     │ │
+│  │  (Node.js lib)  │     │  (1200px)    │     │  (WebP/JPEG)   │ │
+│  └─────────────────┘     └──────────────┘     └────────┬───────┘ │
+│                                                         │          │
+│           ┌─────────────────────────────────────────────┘          │
+│           │                                                         │
+│           ▼                                                         │
+│  3. Storage & Distribution                                          │
+│  ┌─────────────────┐     ┌──────────────┐     ┌────────────────┐ │
+│  │   S3 Bucket     │────►│  CloudFront  │────►│  Global Users  │ │
+│  │  (Storage)      │     │    (CDN)     │     │                │ │
+│  └─────────────────┘     └──────────────┘     └────────────────┘ │
+│                                                                     │
+│  4. Content Update                                                  │
+│  ┌─────────────────┐                                              │
+│  │ Markdown Files  │  (Update image URLs to CloudFront)           │
+│  │  frontmatter    │                                              │
+│  └─────────────────┘                                              │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+### Authentication Flow
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    IAM Authentication Flow                          │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  1. Request Initiation                                              │
+│  ┌─────────────────┐                                              │
+│  │  Client App     │  (Next.js running on Amplify)                │
+│  │                 │                                              │
+│  └────────┬────────┘                                              │
+│           │                                                         │
+│           ▼                                                         │
+│  2. Credential Resolution                                           │
+│  ┌─────────────────┐     ┌──────────────┐     ┌────────────────┐ │
+│  │  AWS SDK        │────►│   STS        │────►│  Temporary     │ │
+│  │  Credential     │     │  AssumeRole  │     │  Credentials   │ │
+│  │  Provider       │     │              │     │                │ │
+│  └─────────────────┘     └──────────────┘     └────────┬───────┘ │
+│                                                         │          │
+│           ┌─────────────────────────────────────────────┘          │
+│           │                                                         │
+│           ▼                                                         │
+│  3. Request Signing                                                 │
+│  ┌─────────────────┐     ┌──────────────┐     ┌────────────────┐ │
+│  │  SignatureV4    │────►│   Sign       │────►│  Signed        │ │
+│  │  (AWS SDK)      │     │  Request     │     │  HTTP Request  │ │
+│  └─────────────────┘     └──────────────┘     └────────┬───────┘ │
+│                                                         │          │
+│           ┌─────────────────────────────────────────────┘          │
+│           │                                                         │
+│           ▼                                                         │
+│  4. API Access                                                      │
+│  ┌─────────────────┐     ┌──────────────┐     ┌────────────────┐ │
+│  │   AppSync       │────►│   Validate   │────►│  Execute       │ │
+│  │   GraphQL API   │     │   IAM Auth   │     │  Query         │ │
+│  └─────────────────┘     └──────────────┘     └────────────────┘ │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+### Component Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    Component Hierarchy                              │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  App Root                                                           │
+│  └── Layout                                                         │
+│      ├── Header                                                     │
+│      │   ├── Navigation                                            │
+│      │   ├── ThemeToggle                                           │
+│      │   └── MobileMenu                                            │
+│      │                                                             │
+│      ├── Main Content                                              │
+│      │   ├── HomePage                                              │
+│      │   │   ├── Hero                                              │
+│      │   │   ├── EnhancedBackgroundAnimation                       │
+│      │   │   └── FeaturedContent                                   │
+│      │   │                                                         │
+│      │   ├── BlogPage                                              │
+│      │   │   ├── BlogList                                          │
+│      │   │   │   └── BlogCard                                      │
+│      │   │   ├── SearchBar                                         │
+│      │   │   └── TagFilter                                         │
+│      │   │                                                         │
+│      │   ├── ProjectPage                                           │
+│      │   │   ├── ProjectGrid                                       │
+│      │   │   └── ProjectCard                                       │
+│      │   │                                                         │
+│      │   └── ContactPage                                           │
+│      │       ├── ContactForm                                       │
+│      │       └── ContactInfo                                       │
+│      │                                                             │
+│      └── Footer                                                     │
+│          ├── SocialLinks                                           │
+│          └── Copyright                                             │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+### Performance Optimization Strategy
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                 Performance Optimization Flow                       │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  1. Build Time Optimizations                                        │
+│  ┌─────────────────┐     ┌──────────────┐     ┌────────────────┐ │
+│  │  Static Pages   │     │  Code Split  │     │  Tree Shaking  │ │
+│  │  Generation     │     │  by Route    │     │  Unused Code   │ │
+│  └─────────────────┘     └──────────────┘     └────────────────┘ │
+│                                                                     │
+│  2. Asset Optimization                                              │
+│  ┌─────────────────┐     ┌──────────────┐     ┌────────────────┐ │
+│  │  Image          │     │  WebP Format │     │  Lazy Loading  │ │
+│  │  Processing     │     │  Conversion  │     │  Implementation│ │
+│  └─────────────────┘     └──────────────┘     └────────────────┘ │
+│                                                                     │
+│  3. Runtime Optimizations                                           │
+│  ┌─────────────────┐     ┌──────────────┐     ┌────────────────┐ │
+│  │  React.memo     │     │  useMemo     │     │  Virtualization│ │
+│  │  Components     │     │  Hooks       │     │  Long Lists    │ │
+│  └─────────────────┘     └──────────────┘     └────────────────┘ │
+│                                                                     │
+│  4. Network Optimizations                                           │
+│  ┌─────────────────┐     ┌──────────────┐     ┌────────────────┐ │
+│  │  CloudFront     │     │  Brotli      │     │  HTTP/2        │ │
+│  │  CDN            │     │  Compression │     │  Push          │ │
+│  └─────────────────┘     └──────────────┘     └────────────────┘ │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+### Deployment Pipeline
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    Deployment Pipeline                              │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  Local Development                                                  │
+│  ┌─────────────────┐                                              │
+│  │  Git Commit     │  (Feature branch)                            │
+│  │                 │                                              │
+│  └────────┬────────┘                                              │
+│           │                                                         │
+│           ▼                                                         │
+│  GitHub Actions                                                     │
+│  ┌─────────────────┐     ┌──────────────┐     ┌────────────────┐ │
+│  │  Lint & Test    │────►│  Build       │────►│  Type Check    │ │
+│  │  (ESLint, Jest) │     │  (Next.js)   │     │  (TypeScript)  │ │
+│  └─────────────────┘     └──────────────┘     └────────┬───────┘ │
+│                                                         │          │
+│           ┌─────────────────────────────────────────────┘          │
+│           │                                                         │
+│           ▼                                                         │
+│  AWS Amplify                                                        │
+│  ┌─────────────────┐     ┌──────────────┐     ┌────────────────┐ │
+│  │  Preview Build  │────►│  Production  │────►│  CloudFront    │ │
+│  │  (PR branches)  │     │  Build       │     │  Invalidation  │ │
+│  └─────────────────┘     └──────────────┘     └────────────────┘ │
+│                                                                     │
+│  Monitoring                                                         │
+│  ┌─────────────────┐     ┌──────────────┐     ┌────────────────┐ │
+│  │  CloudWatch     │     │  Error       │     │  Performance   │ │
+│  │  Logs           │     │  Tracking    │     │  Metrics       │ │
+│  └─────────────────┘     └──────────────┘     └────────────────┘ │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
 
 ## 2-Getting-Started
 
@@ -119,7 +395,7 @@ cp .env.example .env
 
 4. Configure required environment variables:
 
-```
+```bash
 VITE_APPSYNC_ENDPOINT=your_appsync_endpoint
 VITE_APPSYNC_API_KEY=your_api_key
 VITE_GA_MEASUREMENT_ID=your_ga_id
@@ -171,8 +447,6 @@ npm run test
 ```bash
 npm run preview
 ```
-
----
 
 ## 3-Frontend-Architecture
 
@@ -355,8 +629,6 @@ const renderer = new THREE.WebGLRenderer()
 // ... Three.js setup
 ```
 
----
-
 ## 4-Backend-Services
 
 ### AWS-AppSync-API
@@ -479,8 +751,6 @@ exports.handler = async (event) => {
 
 - Field-level authorization with @auth directives
 - IAM roles with least privilege principle
-
----
 
 ## 5-Blog-System
 
@@ -629,8 +899,6 @@ query GetBlogPost {
   }
 }
 ```
-
----
 
 ## 6-Infrastructure-Management
 
@@ -836,8 +1104,6 @@ npm run tf:workspace:list
 - `staging` - Testing and QA
 - `prod` - Production environment
 
----
-
 ## 7-Deployment
 
 ### Build-Process
@@ -953,8 +1219,6 @@ jobs:
 
       # Amplify automatically deploys on push to main
 ```
-
----
 
 ## 8-Performance-Optimization
 
@@ -1104,8 +1368,6 @@ export async function fetchBlogPost(slug) {
   return data
 }
 ```
-
----
 
 ## 9-Testing
 
@@ -1312,8 +1574,6 @@ npm run test:coverage
 # View coverage report
 open coverage/index.html
 ```
-
----
 
 ## 10-Security-Considerations
 
@@ -1591,8 +1851,6 @@ export default defineConfig({
   }
 })
 ```
-
----
 
 ## 11-Monitoring-and-Analytics
 
@@ -1894,8 +2152,6 @@ resource "aws_sns_topic" "alerts" {
 }
 ```
 
----
-
 ## 12-Maintenance
 
 ### Regular Updates
@@ -2008,8 +2264,6 @@ npm run blog:images
 # Upload images to S3
 npm run blog:s3-upload
 ```
-
----
 
 ## 13-Troubleshooting
 
@@ -2130,8 +2384,6 @@ aws dynamodb scan \
 - GitHub Issues
 - AWS Forums
 - React Discord
-
----
 
 ## 14-Best-Practices
 
@@ -2400,8 +2652,6 @@ export default VirtualizedList
 8. Use secure headers
 9. Protect against common web vulnerabilities (XSS, CSRF, etc.)
 10. Regularly audit code for security issues
-
----
 
 ## 15-Resources
 

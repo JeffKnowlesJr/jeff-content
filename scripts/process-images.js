@@ -16,6 +16,8 @@ const FORCE_REPROCESS = false
 // Configuration
 const ASSETS_DIR = path.join(process.cwd(), 'content', 'blog', 'assets')
 const BLOG_CONTENT_DIR = path.join(process.cwd(), 'content', 'blog')
+const PROJECT_CONTENT_DIR = path.join(process.cwd(), 'content', 'projects')
+const PROJECT_ASSETS_DIR = path.join(process.cwd(), 'content', 'projects', 'assets')
 const TEMP_PROCESSING_DIR = path.join(process.cwd(), 'temp_processed_images')
 
 // AWS/CloudFront Config
@@ -59,16 +61,51 @@ const getBaseName = (filePath) => {
   }
 }
 
-// Helper to find source asset matching base name
-const findSourceAsset = (baseName) => {
+// Project to image mapping
+const PROJECT_IMAGE_MAPPING = {
+  'project-pii': 'nick-hillier-yD5rv8_WzxA-unsplash',
+  'project-omega': 'planet-volumes-OLH166vSyHA-unsplash', 
+  'project-zero': 'allison-saeng-Iy_wveeeqe8-unsplash'
+}
+
+// Helper to find source asset matching base name (enhanced for projects)
+const findSourceAsset = (baseName, isProject = false, projectSlug = null) => {
   if (!baseName) return null
   const extensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp']
-  for (const ext of extensions) {
-    const potentialFile = path.join(ASSETS_DIR, `${baseName}${ext}`)
-    if (fs.existsSync(potentialFile)) {
-      return potentialFile
+  
+  // For projects, first try the mapping
+  if (isProject && projectSlug && baseName === 'cover') {
+    const mappedImage = PROJECT_IMAGE_MAPPING[projectSlug]
+    if (mappedImage) {
+      for (const ext of extensions) {
+        const potentialFile = path.join(PROJECT_ASSETS_DIR, `${mappedImage}${ext}`)
+        if (fs.existsSync(potentialFile)) {
+          return potentialFile
+        }
+      }
     }
   }
+  
+  // For projects, check multiple possible locations
+  const searchDirs = isProject 
+    ? [PROJECT_ASSETS_DIR, ASSETS_DIR, path.join(process.cwd(), 'public', 'images', 'projects')]
+    : [ASSETS_DIR]
+  
+  for (const dir of searchDirs) {
+    for (const ext of extensions) {
+      const potentialFile = path.join(dir, `${baseName}${ext}`)
+      if (fs.existsSync(potentialFile)) {
+        return potentialFile
+      }
+    }
+  }
+  
+  // Also check if the image file exists in the project root (for manual uploads)
+  const rootPath = path.join(process.cwd(), `${baseName}.jpg`)
+  if (fs.existsSync(rootPath)) {
+    return rootPath
+  }
+  
   return null // Not found
 }
 
@@ -112,19 +149,32 @@ async function uploadToS3(filePath, s3Key) {
 // --- Main processing function ---
 async function processAndSyncImages() {
   console.log(
-    'Starting Image Sync Process (S3/CloudFront Workflow using ogImage field)...'
+    'Starting Image Sync Process (S3/CloudFront Workflow)...'
   )
-  console.log(`Reading markdown from: ${BLOG_CONTENT_DIR}`)
-  console.log(`Using assets from: ${ASSETS_DIR}`)
+  console.log(`Reading blog markdown from: ${BLOG_CONTENT_DIR}`)
+  console.log(`Reading project markdown from: ${PROJECT_CONTENT_DIR}`)
+  console.log(`Using blog assets from: ${ASSETS_DIR}`)
+  console.log(`Using project assets from: ${PROJECT_ASSETS_DIR}`)
   console.log(
     `Uploading to S3 Bucket: ${S3_BUCKET_NAME}, Prefix: ${S3_UPLOAD_PREFIX}`
   )
   console.log(`Using CloudFront Domain: ${CLOUDFRONT_DOMAIN}`)
 
-  const markdownFiles = fs
+  // Process both blog and project markdown files
+  const blogFiles = fs
     .readdirSync(BLOG_CONTENT_DIR)
     .filter((f) => f.endsWith('.md'))
-  console.log(`Found ${markdownFiles.length} markdown blog posts.`)
+    .map(f => ({ path: path.join(BLOG_CONTENT_DIR, f), type: 'blog', filename: f }))
+    
+  const projectFiles = fs.existsSync(PROJECT_CONTENT_DIR) 
+    ? fs.readdirSync(PROJECT_CONTENT_DIR)
+        .filter((f) => f.endsWith('.md'))
+        .map(f => ({ path: path.join(PROJECT_CONTENT_DIR, f), type: 'project', filename: f }))
+    : []
+    
+  const allMarkdownFiles = [...blogFiles, ...projectFiles]
+  
+  console.log(`Found ${blogFiles.length} blog posts and ${projectFiles.length} project files.`)
 
   let processedCount = 0
   let uploadedCount = 0
@@ -132,9 +182,8 @@ async function processAndSyncImages() {
   let warningCount = 0
   let alreadyCloudFrontCount = 0
 
-  for (const mdFilename of markdownFiles) {
-    const mdFilePath = path.join(BLOG_CONTENT_DIR, mdFilename)
-    console.log(`\nProcessing Markdown: ${mdFilename}`)
+  for (const { path: mdFilePath, type, filename: mdFilename } of allMarkdownFiles) {
+    console.log(`\nProcessing ${type} markdown: ${mdFilename}`)
     let needsSave = false
 
     try {
@@ -152,115 +201,65 @@ async function processAndSyncImages() {
         continue
       }
 
-      const currentOgImage = frontmatter.ogImage
-      const currentFeaturedImage = frontmatter.featuredImage
+      // For projects, we look at featuredImage, thumbnailImage, and contentImage
+      // For blogs, we look at ogImage and featuredImage
+      const imageFields = type === 'project' 
+        ? ['featuredImage', 'thumbnailImage', 'contentImage']
+        : ['ogImage']
 
-      if (!currentOgImage || typeof currentOgImage !== 'string') {
-        console.warn(
-          `  -> Skipping ${mdFilename}: Missing or invalid 'ogImage' field in frontmatter.`
-        )
-        warningCount++
-        continue
-      }
-
-      // Scenario 1: ogImage is already a CloudFront URL
-      if (
-        currentOgImage.startsWith(`https://${CLOUDFRONT_DOMAIN}`) &&
-        !FORCE_REPROCESS
-      ) {
-        console.log(
-          `  -> Found existing CloudFront URL in ogImage: ${currentOgImage}`
-        )
-        alreadyCloudFrontCount++
-        // Check if featuredImage needs updating to match
-        if (currentFeaturedImage !== currentOgImage) {
-          console.log(`     Updating featuredImage to match ogImage.`)
-          frontmatter.featuredImage = currentOgImage
-          needsSave = true
-        } else {
-          // console.log(`     -> featuredImage already matches ogImage.`)
-        }
-      }
-      // Scenario 2: ogImage is likely a local path, or we're forcing reprocessing
-      else {
-        // If forcing reprocessing of CloudFront URL
-        if (
-          FORCE_REPROCESS &&
-          currentOgImage.startsWith(`https://${CLOUDFRONT_DOMAIN}`)
-        ) {
-          console.log(
-            `  -> Force reprocessing enabled. Reprocessing existing CloudFront image.`
-          )
-        } else {
-          console.log(
-            `  -> Found non-CloudFront ogImage: ${currentOgImage}. Attempting to process and upload.`
-          )
+      for (const field of imageFields) {
+        const currentImage = frontmatter[field]
+        
+        if (!currentImage || typeof currentImage !== 'string') {
+          // Skip if field doesn't exist
+          continue
         }
 
-        // First check if there's a sourceImageAsset field
-        let sourceAssetPath = null
-        if (frontmatter.sourceImageAsset) {
-          // Try to find the image directly using sourceImageAsset
-          const potentialSourceAsset = path.join(
-            ASSETS_DIR,
-            frontmatter.sourceImageAsset
-          )
-          if (fs.existsSync(potentialSourceAsset)) {
-            sourceAssetPath = potentialSourceAsset
-            console.log(
-              `  -> Using sourceImageAsset: ${frontmatter.sourceImageAsset}`
-            )
-          } else {
-            console.warn(
-              `  -> sourceImageAsset specified but file not found: ${frontmatter.sourceImageAsset}`
-            )
-          }
+        // Skip if already a CloudFront URL and not forcing reprocess
+        if (currentImage.startsWith(`https://${CLOUDFRONT_DOMAIN}`) && !FORCE_REPROCESS) {
+          console.log(`  -> ${field} already has CloudFront URL: ${currentImage}`)
+          alreadyCloudFrontCount++
+          continue
         }
 
-        // If no sourceImageAsset or file not found, fall back to base name derivation
+        console.log(`  -> Processing ${field}: ${currentImage}`)
+
+        // Extract base name and find source
+        const baseName = getBaseName(currentImage)
+        if (!baseName) {
+          console.warn(`     Could not determine base name from ${field} path.`)
+          warningCount++
+          continue
+        }
+
+        // For projects, extract project slug from markdown filename
+        const projectSlug = type === 'project' ? mdFilename.replace('-documentation.md', '') : null
+        const sourceAssetPath = findSourceAsset(baseName, type === 'project', projectSlug)
         if (!sourceAssetPath) {
-          const ogBaseName = getBaseName(currentOgImage)
-          if (!ogBaseName) {
-            console.warn(
-              `     Could not determine base name from ogImage path. Skipping processing.`
-            )
-            warningCount++
-            continue
-          }
-
-          sourceAssetPath = findSourceAsset(ogBaseName)
-          if (!sourceAssetPath) {
-            console.error(
-              `     Error: Could not find source asset in ${ASSETS_DIR} matching base name '${ogBaseName}' derived from ogImage.`
-            )
-            warningCount++
-            continue
-          }
+          console.error(`     Error: Could not find source asset matching '${baseName}' for ${type === 'project' ? `project '${projectSlug}'` : 'blog'}.`)
+          warningCount++
+          continue
         }
 
-        console.log(
-          `     Found source asset: ${path.basename(sourceAssetPath)}`
-        )
+        console.log(`     Found source asset: ${path.basename(sourceAssetPath)}`)
 
-        // Prepare filenames and paths
+        // Prepare paths - use different S3 prefixes for projects vs blogs
+        const s3Prefix = type === 'project' ? 'projects/' : S3_UPLOAD_PREFIX
         const baseFileName = path.parse(path.basename(sourceAssetPath)).name
         const webpFilename = `${baseFileName}.webp`
         const tempWebpPath = path.join(TEMP_PROCESSING_DIR, webpFilename)
-        const s3Key = `${S3_UPLOAD_PREFIX}${webpFilename}`
+        const s3Key = `${s3Prefix}${webpFilename}`
         const finalCloudfrontUrl = `https://${CLOUDFRONT_DOMAIN}/${s3Key}`
 
-        // Process
-        const processedOk = await processImageLocal(
-          sourceAssetPath,
-          tempWebpPath
-        )
+        // Process image
+        const processedOk = await processImageLocal(sourceAssetPath, tempWebpPath)
         if (!processedOk) {
           warningCount++
           continue
         }
         processedCount++
 
-        // Upload
+        // Upload to S3
         const uploadedOk = await uploadToS3(tempWebpPath, s3Key)
         fs.unlinkSync(tempWebpPath) // Clean up temp
         if (!uploadedOk) {
@@ -270,60 +269,48 @@ async function processAndSyncImages() {
         uploadedCount++
 
         // Update frontmatter
-        console.log(`     Updating featuredImage to: ${finalCloudfrontUrl}`)
-        frontmatter.featuredImage = finalCloudfrontUrl
-        console.log(`     Updating ogImage to: ${finalCloudfrontUrl}`)
-        frontmatter.ogImage = finalCloudfrontUrl
+        console.log(`     Updating ${field} to: ${finalCloudfrontUrl}`)
+        frontmatter[field] = finalCloudfrontUrl
+        needsSave = true
+      }
+
+      // For blog posts, sync ogImage to featuredImage
+      if (type === 'blog' && frontmatter.ogImage && frontmatter.ogImage !== frontmatter.featuredImage) {
+        frontmatter.featuredImage = frontmatter.ogImage
         needsSave = true
       }
 
       // Save the file if any changes were made
       if (needsSave) {
-        frontmatter.dateModified = new Date().toISOString().split('T')[0] // Update modification date
+        frontmatter.dateModified = new Date().toISOString().split('T')[0]
         const serializableFrontmatter = { ...frontmatter }
         Object.keys(serializableFrontmatter).forEach((key) => {
           if (typeof serializableFrontmatter[key] === 'undefined') {
             serializableFrontmatter[key] = null
           }
         })
-        const updatedFileContent = matter.stringify(
-          content,
-          serializableFrontmatter
-        )
+        const updatedFileContent = matter.stringify(content, serializableFrontmatter)
         fs.writeFileSync(mdFilePath, updatedFileContent, 'utf8')
         updatedMdCount++
-        console.log(
-          `     -> Successfully updated frontmatter for ${mdFilename}`
-        )
+        console.log(`     -> Successfully updated frontmatter for ${mdFilename}`)
       }
     } catch (error) {
       if (error.name === 'YAMLException') {
-        console.error(
-          `  Error parsing YAML frontmatter in ${mdFilename}:`,
-          error.message
-        )
+        console.error(`  Error parsing YAML frontmatter in ${mdFilename}:`, error.message)
       } else {
-        console.error(
-          `  Error processing markdown file ${mdFilename}:`,
-          error.message
-        )
+        console.error(`  Error processing markdown file ${mdFilename}:`, error.message)
       }
       warningCount++
     }
   }
 
   // Clean up temp dir
-  if (
-    fs.existsSync(TEMP_PROCESSING_DIR) &&
-    fs.readdirSync(TEMP_PROCESSING_DIR).length === 0
-  ) {
+  if (fs.existsSync(TEMP_PROCESSING_DIR) && fs.readdirSync(TEMP_PROCESSING_DIR).length === 0) {
     fs.rmdirSync(TEMP_PROCESSING_DIR)
   }
 
   console.log(`\nImage Sync Finished.`)
-  console.log(
-    `Markdown Files Processed: ${markdownFiles.length}, Already CloudFront: ${alreadyCloudFrontCount}, Images Processed: ${processedCount}, Images Uploaded: ${uploadedCount}, Markdown Updated: ${updatedMdCount}, Warnings/Errors: ${warningCount}`
-  )
+  console.log(`Total Files Processed: ${allMarkdownFiles.length}, Already CloudFront: ${alreadyCloudFrontCount}, Images Processed: ${processedCount}, Images Uploaded: ${uploadedCount}, Markdown Updated: ${updatedMdCount}, Warnings/Errors: ${warningCount}`)
 }
 
 // Main execution wrapper

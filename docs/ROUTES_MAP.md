@@ -20,6 +20,13 @@ The application uses Next.js App Router, where routes are defined by folder stru
 | `/dev-log`                  | `src/app/dev-log/page.tsx`                  | Development log        | BlogLayout                        |
 | `/resources`                | `src/app/resources/page.tsx`                | Resources page         | ResourceList                      |
 | `/sitemap`                  | `src/app/sitemap/page.tsx`                  | Sitemap page           | -                                 |
+| `/projects/project-beta-showcase`      | `src/app/projects/[slug]/page.tsx`      | Project Detail           | Dynamic | ✓        | ✓         | High     | Case study for Project Beta.                 |
+| `/projects/project-gamma-framework`    | `src/app/projects/[slug]/page.tsx`      | Project Detail           | Dynamic | ✓        | ✓         | High     | Documentation for Project Gamma.             |
+| `/projects/project-omega-documentation`| `src/app/projects/[slug]/page.tsx`      | Project Detail           | Dynamic | ✓        | ✓         | High     | Documentation for Project Omega.             |
+| `/projects/project-pii-documentation`  | `src/app/projects/[slug]/page.tsx`      | Project Detail           | Dynamic | ✓        | ✓         | High     | Documentation for Project PII (Vibe System). |
+
+|                                        |                                     |                          |         |          |           |          |                                              |
+| **Development Logs & Changelog**       |                                     |                          |         |          |           |          |                                              |
 
 ## Layout Structure
 
